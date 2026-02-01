@@ -10,4 +10,6 @@
 
 <h1>session {$page.params.session}</h1>
 
-<p>{data.session}</p>
+<pre>{JSON.stringify(data.parsed, null, 2)}</pre>
+
+<pre>{data.csv}</pre>

@@ -1,7 +1,7 @@
 'use client';
 
 import { AgGridReact } from 'ag-grid-react';
-import { ColDef,ModuleRegistry, AllCommunityModule } from 'ag-grid-community';
+import { ColDef,ModuleRegistry, AllCommunityModule, colorSchemeDark, themeQuartz  } from 'ag-grid-community';
 
 ModuleRegistry.registerModules([ AllCommunityModule ]);
 
@@ -53,6 +53,7 @@ export default function SessionDataGrid({ data }: SessionDataGridProps) {
         paginationPageSize={100}
         suppressCellFocus={true}
         rowSelection="single"
+        theme={themeQuartz.withPart(colorSchemeDark)}
       />
     </div>
   );

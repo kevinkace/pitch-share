@@ -43,7 +43,7 @@ export default function SessionDataGrid({ data }: SessionDataGridProps) {
   };
 
   return (
-    <div className="">
+    <div>
       <AgGridReact<SessionData>
         domLayout='autoHeight'
         rowData={data}

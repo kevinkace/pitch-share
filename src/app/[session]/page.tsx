@@ -55,10 +55,10 @@ export default async function SessionPage({ params }: SessionPageProps) {
 
   return (
     <div>
-      <h1>Session: {session}</h1>
+      <h1>{data[0]?.['Player Name'] || 'Unknown'}</h1>
       {data.length > 0 ? (
         <div>
-          <h2>Session Data ({data.length} pitches)</h2>
+          <h2>{data.length} pitches</h2>
           <SessionStats speeds={speeds} unit={unit} />
           <SessionDataGrid data={data} />
         </div>

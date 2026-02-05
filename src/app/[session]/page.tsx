@@ -2,6 +2,8 @@ import Papa from 'papaparse';
 import { readFileSync } from 'fs';
 import path from 'path';
 
+import SessionDataGrid from './SessionDataGrid';
+
 interface SessionData {
   Date: string;
   Time: string;
@@ -52,7 +54,8 @@ export default async function SessionPage({ params }: SessionPageProps) {
       {data.length > 0 ? (
         <div>
           <h2>Session Data ({data.length} pitches)</h2>
-          <pre>{JSON.stringify(data, null, 2)}</pre>
+
+          <SessionDataGrid data={data} />
         </div>
       ) : (
         <p>No data found for session: {session}</p>

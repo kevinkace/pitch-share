@@ -4,6 +4,7 @@ import path from 'path';
 import Papa from 'papaparse';
 
 import SessionDataGrid from './SessionDataGrid';
+import SessionStats from './SessionStats';
 interface SessionData {
   Date: string;
   Time: string;
@@ -48,13 +49,17 @@ export default async function SessionPage({ params }: SessionPageProps) {
 
   const data = await loadSessionData(session);
 
+  // Calculate statistics
+  const speeds = data.map(pitch => parseFloat(pitch.Speed)).filter(speed => !isNaN(speed));
+  const unit = data[0]?.Unit || 'MPH';
+
   return (
     <div>
       <h1>Session: {session}</h1>
       {data.length > 0 ? (
         <div>
           <h2>Session Data ({data.length} pitches)</h2>
-
+          <SessionStats speeds={speeds} unit={unit} />
           <SessionDataGrid data={data} />
         </div>
       ) : (

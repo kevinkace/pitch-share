@@ -42,6 +42,12 @@ export default function SessionDataGrid({ data }: SessionDataGridProps) {
     resizable: true,
   };
 
+  const theme = themeQuartz
+    .withPart(colorSchemeDark)
+    .withParams({
+        backgroundColor: 'transparent',
+    });
+
   return (
       <AgGridReact<SessionData>
         domLayout='autoHeight'
@@ -52,7 +58,7 @@ export default function SessionDataGrid({ data }: SessionDataGridProps) {
         paginationPageSize={100}
         suppressCellFocus={true}
         rowSelection="single"
-        theme={themeQuartz.withPart(colorSchemeDark)}
+        theme={theme}
       />
   );
 }

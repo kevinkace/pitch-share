@@ -1,6 +1,7 @@
 'use client';
 
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
+import SpeedGauge from './SpeedGauge';
 
 interface SessionStatsProps {
   speeds: number[];
@@ -29,22 +30,33 @@ export default function SessionStats({ speeds, unit }: SessionStatsProps) {
   }
 
   return (
-      <ResponsiveContainer width="100%" height={300}>
-        <BarChart data={chartData} margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
-          <CartesianGrid strokeDasharray="3 3" />
-          <XAxis
-            dataKey="speed"
-            label={{ value: `Speed (${unit})`, position: 'insideBottom', offset: -5 }}
-          />
-          <YAxis
-            label={{ value: 'Count', angle: -90, position: 'insideLeft' }}
-          />
-          <Tooltip
-            formatter={(value) => [value, 'Pitches']}
-            labelFormatter={(label) => `${label} ${unit}`}
-          />
-          <Bar dataKey="count" fill="#8884d8" />
-        </BarChart>
-      </ResponsiveContainer>
+    <div>
+      <div style={{ display: 'flex', alignItems: 'flex-start', gap: '40px', marginBottom: '20px' }}>
+        <div>
+          <h3>Top Speed</h3>
+          <SpeedGauge speed={fastestPitch} unit={unit} />
+        </div>
+        <div style={{ flex: 1 }}>
+          <h3>Speed Distribution</h3>
+          <ResponsiveContainer width="100%" height={300}>
+            <BarChart data={chartData} margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
+              <CartesianGrid strokeDasharray="3 3" />
+              <XAxis
+                dataKey="speed"
+                label={{ value: `Speed (${unit})`, position: 'insideBottom', offset: -5 }}
+              />
+              <YAxis
+                label={{ value: 'Count', angle: -90, position: 'insideLeft' }}
+              />
+              <Tooltip
+                formatter={(value) => [value, 'Pitches']}
+                labelFormatter={(label) => `${label} ${unit}`}
+              />
+              <Bar dataKey="count" fill="#8884d8" />
+            </BarChart>
+          </ResponsiveContainer>
+        </div>
+      </div>
+    </div>
   );
 }

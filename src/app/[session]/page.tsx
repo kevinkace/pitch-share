@@ -1,9 +1,9 @@
-import Papa from 'papaparse';
 import { readFileSync } from 'fs';
 import path from 'path';
 
-import SessionDataGrid from './SessionDataGrid';
+import Papa from 'papaparse';
 
+import SessionDataGrid from './SessionDataGrid';
 interface SessionData {
   Date: string;
   Time: string;

@@ -43,7 +43,6 @@ export default function SessionDataGrid({ data }: SessionDataGridProps) {
   };
 
   return (
-    <div>
       <AgGridReact<SessionData>
         domLayout='autoHeight'
         rowData={data}
@@ -55,6 +54,5 @@ export default function SessionDataGrid({ data }: SessionDataGridProps) {
         rowSelection="single"
         theme={themeQuartz.withPart(colorSchemeDark)}
       />
-    </div>
   );
 }

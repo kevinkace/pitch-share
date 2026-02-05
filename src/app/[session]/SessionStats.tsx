@@ -29,11 +29,6 @@ export default function SessionStats({ speeds, unit }: SessionStatsProps) {
   }
 
   return (
-    <div>
-      <p>top speed: {fastestPitch > 0 ? `${fastestPitch} ${unit}` : 'N/A'}</p>
-
-      <h4>Speed Distribution:</h4>
-
       <ResponsiveContainer width="100%" height={300}>
         <BarChart data={chartData} margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
           <CartesianGrid strokeDasharray="3 3" />
@@ -51,6 +46,5 @@ export default function SessionStats({ speeds, unit }: SessionStatsProps) {
           <Bar dataKey="count" fill="#8884d8" />
         </BarChart>
       </ResponsiveContainer>
-    </div>
   );
 }

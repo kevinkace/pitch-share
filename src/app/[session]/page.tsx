@@ -52,6 +52,7 @@ export default async function SessionPage({ params }: SessionPageProps) {
   // Calculate statistics
   const speeds = data.map(pitch => parseFloat(pitch.Speed)).filter(speed => !isNaN(speed));
   const unit = data[0]?.Unit || 'MPH';
+  const fastestPitch = speeds.length > 0 ? Math.max(...speeds) : 0;
 
   return (
     <div>
@@ -59,6 +60,8 @@ export default async function SessionPage({ params }: SessionPageProps) {
       {data.length > 0 ? (
         <div>
           <h2>{data.length} pitches</h2>
+
+          <h2>top speed: {fastestPitch > 0 ? `${fastestPitch} ${unit}` : 'N/A'}</h2>
           <SessionStats speeds={speeds} unit={unit} />
           <SessionDataGrid data={data} />
         </div>

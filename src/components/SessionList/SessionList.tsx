@@ -3,7 +3,9 @@ import path from 'path';
 import Link from 'next/link';
 import Papa from 'papaparse';
 import { unstable_cache } from 'next/cache';
-import styles from './page.module.css';
+
+import styles from './SessionList.module.css';
+import { Card } from '@radix-ui/themes';
 
 interface SessionData {
   Date: string;
@@ -100,35 +102,44 @@ export default async function SessionList() {
       ) : (
         <div className={styles.sessionGrid}>
           {sessions.map((session) => (
-            <Link
-              key={session.id}
-              href={`/${session.id}`}
-              className={styles.sessionCard}
-            >
-              <div className={styles.sessionHeader}>
-                <h3>{session.playerName}</h3>
-                <span className={styles.sessionDate}>
-                  {new Date(session.date).toLocaleDateString()} at {session.time}
-                </span>
-              </div>
-              <div className={styles.sessionStats}>
-                <div className={styles.stat}>
-                  <span className={styles.statValue}>{session.pitchCount}</span>
-                  <span className={styles.statLabel}>Pitches</span>
+
+            <Card asChild key={session.id}>
+              <Link
+                key={session.id}
+                href={`/${session.id}`}
+              >
+                <div className={styles.sessionHeader}>
+                  <h3>{session.playerName}</h3>
+
+                  <span className={styles.sessionDate}>
+                    {new Date(session.date).toLocaleDateString()} at {session.time}
+                  </span>
                 </div>
-                <div className={styles.stat}>
-                  <span className={styles.statValue}>{session.maxSpeed}</span>
-                  <span className={styles.statLabel}>Max {session.unit}</span>
+
+                <div className={styles.sessionStats}>
+
+                  <div className={styles.stat}>
+                    <span className={styles.statValue}>{session.pitchCount}</span>
+                    <span className={styles.statLabel}>Pitches</span>
+                  </div>
+
+                  <div className={styles.stat}>
+                    <span className={styles.statValue}>{session.maxSpeed}</span>
+                    <span className={styles.statLabel}>Max {session.unit}</span>
+                  </div>
+
+                  <div className={styles.stat}>
+                    <span className={styles.statValue}>{session.avgSpeed}</span>
+                    <span className={styles.statLabel}>Avg {session.unit}</span>
+                  </div>
+
                 </div>
-                <div className={styles.stat}>
-                  <span className={styles.statValue}>{session.avgSpeed}</span>
-                  <span className={styles.statLabel}>Avg {session.unit}</span>
+                <div className={styles.sessionMeta}>
+                  {session.sport} • {session.activity}
                 </div>
-              </div>
-              <div className={styles.sessionMeta}>
-                {session.sport} • {session.activity}
-              </div>
-            </Link>
+              </Link>
+
+            </Card>
           ))}
         </div>
       )}

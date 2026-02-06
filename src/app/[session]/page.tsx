@@ -6,6 +6,8 @@ import Papa from 'papaparse';
 import SessionDataGrid from '@/components/SessionDataGrid/SessionDataGrid';
 import SessionStats from '@/components/SessionStats/SessionStats';
 import SpeedGauge from '@/components/SpeedGauge/SpeedGauge';
+
+import style from './page.module.css';
 interface SessionData {
   Date: string;
   Time: string;
@@ -54,32 +56,49 @@ export default async function SessionPage({ params }: SessionPageProps) {
   const speeds = data.map(pitch => parseFloat(pitch.Speed)).filter(speed => !isNaN(speed));
   const unit = data[0]?.Unit || 'MPH';
   const fastestPitch = speeds.length > 0 ? Math.max(...speeds) : 0;
+  const avgSpeed = speeds.length > 0 ? Math.round(speeds.reduce((a, b) => a + b, 0) / speeds.length) : 0;
+  const medSpeed = speeds.length > 0 ? Math.round(speeds.sort((a, b) => a - b)[Math.floor(speeds.length / 2)]) : 0;
+  // total duration using first and last row
+  const duration = data.length > 0 ? Math.round((new Date(`${data[data.length - 1].Date} ${data[data.length - 1].Time}`).getTime() - new Date(`${data[0].Date} ${data[0].Time}`).getTime()) / 60000) : 0;
 
   return (
-    <div>
-      <h1>{data[0]?.['Player Name'] || 'Unknown'}</h1>
+    <>
+      <h1 className={style.header}>
+        {data[0]?.['Player Name'] || 'Unknown'}
+      </h1>
+
+      {/* date */}
+      <h2>
+        {data[0]?.Date || 'Unknown Date'} {data[0]?.Time || ''}
+      </h2>
+
+      {/* duration */}
+      <h2>
+        Duration: {duration} min
+      </h2>
+
       {data.length > 0 ? (
-        <div>
+        <>
           <h2>{data.length} pitches</h2>
 
           <h2>
-            top speed: {fastestPitch > 0 ? `${fastestPitch} ${unit}` : 'N/A'}
+            top speed: {`${fastestPitch} ${unit}`}
           </h2>
           <h2>
-            average speed: {speeds.length > 0 ? `${Math.round(speeds.reduce((a, b) => a + b, 0) / speeds.length)} ${unit}` : 'N/A'}
+            avg: {`${avgSpeed} ${unit}`}
           </h2>
           <h2>
-            median speed: {speeds.length > 0 ? `${Math.round(speeds.sort((a, b) => a - b)[Math.floor(speeds.length / 2)])} ${unit}` : 'N/A'}
+            med: {`${medSpeed} ${unit}`}
           </h2>
 
           <SpeedGauge speed={fastestPitch} speeds={speeds} unit={unit} />
           <SessionStats speeds={speeds} unit={unit} />
           <SessionDataGrid data={data} />
-        </div>
+        </>
       ) : (
         <p>No data found for session: {session}</p>
       )}
-    </div>
+    </>
   );
 }
 

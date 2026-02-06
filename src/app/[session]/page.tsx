@@ -61,7 +61,16 @@ export default async function SessionPage({ params }: SessionPageProps) {
         <div>
           <h2>{data.length} pitches</h2>
 
-          <h2>top speed: {fastestPitch > 0 ? `${fastestPitch} ${unit}` : 'N/A'}</h2>
+          <h2>
+            top speed: {fastestPitch > 0 ? `${fastestPitch} ${unit}` : 'N/A'}
+          </h2>
+          <h2>
+            average speed: {speeds.length > 0 ? `${Math.round(speeds.reduce((a, b) => a + b, 0) / speeds.length)} ${unit}` : 'N/A'}
+          </h2>
+          <h2>
+            median speed: {speeds.length > 0 ? `${Math.round(speeds.sort((a, b) => a - b)[Math.floor(speeds.length / 2)])} ${unit}` : 'N/A'}
+          </h2>
+
           <SessionStats speeds={speeds} unit={unit} />
           <SessionDataGrid data={data} />
         </div>

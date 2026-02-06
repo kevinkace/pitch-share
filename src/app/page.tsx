@@ -1,64 +1,128 @@
-import Image from "next/image";
+import { readFileSync, readdirSync } from 'fs';
+import path from 'path';
+import Link from 'next/link';
+import Papa from 'papaparse';
 import styles from "./page.module.css";
 
+interface SessionData {
+  Date: string;
+  Time: string;
+  'Session Title': string;
+  Count: string;
+  Speed: string;
+  Unit: string;
+  'Pitch View': string;
+  'Pitch Zone': string;
+  'Pitch Type': string;
+  'Player Name': string;
+  Sport: string;
+  Activity: string;
+  Video: string;
+}
+
+interface SessionSummary {
+  id: string;
+  date: string;
+  time: string;
+  playerName: string;
+  pitchCount: number;
+  maxSpeed: number;
+  avgSpeed: number;
+  unit: string;
+  sport: string;
+  activity: string;
+}
+
+function getAllSessions(): SessionSummary[] {
+  try {
+    const dataDir = path.join(process.cwd(), 'src', 'lib', 'data');
+    const files = readdirSync(dataDir).filter(file => file.endsWith('.csv'));
+
+    return files.map(filename => {
+      const filePath = path.join(dataDir, filename);
+      const csvContent = readFileSync(filePath, 'utf-8');
+
+      const result = Papa.parse<SessionData>(csvContent, {
+        header: true,
+        skipEmptyLines: true,
+      });
+
+      const data = result.data.filter(row => row.Date && row.Time); // Filter out empty rows
+
+      if (data.length === 0) {
+        return null;
+      }
+
+      const firstRow = data[0];
+      const speeds = data.map(row => parseFloat(row.Speed)).filter(speed => !isNaN(speed));
+
+      return {
+        id: filename.replace('.csv', ''),
+        date: firstRow.Date,
+        time: firstRow.Time,
+        playerName: firstRow['Player Name'] || 'Unknown',
+        pitchCount: data.length,
+        maxSpeed: speeds.length > 0 ? Math.max(...speeds) : 0,
+        avgSpeed: speeds.length > 0 ? Math.round(speeds.reduce((a, b) => a + b, 0) / speeds.length) : 0,
+        unit: firstRow.Unit || 'MPH',
+        sport: firstRow.Sport || 'Baseball',
+        activity: firstRow.Activity || 'Pitching'
+      };
+    }).filter(Boolean) as SessionSummary[];
+  } catch (error) {
+    console.error('Error reading session data:', error);
+    return [];
+  }
+}
+
 export default function Home() {
+  const sessions = getAllSessions();
+
   return (
     <div className={styles.page}>
       <main className={styles.main}>
-        <Image
-          className={styles.logo}
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className={styles.intro}>
-          <h1>To get started, edit the page.tsx file.</h1>
-          <p>
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
-        </div>
-        <div className={styles.ctas}>
-          <a
-            className={styles.primary}
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className={styles.logo}
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className={styles.secondary}
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
+        <h1>Pitch Share</h1>
+        <p>Baseball pitching session analysis and tracking</p>
+
+        <div className={styles.sessionsContainer}>
+          <h2>Available Sessions</h2>
+          {sessions.length === 0 ? (
+            <p>No sessions found.</p>
+          ) : (
+            <div className={styles.sessionGrid}>
+              {sessions.map((session) => (
+                <Link
+                  key={session.id}
+                  href={`/${session.id}`}
+                  className={styles.sessionCard}
+                >
+                  <div className={styles.sessionHeader}>
+                    <h3>{session.playerName}</h3>
+                    <span className={styles.sessionDate}>
+                      {new Date(session.date).toLocaleDateString()} at {session.time}
+                    </span>
+                  </div>
+                  <div className={styles.sessionStats}>
+                    <div className={styles.stat}>
+                      <span className={styles.statValue}>{session.pitchCount}</span>
+                      <span className={styles.statLabel}>Pitches</span>
+                    </div>
+                    <div className={styles.stat}>
+                      <span className={styles.statValue}>{session.maxSpeed}</span>
+                      <span className={styles.statLabel}>Max {session.unit}</span>
+                    </div>
+                    <div className={styles.stat}>
+                      <span className={styles.statValue}>{session.avgSpeed}</span>
+                      <span className={styles.statLabel}>Avg {session.unit}</span>
+                    </div>
+                  </div>
+                  <div className={styles.sessionMeta}>
+                    {session.sport} • {session.activity}
+                  </div>
+                </Link>
+              ))}
+            </div>
+          )}
         </div>
       </main>
     </div>

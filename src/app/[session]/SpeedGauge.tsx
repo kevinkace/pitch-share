@@ -1,40 +1,51 @@
 'use client';
 
 import { PieChart, Pie, Cell, ResponsiveContainer } from 'recharts';
+import styles from './SpeedGauge.module.css';
 
 interface SpeedGaugeProps {
   speed: number;
-  maxSpeed?: number;
+  speeds?: number[]; // Array of all pitch speeds for distribution
   unit: string;
 }
 
-export default function SpeedGauge({ speed, maxSpeed = 80, unit }: SpeedGaugeProps) {
-  // Calculate percentage for gauge
-  const percentage = Math.min((speed / maxSpeed) * 100, 100);
-
-  // Create data for the gauge (semicircle)
-  const data = [
-    { name: 'Speed', value: percentage, fill: '#8884d8' },
-    { name: 'Remaining', value: 100 - percentage, fill: '#e0e0e0' }
+export default function SpeedGauge({ speed, speeds = [], unit }: SpeedGaugeProps) {
+  // Define speed ranges (in 10 MPH increments for simplicity)
+  const ranges = [
+    { min: 0, max: 30, color: '#666' },    // Green
+    { min: 30, max: 40, color: '#FFEB3B' },   // Yellow
+    { min: 40, max: 45, color: '#FF5722' },   // Deep Orange
+    { min: 45, max: 50, color: '#E91E63' },   // Pink
+    { min: 50, max: 100, color: '#673AB7' },  // Deep Purple
   ];
 
-  // Color based on speed ranges
-  const getSpeedColor = (speed: number) => {
-    if (speed >= 60) return '#ff4444'; // Red for very fast
-    if (speed >= 50) return '#ff8800'; // Orange for fast
-    if (speed >= 40) return '#ffdd00'; // Yellow for medium
-    return '#44ff44'; // Green for slow
-  };
+  // Count pitches in each range
+  const rangeData = ranges.map(range => {
+    const count = speeds.filter(s => s >= range.min && s < range.max).length;
+    return {
+      name: `${range.min}-${range.max} ${unit}`,
+      value: count > 0 ? count : 0.1, // Minimum value to show empty ranges
+      fill: range.color,
+      isEmpty: count === 0
+    };
+  });
 
-  const speedColor = getSpeedColor(speed);
-  data[0].fill = speedColor;
+  // Calculate needle angle (180° = 0 MPH at 9 o'clock, 0° = 100 MPH at 3 o'clock)
+  const needleAngle = 180 - (speed / 100) * 180;
+  const needleLength = 75;
+  const centerX = 150; // 50% of 300px width
+  const centerY = 180; // 90% of 200px height
+
+  // Calculate needle tip coordinates
+  const needleX = centerX + needleLength * Math.cos((needleAngle - 90) * Math.PI / 180);
+  const needleY = centerY + needleLength * Math.sin((needleAngle - 90) * Math.PI / 180);
 
   return (
-    <div style={{ width: '300px', height: '200px', position: 'relative' }}>
+    <div className={styles.container}>
       <ResponsiveContainer width="100%" height="100%">
         <PieChart>
           <Pie
-            data={data}
+            data={rangeData}
             cx="50%"
             cy="90%"
             startAngle={180}
@@ -43,27 +54,61 @@ export default function SpeedGauge({ speed, maxSpeed = 80, unit }: SpeedGaugePro
             outerRadius={90}
             dataKey="value"
           >
-            {data.map((entry, index) => (
-              <Cell key={`cell-${index}`} fill={entry.fill} />
+            {rangeData.map((entry, index) => (
+              <Cell
+                key={`cell-${index}`}
+                fill={entry.isEmpty ? '#f0f0f0' : entry.fill}
+                stroke={entry.isEmpty ? '#ddd' : 'none'}
+                strokeWidth={entry.isEmpty ? 1 : 0}
+              />
             ))}
           </Pie>
         </PieChart>
       </ResponsiveContainer>
 
+      {/* Needle */}
+      <svg className={styles.needle}>
+        {/* Needle line */}
+        <line
+          x1={centerX}
+          y1={centerY}
+          x2={needleX}
+          y2={needleY}
+          stroke="currentColor"
+          strokeWidth="3"
+          strokeLinecap="round"
+        />
+        {/* Center dot */}
+        <circle
+          cx={centerX}
+          cy={centerY}
+          r="5"
+          fill="currentColor"
+        />
+      </svg>
+
+      {/* color legend */}
+      <div className={styles.legend}>
+        {ranges.map((range, index) => (
+          <div key={index} className={styles.legendItem}>
+            <div
+              className={styles.legendColor}
+              style={{ backgroundColor: range.color }}
+            ></div>
+
+            <div className={styles.legendText}>
+              {`${range.min}-${range.max} ${unit}`}
+              </div>
+          </div>
+        ))}
+      </div>
+
       {/* Speed display in center */}
-      <div
-        style={{
-          position: 'absolute',
-          bottom: '40px',
-          left: '50%',
-          transform: 'translateX(-50%)',
-          textAlign: 'center'
-        }}
-      >
-        <div style={{ fontSize: '32px', fontWeight: 'bold', color: speedColor }}>
+      <div className={styles.speedDisplay}>
+        <div className={styles.speedValue}>
           {speed}
         </div>
-        <div style={{ fontSize: '14px', color: '#666' }}>
+        <div className={styles.speedUnit}>
           {unit}
         </div>
       </div>

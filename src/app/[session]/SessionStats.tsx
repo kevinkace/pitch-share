@@ -34,7 +34,7 @@ export default function SessionStats({ speeds, unit }: SessionStatsProps) {
       <div style={{ display: 'flex', alignItems: 'flex-start', gap: '40px', marginBottom: '20px' }}>
         <div>
           <h3>Top Speed</h3>
-          <SpeedGauge speed={fastestPitch} unit={unit} />
+          <SpeedGauge speed={fastestPitch} speeds={speeds} unit={unit} />
         </div>
         <div style={{ flex: 1 }}>
           <h3>Speed Distribution</h3>

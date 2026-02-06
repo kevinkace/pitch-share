@@ -3,8 +3,9 @@ import path from 'path';
 
 import Papa from 'papaparse';
 
-import SessionDataGrid from './SessionDataGrid';
-import SessionStats from './SessionStats';
+import SessionDataGrid from '../../components/SessionDataGrid/SessionDataGrid';
+import SessionStats from '../../components/SessionStats/SessionStats';
+import SpeedGauge from '@/components/SpeedGauge/SpeedGauge';
 interface SessionData {
   Date: string;
   Time: string;
@@ -71,6 +72,7 @@ export default async function SessionPage({ params }: SessionPageProps) {
             median speed: {speeds.length > 0 ? `${Math.round(speeds.sort((a, b) => a - b)[Math.floor(speeds.length / 2)])} ${unit}` : 'N/A'}
           </h2>
 
+          <SpeedGauge speed={fastestPitch} speeds={speeds} unit={unit} />
           <SessionStats speeds={speeds} unit={unit} />
           <SessionDataGrid data={data} />
         </div>

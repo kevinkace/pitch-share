@@ -1,8 +1,6 @@
 import type { Metadata } from "next";
-import { Theme } from "@radix-ui/themes";
+import { Link, Theme } from "@radix-ui/themes";
 import "@radix-ui/themes/styles.css";
-
-import Header from "@/components/Header/Header";
 
 import "./globals.css";
 import style from "./layout.module.css";
@@ -19,14 +17,22 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body>
-        <Theme appearance="dark">
+
+      <Theme appearance="dark" asChild>
+        <body className={style.body}>
+
+          <header className={style.header}>
+            <Link href="/">
+              <h1>Pitch Share</h1>
+            </Link>
+            <p>Baseball pitching session analysis and tracking</p>
+          </header>
+
           <div className={style.main}>
-            <Header />
             {children}
           </div>
-        </Theme>
-      </body>
+        </body>
+      </Theme>
     </html>
   );
 }

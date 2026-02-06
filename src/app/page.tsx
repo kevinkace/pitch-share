@@ -16,8 +16,6 @@ export const metadata: Metadata = {
 export default function Home() {
   return (
     <>
-      <h1>Pitch Share</h1>
-      <p>Baseball pitching session analysis and tracking</p>
       <SessionList />
     </>
   );

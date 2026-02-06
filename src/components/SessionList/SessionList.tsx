@@ -5,7 +5,7 @@ import Papa from 'papaparse';
 import { unstable_cache } from 'next/cache';
 
 import styles from './SessionList.module.css';
-import { Card } from '@radix-ui/themes';
+import { Card, Flex } from '@radix-ui/themes';
 
 interface SessionData {
   Date: string;
@@ -100,7 +100,7 @@ export default async function SessionList() {
       {sessions.length === 0 ? (
         <p>No sessions found.</p>
       ) : (
-        <div className={styles.sessionGrid}>
+        <Flex wrap="wrap" gap="3">
           {sessions.map((session) => (
 
             <Card asChild key={session.id}>
@@ -141,7 +141,7 @@ export default async function SessionList() {
 
             </Card>
           ))}
-        </div>
+        </Flex>
       )}
     </div>
   );

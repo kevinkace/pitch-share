@@ -3,8 +3,8 @@ import path from 'path';
 
 import Papa from 'papaparse';
 
-import SessionDataGrid from '../../components/SessionDataGrid/SessionDataGrid';
-import SessionStats from '../../components/SessionStats/SessionStats';
+import SessionDataGrid from '@/components/SessionDataGrid/SessionDataGrid';
+import SessionStats from '@/components/SessionStats/SessionStats';
 import SpeedGauge from '@/components/SpeedGauge/SpeedGauge';
 interface SessionData {
   Date: string;

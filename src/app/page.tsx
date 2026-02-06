@@ -1,6 +1,6 @@
 import { Metadata } from 'next';
-import SessionList from '../components/SessionList/SessionList';
-import styles from "./page.module.css";
+
+import SessionList from '@/components/SessionList/SessionList';
 
 export const metadata: Metadata = {
   title: 'Pitch Share - Baseball Pitching Analysis & Tracking',
@@ -15,12 +15,10 @@ export const metadata: Metadata = {
 
 export default function Home() {
   return (
-    <div className={styles.page}>
-      <main className={styles.main}>
-        <h1>Pitch Share</h1>
-        <p>Baseball pitching session analysis and tracking</p>
-        <SessionList />
-      </main>
-    </div>
+    <>
+      <h1>Pitch Share</h1>
+      <p>Baseball pitching session analysis and tracking</p>
+      <SessionList />
+    </>
   );
 }

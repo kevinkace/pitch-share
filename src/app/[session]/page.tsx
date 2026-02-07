@@ -62,6 +62,10 @@ export default async function SessionPage({ params }: SessionPageProps) {
   // total duration using first and last row
   const duration = data.length > 0 ? Math.round((new Date(`${data[data.length - 1].Date} ${data[data.length - 1].Time}`).getTime() - new Date(`${data[0].Date} ${data[0].Time}`).getTime()) / 60000) : 0;
 
+  const date = data[0]?.Date || 'Unknown Date';
+  const startTime = data[0]?.Time || 'Unknown Time';
+  const endTime = data.at(-1)?.Time || 'Unknown Time';
+
   return (
     <>
       <h1 className={style.header}>
@@ -69,28 +73,26 @@ export default async function SessionPage({ params }: SessionPageProps) {
       </h1>
 
       {/* date */}
-      <h2>
-        {data[0]?.Date || 'Unknown Date'} {data[0]?.Time || ''}
-      </h2>
-
-      {/* duration */}
-      <h2>
-        Duration: {duration} min
-      </h2>
+      <div className={style.date}>
+        <div>{date}</div>
+        <div>{startTime}</div>
+        <div>{duration} min</div>
+      </div>
 
       {data.length > 0 ? (
         <>
-          <h2>{data.length} pitches</h2>
-
-          <h2>
+          <div>
+            pitch count: {data.length}
+          </div>
+          <div>
             top speed: {`${fastestPitch} ${unit}`}
-          </h2>
-          <h2>
+          </div>
+          <div>
             avg: {`${avgSpeed} ${unit}`}
-          </h2>
-          <h2>
+          </div>
+          <div>
             med: {`${medSpeed} ${unit}`}
-          </h2>
+          </div>
 
 
           <Flex className={style.gaugeStats}>

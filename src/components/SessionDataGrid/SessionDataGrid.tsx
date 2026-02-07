@@ -2,6 +2,8 @@
 
 import { AgGridReact } from 'ag-grid-react';
 import { ColDef,ModuleRegistry, AllCommunityModule, colorSchemeDark, themeQuartz  } from 'ag-grid-community';
+import { getSpeedColor } from '@/lib/speedRanges';
+import SpeedColorIndicator from '@/components/SpeedColorIndicator/SpeedColorIndicator';
 
 ModuleRegistry.registerModules([ AllCommunityModule ]);
 
@@ -22,24 +24,34 @@ interface SessionDataGridProps {
 
 export default function SessionDataGrid({ data }: SessionDataGridProps) {
   const columnDefs: ColDef<SessionData>[] = [
-    { field: 'Count', headerName: '#', width: 70, type: 'numericColumn' },
-    { field: 'Time', width: 100 },
+    { field: 'Count', headerName: '#', type: 'numericColumn' },
+    { field: 'Time' },
     {
       field: 'Speed',
-      width: 100,
       type: 'numericColumn',
-      cellRenderer: (params: any) => params.value ? `${params.value} ${data[0]?.Unit || 'MPH'}` : ''
+      cellRenderer: (params: any) => {
+        if (!params.value) return '';
+        const speed = parseFloat(params.value);
+        const unit = data[0]?.Unit || 'MPH';
+        return (
+          <div style={{ display: 'flex', alignItems: 'center' }}>
+            <SpeedColorIndicator color={getSpeedColor(speed)} />
+            {params.value} {unit}
+          </div>
+        );
+      }
     },
-    { field: 'Pitch Type', headerName: 'Type', width: 120 },
-    { field: 'Pitch Zone', headerName: 'Zone', width: 100 },
-    { field: 'Pitch View', headerName: 'View', width: 100 },
-    { field: 'Video', width: 80 }
+    { field: 'Pitch Type', headerName: 'Type' },
+    { field: 'Pitch Zone', headerName: 'Zone' },
+    { field: 'Pitch View', headerName: 'View' },
+    { field: 'Video' }
   ];
 
   const defaultColDef: ColDef = {
     sortable: true,
     filter: true,
     resizable: true,
+    flex: 1,
   };
 
   const theme = themeQuartz

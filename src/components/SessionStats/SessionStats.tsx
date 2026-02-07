@@ -46,6 +46,14 @@ export default function SessionStats({ speeds, unit }: SessionStatsProps) {
                     <Tooltip
                         formatter={(value) => [value, 'Pitches']}
                         labelFormatter={(label) => `${label} ${unit}`}
+                        contentStyle={{
+                            backgroundColor: '#1a1a1a',
+                            border: '1px solid #333',
+                            borderRadius: '6px',
+                            color: '#fff'
+                        }}
+                        labelStyle={{ color: '#fff' }}
+                        itemStyle={{ color: '#fff' }}
                     />
                     <Bar dataKey="count">
                         {chartData.map((entry, index) => (

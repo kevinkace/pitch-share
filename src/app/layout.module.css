@@ -20,11 +20,17 @@
 
   h1 {
     margin: 0;
-
   }
+
   p {
     margin: 0;
   }
+}
+
+.logoContainer {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
 }
 
 .main {

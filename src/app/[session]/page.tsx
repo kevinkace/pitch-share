@@ -132,8 +132,14 @@ export async function generateMetadata({ params }: SessionPageProps) {
   const duration = data.length > 0 ? Math.round((new Date(`${data[data.length - 1].Date} ${data[data.length - 1].Time}`).getTime() - new Date(`${data[0].Date} ${data[0].Time}`).getTime()) / 60000) : 0;
   const date = data[0]?.Date || 'Unknown Date';
 
-  // Generate image URL with just session parameter
-  const imageUrl = `/api/session-image?session=${encodeURIComponent(session)}`;
+  // Generate absolute image URL for OG tags
+  const baseUrl = process.env.VERCEL_URL
+    ? `https://${process.env.VERCEL_URL}`
+    : process.env.NODE_ENV === 'production'
+    ? 'https://pitchshare.netlify.app'
+    : 'http://localhost:3000';
+
+  const imageUrl = `${baseUrl}/api/session-image?session=${encodeURIComponent(session)}`;
 
   return {
     title: `${playerName} - ${sessionTitle || session} | Pitch Share`,

@@ -1,7 +1,8 @@
 import { ImageResponse } from 'next/og';
 
-import { imageStyles } from './SessionMetadata.module.css';
+import { LogoSVG } from '@/components/Logo/Logo';
 
+import { imageStyles } from './SessionMetadata.module.css';
 interface SessionMetadataProps {
   playerName: string;
   date: string;
@@ -82,7 +83,8 @@ export function generateSessionImage({
 
         {/* Footer */}
         <div style={imageStyles.footer}>
-          Pitch Share
+          <LogoSVG width={24} height={24} />
+          <span>pitchshare.netlify.app</span>
         </div>
       </div>
     ),

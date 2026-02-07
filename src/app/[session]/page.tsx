@@ -8,6 +8,7 @@ import SessionStats from '@/components/SessionStats/SessionStats';
 import SpeedGauge from '@/components/SpeedGauge/SpeedGauge';
 
 import style from './page.module.css';
+import { Flex } from '@radix-ui/themes';
 interface SessionData {
   Date: string;
   Time: string;
@@ -91,8 +92,13 @@ export default async function SessionPage({ params }: SessionPageProps) {
             med: {`${medSpeed} ${unit}`}
           </h2>
 
-          <SpeedGauge speed={fastestPitch} speeds={speeds} unit={unit} />
-          <SessionStats speeds={speeds} unit={unit} />
+
+          <Flex className={style.gaugeStats}>
+            <SpeedGauge speed={fastestPitch} speeds={speeds} unit={unit} />
+
+            <SessionStats speeds={speeds} unit={unit} />
+          </Flex>
+
           <SessionDataGrid data={data} />
         </>
       ) : (

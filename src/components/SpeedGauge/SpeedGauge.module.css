@@ -1,6 +1,6 @@
 .container {
   width: 300px;
-  height: 200px;
+  height: 230px;
   position: relative;
 }
 
@@ -15,20 +15,26 @@
 
 .legend {
   position: absolute;
-  top: 10px;
-  left: 10px;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  display: flex;
 }
 
 .legendItem {
   display: flex;
   align-items: center;
-  margin-bottom: 4px;
+  justify-content: center;
+  flex-direction: column;
+  gap: 0.4em;
+  text-align: center;
+  line-height: 1;
 }
 
 .legendColor {
-  width: 12px;
-  height: 12px;
-  margin-right: 6px;
+  width: 22px;
+  height: 22px;
+  border-radius: 0.2em;
 }
 
 .legendText {
@@ -37,10 +43,12 @@
 
 .speedDisplay {
   position: absolute;
-  bottom: 40px;
+  top: 20%;
   left: 50%;
   transform: translateX(-50%);
   text-align: center;
+  line-height: 1;
+  text-shadow: 0 0 5px #000;
 }
 
 .speedValue {

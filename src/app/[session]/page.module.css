@@ -1,3 +1,7 @@
 .header {
     margin: 0;
 }
+
+.gaugeStats {
+    width: 100%;
+}

@@ -2,6 +2,8 @@
 
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 
+import styles from './SessionStats.module.css';
+
 interface SessionStatsProps {
   speeds: number[];
   unit: string;
@@ -27,8 +29,7 @@ export default function SessionStats({ speeds, unit }: SessionStatsProps) {
   }
 
   return (
-    <div>
-      <h3>Speed Distribution</h3>
+    <div className={styles.sessionStats}>
       <ResponsiveContainer width="100%" height={300}>
         <BarChart data={chartData} margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
           <CartesianGrid strokeDasharray="3 3" />

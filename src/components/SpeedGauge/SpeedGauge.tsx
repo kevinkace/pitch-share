@@ -34,7 +34,7 @@ export default function SpeedGauge({ speed, speeds = [], unit }: SpeedGaugeProps
   const needleAngle = 180 - (speed / 100) * 180;
   const needleLength = 75;
   const centerX = 150; // 50% of 300px width
-  const centerY = 180; // 90% of 200px height
+  const centerY = 130; // 90% of 200px height
 
   // Calculate needle tip coordinates
   const needleX = centerX + needleLength * Math.cos((needleAngle - 90) * Math.PI / 180);
@@ -47,11 +47,11 @@ export default function SpeedGauge({ speed, speeds = [], unit }: SpeedGaugeProps
           <Pie
             data={rangeData}
             cx="50%"
-            cy="90%"
+            cy="60%"
             startAngle={180}
             endAngle={0}
-            innerRadius={60}
-            outerRadius={90}
+            innerRadius={40}
+            outerRadius={120}
             dataKey="value"
           >
             {rangeData.map((entry, index) => (
@@ -66,7 +66,7 @@ export default function SpeedGauge({ speed, speeds = [], unit }: SpeedGaugeProps
         </PieChart>
       </ResponsiveContainer>
 
-      {/* Needle */}
+{/* Needle */}
       <svg className={styles.needle}>
         {/* Needle line */}
         <line
@@ -87,6 +87,16 @@ export default function SpeedGauge({ speed, speeds = [], unit }: SpeedGaugeProps
         />
       </svg>
 
+      {/* Speed display in center */}
+      <div className={styles.speedDisplay}>
+        <div className={styles.speedValue}>
+          {speed}
+        </div>
+        <div className={styles.speedUnit}>
+          {unit}
+        </div>
+      </div>
+
       {/* color legend */}
       <div className={styles.legend}>
         {ranges.map((range, index) => (
@@ -103,15 +113,6 @@ export default function SpeedGauge({ speed, speeds = [], unit }: SpeedGaugeProps
         ))}
       </div>
 
-      {/* Speed display in center */}
-      <div className={styles.speedDisplay}>
-        <div className={styles.speedValue}>
-          {speed}
-        </div>
-        <div className={styles.speedUnit}>
-          {unit}
-        </div>
-      </div>
     </div>
   );
 }

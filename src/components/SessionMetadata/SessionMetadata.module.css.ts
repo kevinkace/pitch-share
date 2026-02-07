@@ -74,5 +74,8 @@ export const imageStyles = {
     fontSize: '18px',
     color: '#666',
     fontWeight: '500',
+    display: 'flex',
+    alignItems: 'center',
+    gap: '8px',
   },
 };

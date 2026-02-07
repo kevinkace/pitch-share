@@ -107,7 +107,7 @@ export default function SpeedGauge({ speed, speeds = [], unit }: SpeedGaugeProps
             ></div>
 
             <div className={styles.legendText}>
-              {`${range.min}-${range.max} ${unit}`}
+              {`${range.min}-${range.max}`} <br /> {unit}
               </div>
           </div>
         ))}

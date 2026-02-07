@@ -56,27 +56,30 @@ export function generateSessionImage({
           <div style={imageStyles.statCard}>
             <div style={imageStyles.statValue}>
               {topSpeed}
+              <div style={imageStyles.statUnit}>{unit}</div>
             </div>
             <div style={imageStyles.statLabel}>
-              Top Speed ({unit})
+              Top Speed
             </div>
           </div>
 
           <div style={imageStyles.statCard}>
             <div style={imageStyles.statValue}>
               {avgSpeed}
+              <div style={imageStyles.statUnit}>{unit}</div>
             </div>
             <div style={imageStyles.statLabel}>
-              Average ({unit})
+              Average
             </div>
           </div>
 
           <div style={imageStyles.statCard}>
             <div style={imageStyles.statValue}>
               {medSpeed}
+              <div style={imageStyles.statUnit}>{unit}</div>
             </div>
             <div style={imageStyles.statLabel}>
-              Median ({unit})
+              Median
             </div>
           </div>
         </div>

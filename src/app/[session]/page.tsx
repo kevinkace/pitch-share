@@ -5,6 +5,7 @@ import Papa from 'papaparse';
 
 import SessionDataGrid from '@/components/SessionDataGrid/SessionDataGrid';
 import SessionStats from '@/components/SessionStats/SessionStats';
+import SessionSummary from '@/components/SessionSummary/SessionSummary';
 import SpeedGauge from '@/components/SpeedGauge/SpeedGauge';
 
 import style from './page.module.css';
@@ -81,19 +82,13 @@ export default async function SessionPage({ params }: SessionPageProps) {
 
       {data.length > 0 ? (
         <>
-          <div>
-            pitch count: {data.length}
-          </div>
-          <div>
-            top speed: {`${fastestPitch} ${unit}`}
-          </div>
-          <div>
-            avg: {`${avgSpeed} ${unit}`}
-          </div>
-          <div>
-            med: {`${medSpeed} ${unit}`}
-          </div>
-
+          <SessionSummary
+            pitchCount={data.length}
+            topSpeed={fastestPitch}
+            avgSpeed={avgSpeed}
+            medSpeed={medSpeed}
+            unit={unit}
+          />
 
           <Flex className={style.gaugeStats} align="center">
             <SpeedGauge speed={fastestPitch} speeds={speeds} unit={unit} />

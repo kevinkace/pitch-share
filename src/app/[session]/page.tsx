@@ -125,11 +125,36 @@ export async function generateMetadata({ params }: SessionPageProps) {
 
   // Calculate some stats
   const speeds = data.map(pitch => parseFloat(pitch.Speed)).filter(speed => !isNaN(speed));
+  const unit = data[0]?.Unit || 'MPH';
   const avgSpeed = speeds.length > 0 ? Math.round(speeds.reduce((a, b) => a + b, 0) / speeds.length) : 0;
   const maxSpeed = speeds.length > 0 ? Math.max(...speeds) : 0;
+  const medSpeed = speeds.length > 0 ? Math.round(speeds.sort((a, b) => a - b)[Math.floor(speeds.length / 2)]) : 0;
+  const duration = data.length > 0 ? Math.round((new Date(`${data[data.length - 1].Date} ${data[data.length - 1].Time}`).getTime() - new Date(`${data[0].Date} ${data[0].Time}`).getTime()) / 60000) : 0;
+  const date = data[0]?.Date || 'Unknown Date';
+
+  // Generate image URL with just session parameter
+  const imageUrl = `/api/session-image?session=${encodeURIComponent(session)}`;
 
   return {
     title: `${playerName} - ${sessionTitle || session} | Pitch Share`,
     description: `${sport} ${activity} session with ${data.length} pitches. Average speed: ${avgSpeed} MPH, Max speed: ${maxSpeed} MPH.`,
+    openGraph: {
+      title: `${playerName} - ${sessionTitle || session}`,
+      description: `${sport} ${activity} session with ${data.length} pitches. Average: ${avgSpeed} ${unit}, Max: ${maxSpeed} ${unit}`,
+      images: [
+        {
+          url: imageUrl,
+          width: 1200,
+          height: 630,
+          alt: `${playerName} pitching session stats`,
+        },
+      ],
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: `${playerName} - ${sessionTitle || session}`,
+      description: `${sport} ${activity} session with ${data.length} pitches. Average: ${avgSpeed} ${unit}, Max: ${maxSpeed} ${unit}`,
+      images: [imageUrl],
+    },
   };
 }

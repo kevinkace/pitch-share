@@ -95,7 +95,7 @@ export default async function SessionPage({ params }: SessionPageProps) {
           </div>
 
 
-          <Flex className={style.gaugeStats}>
+          <Flex className={style.gaugeStats} align="center">
             <SpeedGauge speed={fastestPitch} speeds={speeds} unit={unit} />
 
             <SessionStats speeds={speeds} unit={unit} />

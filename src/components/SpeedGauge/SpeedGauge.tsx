@@ -3,6 +3,7 @@
 import { PieChart, Pie, Cell, ResponsiveContainer } from 'recharts';
 
 import { SPEED_RANGES } from '@/lib/speedRanges';
+import SpeedColorIndicator from '@/components/SpeedColorIndicator/SpeedColorIndicator';
 
 import styles from './SpeedGauge.module.css';
 
@@ -96,10 +97,10 @@ export default function SpeedGauge({ speed, speeds = [], unit }: SpeedGaugeProps
             <div className={styles.legend}>
                 {SPEED_RANGES.map((range, index) => (
                     <div key={index} className={styles.legendItem}>
-                        <div
+                        <SpeedColorIndicator
+                            color={range.color}
                             className={styles.legendColor}
-                            style={{ backgroundColor: range.color }}
-                        ></div>
+                        />
 
                         <div className={styles.legendText}>
                             {`${range.min}-${range.max}`} <br /> {unit}

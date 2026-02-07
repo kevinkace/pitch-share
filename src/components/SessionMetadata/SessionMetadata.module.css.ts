@@ -17,11 +17,11 @@ export const imageStyles = {
   header: {
     display: 'flex',
     alignItems: 'center',
-    marginBottom: '40px',
+    marginBottom: '32px',
   },
 
   playerName: {
-    fontSize: '48px',
+    fontSize: '80px',
     fontWeight: 'bold',
     margin: 0,
     textAlign: 'center' as const,
@@ -31,13 +31,13 @@ export const imageStyles = {
     display: 'flex',
     gap: '20px',
     marginBottom: '60px',
-    fontSize: '20px',
+    fontSize: '32px',
     color: '#888',
   },
 
   statsGrid: {
     display: 'flex',
-    width: '80%',
+    width: '90%',
     gap: '40px',
     marginBottom: '40px',
   },
@@ -56,22 +56,31 @@ export const imageStyles = {
 
   statValue: {
     display: "flex",
-    fontSize: '36px',
+    fontSize: '80px',
     fontWeight: 'bold',
+    lineHeight: '1',
+    alignItems: 'flex-end',
+  },
+
+
+  statUnit: {
+    fontSize: '16px',
+    color: '#aaa',
     marginBottom: '8px',
   },
 
   statLabel: {
     display: "flex",
-    fontSize: '14px',
+    fontSize: '32px',
     color: '#aaa',
+    textAlign: 'center' as const,
     textTransform: 'uppercase' as const,
   },
 
   footer: {
     position: 'absolute' as const,
     bottom: '40px',
-    fontSize: '18px',
+    fontSize: '22px',
     color: '#666',
     fontWeight: '500',
     display: 'flex',

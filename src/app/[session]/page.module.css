@@ -1,0 +1,14 @@
+.header {
+    margin: 0;
+}
+
+.date {
+    display: flex;
+    gap: 1em;
+    font-size: 14px;
+    margin-bottom: 1em;
+}
+
+.gaugeStats {
+    width: 100%;
+}

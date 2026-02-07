@@ -1,0 +1,40 @@
+.body {
+  display: flex;
+  width: 100%;
+  min-height: 100vh;
+  flex-direction: column;
+  align-items: center;
+}
+
+.header {
+  width: 100%;
+  padding: 0.4em 2em 0.8em;
+
+  line-height: 1;
+
+  background: #ffffff0b;
+
+  a {
+    color: var(--foreground);
+  }
+
+  h1 {
+    margin: 0;
+
+  }
+  p {
+    margin: 0;
+  }
+}
+
+.main {
+  display: flex;
+  width: 100%;
+  max-width: 1200px;
+  flex-direction: column;
+  align-items: stretch;
+  justify-content: flex-start;
+  padding: 2em;
+  margin: 0 auto;
+}
+

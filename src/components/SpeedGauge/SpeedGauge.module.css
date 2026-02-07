@@ -1,0 +1,62 @@
+.container {
+  width: 300px;
+  height: 230px;
+  position: relative;
+}
+
+.needle {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+.legend {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  display: flex;
+}
+
+.legendItem {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  gap: 0.4em;
+  text-align: center;
+  line-height: 1;
+}
+
+.legendColor {
+  width: 22px;
+  height: 22px;
+  border-radius: 0.2em;
+}
+
+.legendText {
+  font-size: 12px;
+}
+
+.speedDisplay {
+  position: absolute;
+  top: 20%;
+  left: 50%;
+  transform: translateX(-50%);
+  text-align: center;
+  line-height: 1;
+  text-shadow: 0 0 5px #000;
+}
+
+.speedValue {
+  font-size: 32px;
+  font-weight: bold;
+}
+
+.speedUnit {
+  font-size: 14px;
+}

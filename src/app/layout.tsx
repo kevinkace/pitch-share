@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import { Link, Theme } from "@radix-ui/themes";
 import "@radix-ui/themes/styles.css";
 
+import Analytics from "@/components/Analytics/Analytics";
+
 import "./globals.css";
 import style from "./layout.module.css";
 
@@ -17,6 +19,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
+      <head>
+        <Analytics />
+      </head>
 
       <Theme appearance="dark" asChild>
         <body className={style.body}>

@@ -1,6 +1,9 @@
 :root {
   --background: #0a0a0a;
   --foreground: #ededed;
+
+  --color-primary: #003b76;
+  --color-primary-contrast: #ffffff;
 }
 
 html,

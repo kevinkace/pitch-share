@@ -27,13 +27,13 @@ export default function PitchTracker() {
     }
 
     return (
-        <div style={{ display: 'flex', gap: 20 }}>
+        <>
             <div style={{ flex: 2 }}>
                 <PitchSVG onRecord={handleNew} />
             </div>
             <div style={{ flex: 1 }}>
                 <PitchHistory rows={rows} onDeleteLocal={handleDeleteLocal} onRestore={handleRestore} />
             </div>
-        </div>
+        </>
     )
 }

@@ -1,3 +1,4 @@
+import Container from '@/components/Container/Container'
 import PitchTracker from '@/components/PitchTracker/PitchTracker'
 
 export const metadata = {
@@ -6,9 +7,9 @@ export const metadata = {
 
 export default function Page() {
     return (
-        <main style={{ padding: 20 }}>
+        <Container width="flex">
             <h1>Pitch Tracker</h1>
             <PitchTracker />
-        </main>
+        </Container>
     )
 }

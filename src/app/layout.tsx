@@ -42,9 +42,8 @@ export default function RootLayout({
             <p>Baseball pitching session analysis and tracking</p>
           </header>
 
-          <div className={style.main}>
             {children}
-          </div>
+
         </body>
       </Theme>
     </html>

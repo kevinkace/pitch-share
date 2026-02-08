@@ -7,45 +7,52 @@ import Analytics from "@/components/Analytics/Analytics";
 
 import "./globals.css";
 import style from "./layout.module.css";
+import { Button } from "@/components/Button/Button";
 
 export const metadata: Metadata = {
-  title: "Pitch Share | Baseball Pitching Analysis",
-  description: "Baseball pitching session analysis and tracking tool",
-  icons: {
-    icon: '/favicon.svg',
-    shortcut: '/favicon.svg',
-    apple: '/favicon.svg',
-  },
+    title: "Pitch Share | Baseball Pitching Analysis",
+    description: "Baseball pitching session analysis and tracking tool",
+    icons: {
+        icon: '/favicon.svg',
+        shortcut: '/favicon.svg',
+        apple: '/favicon.svg',
+    },
 };
 
 export default function RootLayout({
-  children,
+    children,
 }: Readonly<{
-  children: React.ReactNode;
+    children: React.ReactNode;
 }>) {
-  return (
-    <html lang="en">
-      <head>
-        <Analytics />
-      </head>
+    return (
+        <html lang="en">
+            <head>
+                <Analytics />
+            </head>
 
-      <Theme appearance="dark" asChild>
-        <body className={style.body}>
+            <Theme appearance="dark" asChild>
+                <body className={style.body}>
 
-          <header className={style.header}>
-            <Link href="/">
-              <div className={style.logoContainer}>
-                <LogoSVG width={32} height={32} />
-                <h1>Pitch Share</h1>
-              </div>
-            </Link>
-            <p>Baseball pitching session analysis and tracking</p>
-          </header>
+                    <header className={style.header}>
+                        <div>
+                            <Link href="/">
+                                <div className={style.logoContainer}>
+                                    <LogoSVG width={32} height={32} />
+                                    <h1>Pitch Share</h1>
+                                </div>
+                            </Link>
+                            <p>Baseball pitching session analysis and tracking</p>
+                        </div>
 
-            {children}
+                        <Button href="/pitch-tracker">
+                            Pitch Tracker
+                        </Button>
+                    </header>
 
-        </body>
-      </Theme>
-    </html>
-  );
+                    {children}
+
+                </body>
+            </Theme>
+        </html>
+    );
 }

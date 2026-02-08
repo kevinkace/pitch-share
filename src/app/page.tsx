@@ -1,6 +1,7 @@
 import { Metadata } from 'next';
 
 import SessionList from '@/components/SessionList/SessionList';
+import Container from '@/components/Container/Container';
 
 export const metadata: Metadata = {
   title: 'Pitch Share - Baseball Pitching Analysis & Tracking',
@@ -15,8 +16,8 @@ export const metadata: Metadata = {
 
 export default function Home() {
   return (
-    <>
+    <Container>
       <SessionList />
-    </>
+    </Container>
   );
 }

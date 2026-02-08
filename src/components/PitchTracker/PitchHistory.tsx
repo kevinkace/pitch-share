@@ -43,27 +43,42 @@ export default function PitchHistory({ rows, onDeleteLocal, onRestore }: Props) 
     }, [onDeleteLocal, onRestore])
 
     const cols: ColDef<PitchRow>[] = [
-        { field: 'timestamp', headerName: 'Time', flex: 1 },
-        { field: 'x', headerName: 'X (ft)' },
-        { field: 'y', headerName: 'Y (ft)' },
-        { field: 'strike', headerName: 'Strike' },
-        { field: 'ground', headerName: 'Ground' },
         {
-            headerName: 'Actions', cellRenderer: (params: any) => {
-                return React.createElement('button', { onClick: () => deleteRow(params.data) }, 'Delete')
+            field: 'timestamp', headerName: 'Time', width: 90,
+            valueGetter: (params: any) => params.data?.timestamp ?? params.data?.Time ?? params.data?.time ?? '',
+            valueFormatter: (params: any) => {
+                const v = params.value
+                if (!v) return ''
+                try {
+                    const d = new Date(v)
+                    return d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false })
+                } catch { return String(v) }
+            }
+        },
+        { field: 'x', headerName: 'X (ft)', width: 70 },
+        { field: 'y', headerName: 'Y (ft)', width: 70 },
+        { field: 'strike', headerName: 'S', width: 40 },
+        { field: 'ground', headerName: 'G', width: 40 },
+        {
+            headerName: 'Actions', width: 64, cellRenderer: (params: any) => {
+                return React.createElement('button', {
+                    onClick: () => deleteRow(params.data),
+                    title: 'Delete',
+                    style: { cursor: 'pointer', background: 'transparent', border: 'none', padding: 4 }
+                }, '🗑️')
             }
         }
     ]
 
     const defaultColDef: ColDef = {
-        sortable: true,
-        filter: true,
+        sortable: false,
+        filter: false,
         resizable: true,
     }
 
     return (
         <div style={{ flex: 1 }}>
-            <div className="ag-theme-alpine" style={{ height: 600, width: 600 }}>
+            <div className="ag-theme-alpine" style={{ height: 600, width: '100%' }}>
                 <AgGridReact<PitchRow>
                     ref={gridRef}
                     domLayout="autoHeight"

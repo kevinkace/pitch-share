@@ -7,7 +7,7 @@ type Props = {
 }
 
 export default function PitchSVG({ onRecord }: Props) {
-    const width = 420
+    const width = 840
     const height = 600
     const strikeW = 120
     const strikeH = 160
@@ -15,8 +15,8 @@ export default function PitchSVG({ onRecord }: Props) {
     function toFeet(pxX: number, pxY: number) {
         const cx = width / 2
         const cy = height / 2
-        // map horizontal to +/-6 feet, vertical to +/-6 feet
-        const xFeet = ((pxX - cx) / (width / 2)) * 6
+        // map horizontal to +/-12 feet, vertical to +/-6 feet
+        const xFeet = ((pxX - cx) / (width / 2)) * 12
         const yFeet = ((cy - pxY) / (height / 2)) * 6
         return { x: Number(xFeet.toFixed(3)), y: Number(yFeet.toFixed(3)) }
     }
@@ -25,12 +25,15 @@ export default function PitchSVG({ onRecord }: Props) {
         const rect = (e.currentTarget as SVGSVGElement).getBoundingClientRect()
         const pxX = e.clientX - rect.left
         const pxY = e.clientY - rect.top
-        const { x, y } = toFeet(pxX, pxY)
+        // convert rendered pixel coords to SVG internal coordinates
+        const svgX = (pxX / rect.width) * width
+        const svgY = (pxY / rect.height) * height
+        const { x, y } = toFeet(svgX, svgY)
         const isGround = y < -3 // simple heuristic: below center
-        // determine strike by pixel position inside the drawn strike rectangle
+        // determine strike by svg internal position inside the drawn strike rectangle
         const strikeRectX = (width - strikeW) / 2
         const strikeRectY = (height - strikeH) / 2
-        const isStrike = pxX >= strikeRectX && pxX <= strikeRectX + strikeW && pxY >= strikeRectY && pxY <= strikeRectY + strikeH
+        const isStrike = svgX >= strikeRectX && svgX <= strikeRectX + strikeW && svgY >= strikeRectY && svgY <= strikeRectY + strikeH
 
         const payload = { x, y, strike: !!isStrike, ground: !!isGround, timestamp: new Date().toISOString() }
 
@@ -44,7 +47,7 @@ export default function PitchSVG({ onRecord }: Props) {
     }
 
     return (
-        <svg width={width} height={height} style={{ border: '1px solid #ccc' }} onClick={handleClick}>
+        <svg viewBox={`0 0 ${width} ${height}`} width="100%" height={height} style={{ border: '1px solid #ccc' }} onClick={handleClick}>
             <rect x={0} y={0} width={width} height={height} fill="#eef" />
             {/* ground area at bottom */}
             <rect x={0} y={height - 80} width={width} height={80} fill="#cfc" />

@@ -9,6 +9,7 @@ import SessionSummary from '@/components/SessionSummary/SessionSummary';
 import SpeedGauge from '@/components/SpeedGauge/SpeedGauge';
 import SessionNavigation from '@/components/SessionNavigation/SessionNavigation';
 import { getSessionNavigation } from '@/lib/sessionNavigation';
+import Container from '@/components/Container/Container';
 
 import style from './page.module.css';
 import { Flex } from '@radix-ui/themes';
@@ -70,19 +71,18 @@ export default async function SessionPage({ params }: SessionPageProps) {
   const startTime = data[0]?.Time || 'Unknown Time';
 
   return (
-    <>
+    <Container>
       <div className={style.topBar}>
-        <div>
-          <h1 className={style.header}>
-            {data[0]?.['Player Name'] || 'Unknown'}
-          </h1>
+        <h1 className={style.header}>
+          {data[0]?.['Player Name'] || 'Unknown'}
+        </h1>
+
         {/* date */}
         <div className={style.date}>
           <div>{date}</div>
           <div>{startTime}</div>
           <div>{duration} min</div>
         </div>
-      </div>
 
         <SessionNavigation
           previousSession={previousSession}
@@ -124,7 +124,7 @@ export default async function SessionPage({ params }: SessionPageProps) {
         previousDate={previousDate}
         nextDate={nextDate}
       />
-    </>
+    </Container>
   );
 }
 

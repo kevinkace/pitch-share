@@ -1,20 +1,33 @@
 "use client"
 
 import React, { useCallback, useRef } from 'react'
+
 import { AgGridReact } from 'ag-grid-react'
+import { ColDef, ModuleRegistry, AllCommunityModule } from 'ag-grid-community'
 import 'ag-grid-community/styles/ag-grid.css'
 import 'ag-grid-community/styles/ag-theme-alpine.css'
 
+ModuleRegistry.registerModules([AllCommunityModule])
+
+type PitchRow = {
+    id: string
+    x: number
+    y: number
+    strike: boolean
+    ground: boolean
+    timestamp: string
+}
+
 type Props = {
-    rows: any[]
+    rows: PitchRow[]
     onDeleteLocal: (id: string) => void
-    onRestore: (row: any) => void
+    onRestore: (row: PitchRow) => void
 }
 
 export default function PitchHistory({ rows, onDeleteLocal, onRestore }: Props) {
     const gridRef = useRef<any>(null)
 
-    const deleteRow = useCallback((row: any) => {
+    const deleteRow = useCallback((row: PitchRow) => {
         // optimistic remove and allow undo
         onDeleteLocal(row.id)
 
@@ -29,7 +42,7 @@ export default function PitchHistory({ rows, onDeleteLocal, onRestore }: Props) 
         }
     }, [onDeleteLocal, onRestore])
 
-    const cols = [
+    const cols: ColDef<PitchRow>[] = [
         { field: 'timestamp', headerName: 'Time', flex: 1 },
         { field: 'x', headerName: 'X (ft)' },
         { field: 'y', headerName: 'Y (ft)' },
@@ -42,14 +55,24 @@ export default function PitchHistory({ rows, onDeleteLocal, onRestore }: Props) 
         }
     ]
 
+    const defaultColDef: ColDef = {
+        sortable: true,
+        filter: true,
+        resizable: true,
+    }
+
     return (
         <div style={{ flex: 1 }}>
             <div className="ag-theme-alpine" style={{ height: 600, width: 600 }}>
-                <AgGridReact
+                <AgGridReact<PitchRow>
                     ref={gridRef}
+                    domLayout="autoHeight"
                     rowData={rows}
                     columnDefs={cols}
-                    defaultColDef={{ sortable: true, filter: true, resizable: true }}
+                    defaultColDef={defaultColDef}
+                    pagination={false}
+                    suppressCellFocus={true}
+                    rowSelection="single"
                 />
             </div>
         </div>

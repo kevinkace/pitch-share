@@ -2,7 +2,9 @@
 
 import { AgGridReact } from 'ag-grid-react';
 import { ColDef,ModuleRegistry, AllCommunityModule, colorSchemeDark, themeQuartz  } from 'ag-grid-community';
+
 import { getSpeedColor } from '@/lib/speedRanges';
+
 import SpeedColorIndicator from '@/components/SpeedColorIndicator/SpeedColorIndicator';
 
 ModuleRegistry.registerModules([ AllCommunityModule ]);

@@ -1,6 +1,6 @@
 "use client"
 
-import React from 'react'
+import React, { useState } from 'react'
 
 import style from './PitchTracker.module.css'
 
@@ -16,7 +16,8 @@ export default function PitchSVG({ onRecord }: Props) {
     const grassHeight = 567  // height from strike-zone-2.svg ground section
     const borderThickness = 176  // scaled border thickness
 
-    const [ mouse, setMouse ] = React.useState({ x: 0, y: 0 })
+    const [ mouse, setMouse ] = useState({ x: 0, y: 0 });
+    const [ svgPos, setSvgPos ] = useState({ x: 0, y: 0 });
 
     function toFeet(pxX: number, pxY: number) {
         const cx = width / 2
@@ -60,96 +61,121 @@ export default function PitchSVG({ onRecord }: Props) {
     }
 
     return (
-        <svg
-            viewBox={`0 0 ${width} ${height}`}
-            width="100%"
-            height="600"  // Keep rendered height reasonable
-            onClick={handleClick}
-            className={style.svg}
+        <div
+            className={style.wrapper}
             onMouseMove={(e) => {
+                const rect = e.currentTarget.getBoundingClientRect();
 
+                const x = Math.floor(e.clientX - rect.left);
+                const y = Math.floor(e.clientY - rect.top);
+
+                setMouse({ x, y });
             }}
         >
-
-            {/* Strike zone group */}
-            <g className={style.hoverable}>
-                <rect
-                    id="strike-zone"
-                    x={2882}
-                    y={3544}
-                    width={strikeW}
-                    height={strikeH}
-                    fill="var(--strike-zone-color)"
-                />
-
-                <rect
-                    x={2882 + borderThickness}
-                    y={3544 + borderThickness}
-                    width={strikeW - 2 * borderThickness}
-                    height={strikeH - 2 * borderThickness}
-                    fill="var(--strike-zone-inner-color)"
-                />
-            </g>
-
-
-            {/* Outer radial regions group */}
-            <g
-                id="outer"
-                fill="var(--outer-regions-color)"
+            <div
+                className={style.tooltip}
+                style={{
+                    top : mouse.y,
+                    left : mouse.x
+                }}
             >
-                {
-                    Object.entries({
-                        SE : "m6615 4395v2220l-2315-1367.7v-852.3z",
-                        NE : "m6615 567v3829h-2315l0.36-852z",
-                        NNE : "m6615 567l-2314.64 2977h-709.36v-2977z",
-                        NNW : "m3591 567v2977h-709l-2315-2977z",
-                        NW : "m2882 3544v852h-2315v-3829z",
-                        SW : "m2882 4395v852l-2315 1368v-2220z",
-                        SSW : "m3591 5247v1368h-3024l2315-1368z",
-                        SSE : "m4300.36 5247l2314.64 1368h-3024v-1368z"
-                    }).map(([key, path]) => (
-                        <path key={key} id={key} d={path} className={style.hoverable} />
-                    ))
-                }
-            </g>
+                {JSON.stringify(svgPos)}
+            </div>
+            <svg
+                viewBox={`0 0 ${width} ${height}`}
+                width="100%"
+                height="600"  // Keep rendered height reasonable
+                onClick={handleClick}
+                className={style.svg}
+                onMouseMove={(e) => {
+                    const rect = (e.currentTarget as SVGSVGElement).getBoundingClientRect();
 
-            {/* Boundary frame group */}
-            <g id="boundary-frame" fill="var(--boundary-frame-color)">
-                {
-                    Object.entries({
-                        left : "m567 567v6048h-567v-6615z",
-                        top : "m7182 0l-567 567h-6048l-567-567z",
-                        right : "m7182 0v6615h-567v-6048z"
-                    }).map(([key, path]) => (
-                        <path key={key} id={key} d={path} className={style.hoverable} />
-                    ))
-                }
-            </g>
+                    const pxX = e.clientX - rect.left
+                    const pxY = e.clientY - rect.top
 
-            <g
-                id="home-plate-group"
-                className={style.hoverable}
+                    // // convert rendered pixel coords to SVG internal coordinates
+                    const svgX = Math.floor((pxX / rect.width) * width);
+                    const svgY = Math.floor((pxY / rect.height) * height);
+
+                    setSvgPos(toFeet(svgX, svgY));
+                }}
             >
-                <rect
-                    id="ground"
-                    x={0}
-                    y={6615}
-                    width={width}
-                    height={grassHeight}
-                    fill="var(--ground-color)"
-                />
 
-                <path
-                    id="homeplate"
-                    fill="var(--home-plate-color)"
-                    d="m4301 6615v70h-1424v-70z"
-                />
-            </g>
+                {/* Strike zone group */}
+                <g className={style.hoverable}>
+                    <rect
+                        id="strike-zone"
+                        x={2882}
+                        y={3544}
+                        width={strikeW}
+                        height={strikeH}
+                        fill="var(--strike-zone-color)"
+                    />
+
+                    <rect
+                        x={2882 + borderThickness}
+                        y={3544 + borderThickness}
+                        width={strikeW - 2 * borderThickness}
+                        height={strikeH - 2 * borderThickness}
+                        fill="var(--strike-zone-inner-color)"
+                    />
+                </g>
 
 
-            <text x={mouse.x} y={mouse.y} fontSize="240" fill="currentColor" height="2em" width="5em">
-                (JSON.stringify(toFeet(mouse.x, mouse.y)))
-            </text>
-        </svg>
+                {/* Outer radial regions group */}
+                <g
+                    id="outer"
+                    fill="var(--outer-regions-color)"
+                >
+                    {
+                        Object.entries({
+                            SE : "m6615 4395v2220l-2315-1367.7v-852.3z",
+                            NE : "m6615 567v3829h-2315l0.36-852z",
+                            NNE : "m6615 567l-2314.64 2977h-709.36v-2977z",
+                            NNW : "m3591 567v2977h-709l-2315-2977z",
+                            NW : "m2882 3544v852h-2315v-3829z",
+                            SW : "m2882 4395v852l-2315 1368v-2220z",
+                            SSW : "m3591 5247v1368h-3024l2315-1368z",
+                            SSE : "m4300.36 5247l2314.64 1368h-3024v-1368z"
+                        }).map(([key, path]) => (
+                            <path key={key} id={key} d={path} className={style.hoverable} />
+                        ))
+                    }
+                </g>
+
+                {/* Boundary frame group */}
+                <g id="boundary-frame" fill="var(--boundary-frame-color)">
+                    {
+                        Object.entries({
+                            left : "m567 567v6048h-567v-6615z",
+                            top : "m7182 0l-567 567h-6048l-567-567z",
+                            right : "m7182 0v6615h-567v-6048z"
+                        }).map(([key, path]) => (
+                            <path key={key} id={key} d={path} className={style.hoverable} />
+                        ))
+                    }
+                </g>
+
+                <g
+                    id="home-plate-group"
+                    className={style.hoverable}
+                >
+                    <rect
+                        id="ground"
+                        x={0}
+                        y={6615}
+                        width={width}
+                        height={grassHeight}
+                        fill="var(--ground-color)"
+                    />
+
+                    <path
+                        id="homeplate"
+                        fill="var(--home-plate-color)"
+                        d="m4301 6615v70h-1424v-70z"
+                    />
+                </g>
+            </svg>
+        </div>
     )
 }

@@ -1,0 +1,26 @@
+<svg version="1.2" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 7182 7182" width="7182" height="7182">
+	<style>
+		.s0 { fill: #808080 } 
+		.s1 { fill: #ff0000 } 
+		.s2 { fill: #4ec55f } 
+		.s3 { fill: #fff159 } 
+		.s4 { fill: #00c0ff } 
+	</style>
+	<path id="Strike Zone" fill-rule="evenodd" class="s0" d="m4301 3544v1703h-1419v-1703z"/>
+	<path id="Strike border" fill-rule="evenodd" class="s1" d="m4301 3544v1703h-1419v-1703zm-1243 1527h1066v-1351h-1066z"/>
+	<path id="Ground" fill-rule="evenodd" class="s2" d="m7182 6615v567h-7182v-567z"/>
+	<path id="L" fill-rule="evenodd" class="s3" d="m567 567v6048h-567v-6615z"/>
+	<path id="Shape 1" fill-rule="evenodd" class="s3" d="m7182 0l-567 567h-6048l-567-567z"/>
+	<path id="Shape 2" fill-rule="evenodd" class="s3" d="m7182 0v6615h-567v-6048z"/>
+	<path id="Shape 2 copy" fill-rule="evenodd" class="s3" d="m7182 0v6615h-567v-6048z"/>
+	<g id="outer">
+		<path id="SE" fill-rule="evenodd" class="s4" d="m6615 4395v2220l-2315-1367.7v-852.3z"/>
+		<path id="NE" fill-rule="evenodd" class="s4" d="m6615 567v3829h-2315l0.36-852z"/>
+		<path id="NNE" fill-rule="evenodd" class="s4" d="m6615 567l-2314.64 2977h-709.36v-2977z"/>
+		<path id="NNW" fill-rule="evenodd" class="s4" d="m3591 567v2977h-709l-2315-2977z"/>
+		<path id="NW" fill-rule="evenodd" class="s4" d="m2882 3544v852h-2315v-3829z"/>
+		<path id="SW" fill-rule="evenodd" class="s4" d="m2882 4395v852l-2315 1368v-2220z"/>
+		<path id="SSW" fill-rule="evenodd" class="s4" d="m3591 5247v1368h-3024l2315-1368z"/>
+		<path id="SSE" fill-rule="evenodd" class="s4" d="m4300.36 5247l2314.64 1368h-3024v-1368z"/>
+	</g>
+</svg>

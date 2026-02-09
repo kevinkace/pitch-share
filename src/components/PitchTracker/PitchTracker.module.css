@@ -23,4 +23,7 @@
 .tooltip {
     pointer-events: none;
     position: absolute;
+    background: #0005;
+    padding: 0.2em 0.5em;
+    border-radius: 0.2em;
 }

@@ -77,12 +77,14 @@ export default function PitchSVG({ onRecord }: Props) {
             <div
                 className={style.tooltip}
                 style={{
-                    top : mouse.y,
-                    left : mouse.x
+                    top : `calc(${mouse.y}px - 3em)`,
+                    left : `calc(${mouse.x}px - 4.5em)`
                 }}
             >
-                {JSON.stringify(svgPos)}
+                {`x: ${svgPos.x}', y: ${svgPos.y}'`}
             </div>
+
+
             <svg
                 viewBox={`0 0 ${width} ${height}`}
                 width="100%"

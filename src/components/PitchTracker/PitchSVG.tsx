@@ -18,6 +18,7 @@ export default function PitchSVG({ onRecord }: Props) {
 
     const [ mouse, setMouse ] = useState({ x: 0, y: 0 });
     const [ svgPos, setSvgPos ] = useState({ x: 0, y: 0 });
+    const [ pitchType, setPitchType ] = useState('')
 
     function toFeet(pxX: number, pxY: number) {
         const cx = width / 2
@@ -42,7 +43,7 @@ export default function PitchSVG({ onRecord }: Props) {
 
         const { x, y } = toFeet(svgX, svgY)
 
-        const isGround = y < -3 // simple heuristic: below center
+        const isGround = (e.target as Element)?.id === 'ground'
         const isStrike = (e.target as Element)?.id === 'strike-zone'
 
         const res = await fetch('/api/pitch-data', {
@@ -77,10 +78,11 @@ export default function PitchSVG({ onRecord }: Props) {
             <div
                 className={style.tooltip}
                 style={{
-                    top : `calc(${mouse.y}px - 3em)`,
+                    top : `calc(${mouse.y}px - 4em)`,
                     left : `calc(${mouse.x}px - 4.5em)`
                 }}
             >
+                {pitchType.length ? <>{pitchType}<br /></> : <></>}
                 {`x: ${svgPos.x}', y: ${svgPos.y}'`}
             </div>
 
@@ -102,13 +104,24 @@ export default function PitchSVG({ onRecord }: Props) {
                     const svgY = Math.floor((pxY / rect.height) * height);
 
                     setSvgPos(toFeet(svgX, svgY));
+
+                    const targetId = (e.target as Element)?.id
+
+                    if (targetId === 'strike-zone') {
+                        setPitchType('Strike')
+                    } else if (targetId === 'ground') {
+                        setPitchType('Ground')
+                    } else {
+                        setPitchType('')
+                    }
                 }}
             >
 
                 {/* Strike zone group */}
                 <g className={style.hoverable}>
+
                     <rect
-                        id="strike-zone"
+                        id="strike-zone-border"
                         x={2882}
                         y={3544}
                         width={strikeW}
@@ -117,12 +130,15 @@ export default function PitchSVG({ onRecord }: Props) {
                     />
 
                     <rect
+                        id="strike-zone-inner"
                         x={2882 + borderThickness}
                         y={3544 + borderThickness}
                         width={strikeW - 2 * borderThickness}
                         height={strikeH - 2 * borderThickness}
                         fill="var(--strike-zone-inner-color)"
                     />
+
+                    <rect id="strike-zone" fill="transparent" x={2882} y={3544} width={strikeW} height={strikeH}/>
                 </g>
 
 

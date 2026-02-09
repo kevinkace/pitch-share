@@ -1,10 +1,10 @@
 <svg version="1.2" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 7182 7182" width="7182" height="7182">
 	<style>
-		.s0 { fill: #808080 } 
-		.s1 { fill: #ff0000 } 
-		.s2 { fill: #4ec55f } 
-		.s3 { fill: #fff159 } 
-		.s4 { fill: #00c0ff } 
+		.s0 { fill: #808080 }
+		.s1 { fill: #ff0000 }
+		.s2 { fill: #4ec55f }
+		.s3 { fill: #fff159 }
+		.s4 { fill: #00c0ff }
 	</style>
 	<path id="Strike Zone" fill-rule="evenodd" class="s0" d="m4301 3544v1703h-1419v-1703z"/>
 	<path id="Strike border" fill-rule="evenodd" class="s1" d="m4301 3544v1703h-1419v-1703zm-1243 1527h1066v-1351h-1066z"/>

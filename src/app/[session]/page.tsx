@@ -7,6 +7,7 @@ import SessionDataGrid from '@/components/SessionDataGrid/SessionDataGrid';
 import SessionStats from '@/components/SessionStats/SessionStats';
 import SessionSummary from '@/components/SessionSummary/SessionSummary';
 import SpeedGauge from '@/components/SpeedGauge/SpeedGauge';
+import Container from '@/components/Container/Container';
 
 import style from './page.module.css';
 import { Flex } from '@radix-ui/themes';
@@ -65,10 +66,9 @@ export default async function SessionPage({ params }: SessionPageProps) {
 
   const date = data[0]?.Date || 'Unknown Date';
   const startTime = data[0]?.Time || 'Unknown Time';
-  const endTime = data.at(-1)?.Time || 'Unknown Time';
 
   return (
-    <>
+    <Container>
       <h1 className={style.header}>
         {data[0]?.['Player Name'] || 'Unknown'}
       </h1>
@@ -101,7 +101,7 @@ export default async function SessionPage({ params }: SessionPageProps) {
       ) : (
         <p>No data found for session: {session}</p>
       )}
-    </>
+    </Container>
   );
 }
 

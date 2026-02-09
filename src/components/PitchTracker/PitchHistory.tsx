@@ -4,8 +4,8 @@ import React, { useCallback, useRef } from 'react'
 
 import { AgGridReact } from 'ag-grid-react'
 import { ColDef, ModuleRegistry, AllCommunityModule } from 'ag-grid-community'
-import 'ag-grid-community/styles/ag-grid.css'
-import 'ag-grid-community/styles/ag-theme-alpine.css'
+
+import { theme } from '@/lib/datagrid-theme'
 
 ModuleRegistry.registerModules([AllCommunityModule])
 
@@ -78,7 +78,7 @@ export default function PitchHistory({ rows, onDeleteLocal, onRestore }: Props) 
 
     return (
         <div style={{ flex: 1 }}>
-            <div className="ag-theme-alpine" style={{ height: 600, width: '100%' }}>
+            <div style={{ height: 600, width: '100%' }}>
                 <AgGridReact<PitchRow>
                     ref={gridRef}
                     domLayout="autoHeight"
@@ -88,6 +88,7 @@ export default function PitchHistory({ rows, onDeleteLocal, onRestore }: Props) 
                     pagination={false}
                     suppressCellFocus={true}
                     rowSelection="single"
+                    theme={theme}
                 />
             </div>
         </div>

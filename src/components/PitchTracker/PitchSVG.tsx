@@ -22,9 +22,11 @@ export default function PitchSVG({ onRecord }: Props) {
     function toFeet(pxX: number, pxY: number) {
         const cx = width / 2
         const cy = height / 2
+        // Add half strike zone height to center y at strike zone center
+        const strikeZoneCenterY = cy + (strikeH / 2)
         // map horizontal to +/-12 feet, vertical to +/-6 feet
         const xFeet = ((pxX - cx) / (width / 2)) * 12
-        const yFeet = ((cy - pxY) / (height / 2)) * 6
+        const yFeet = ((strikeZoneCenterY - pxY) / (height / 2)) * 6
         return { x: Number(xFeet.toFixed(3)), y: Number(yFeet.toFixed(3)) }
     }
 
@@ -93,7 +95,7 @@ export default function PitchSVG({ onRecord }: Props) {
                     const pxX = e.clientX - rect.left
                     const pxY = e.clientY - rect.top
 
-                    // // convert rendered pixel coords to SVG internal coordinates
+                    // convert rendered pixel coords to SVG internal coordinates
                     const svgX = Math.floor((pxX / rect.width) * width);
                     const svgY = Math.floor((pxY / rect.height) * height);
 

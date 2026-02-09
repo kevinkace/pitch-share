@@ -74,7 +74,7 @@ export default function PitchSVG({ onRecord }: Props) {
                     y={3544}
                     width={strikeW}
                     height={strikeH}
-                    fill="rgb(137, 37, 37)"
+                    fill="var(--strike-zone-color)"
                 />
 
                 <rect
@@ -82,7 +82,7 @@ export default function PitchSVG({ onRecord }: Props) {
                     y={3544 + borderThickness}
                     width={strikeW - 2 * borderThickness}
                     height={strikeH - 2 * borderThickness}
-                    fill="#636363"
+                    fill="var(--strike-zone-inner-color)"
                 />
             </g>
 
@@ -90,7 +90,7 @@ export default function PitchSVG({ onRecord }: Props) {
             {/* Outer radial regions group */}
             <g
                 id="outer"
-                fill="rgb(0, 73, 98)"
+                fill="var(--outer-regions-color)"
             >
                 {
                     Object.entries({
@@ -109,7 +109,7 @@ export default function PitchSVG({ onRecord }: Props) {
             </g>
 
             {/* Boundary frame group */}
-            <g id="boundary-frame" fill="rgb(67, 63, 24)">
+            <g id="boundary-frame" fill="var(--boundary-frame-color)">
                 {
                     Object.entries({
                         left : "m567 567v6048h-567v-6615z",
@@ -121,21 +121,25 @@ export default function PitchSVG({ onRecord }: Props) {
                 }
             </g>
 
-            <rect
-                id="ground"
+            <g
+                id="home-plate-group"
                 className={style.hoverable}
-                x={0}
-                y={6615}
-                width={width}
-                height={grassHeight}
-                fill="rgb(6, 71, 32)"
-            />
+            >
+                <rect
+                    id="ground"
+                    x={0}
+                    y={6615}
+                    width={width}
+                    height={grassHeight}
+                    fill="var(--ground-color)"
+                />
 
-	        <path
-                id="homeplate"
-                fill="#636363"
-                d="m4301 6615v70h-1424v-70z"
-            />
+                <path
+                    id="homeplate"
+                    fill="var(--home-plate-color)"
+                    d="m4301 6615v70h-1424v-70z"
+                />
+            </g>
         </svg>
     )
 }

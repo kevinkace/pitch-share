@@ -1,3 +1,10 @@
 .svg {
     cursor: crosshair;
+
+    rect,
+    path {
+        &:hover {
+            filter: brightness(2);
+        }
+    }
 }

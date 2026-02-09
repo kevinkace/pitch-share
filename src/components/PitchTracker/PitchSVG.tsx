@@ -16,6 +16,8 @@ export default function PitchSVG({ onRecord }: Props) {
     const grassHeight = 567  // height from strike-zone-2.svg ground section
     const borderThickness = 176  // scaled border thickness
 
+    const [ mouse, setMouse ] = React.useState({ x: 0, y: 0 })
+
     function toFeet(pxX: number, pxY: number) {
         const cx = width / 2
         const cy = height / 2
@@ -64,6 +66,9 @@ export default function PitchSVG({ onRecord }: Props) {
             height="600"  // Keep rendered height reasonable
             onClick={handleClick}
             className={style.svg}
+            onMouseMove={(e) => {
+
+            }}
         >
 
             {/* Strike zone group */}
@@ -140,6 +145,11 @@ export default function PitchSVG({ onRecord }: Props) {
                     d="m4301 6615v70h-1424v-70z"
                 />
             </g>
+
+
+            <text x={mouse.x} y={mouse.y} fontSize="240" fill="currentColor" height="2em" width="5em">
+                (JSON.stringify(toFeet(mouse.x, mouse.y)))
+            </text>
         </svg>
     )
 }

@@ -1,8 +1,7 @@
 .svg {
     cursor: crosshair;
 
-    rect,
-    path {
+    .hoverable {
         &:hover {
             filter: brightness(2);
         }

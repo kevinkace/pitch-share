@@ -78,7 +78,7 @@ export default function PitchSVG({ onRecord }: Props) {
             <div
                 className={style.tooltip}
                 style={{
-                    top : `calc(${mouse.y}px - 4em)`,
+                    top : `calc(${mouse.y}px - ${pitchType.length ? "4" : "2.5"}em)`,
                     left : `calc(${mouse.x}px - 4.5em)`
                 }}
             >
@@ -111,6 +111,8 @@ export default function PitchSVG({ onRecord }: Props) {
                         setPitchType('Strike')
                     } else if (targetId === 'ground') {
                         setPitchType('Ground')
+                    } else if ([ "top", "left", "right" ].includes(targetId)) {
+                        setPitchType('Out of Bounds')
                     } else {
                         setPitchType('')
                     }

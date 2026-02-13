@@ -4,11 +4,23 @@ import React, { useState } from 'react'
 
 import style from './PitchTracker.module.css'
 
-type Props = {
-    onRecord: (row: any) => void
+type Pitch = {
+    id: string
+    x: number
+    y: number
+    strike: boolean
+    ground: boolean
+    timestamp: string
 }
 
-export default function PitchSVG({ onRecord }: Props) {
+type Props = {
+    onRecord: (row: any) => void
+    pitches?: Pitch[]
+    selectedPitchIds?: string[]
+    onPitchClick?: (pitch: Pitch) => void
+}
+
+export default function PitchSVG({ onRecord, pitches = [], selectedPitchIds = [], onPitchClick }: Props) {
     const width = 7182
     const height = 7182
     const strikeW = 1419  // width from strike-zone-2.svg (4301-2882)
@@ -29,6 +41,17 @@ export default function PitchSVG({ onRecord }: Props) {
         const xFeet = ((pxX - cx) / (width / 2)) * 12
         const yFeet = ((strikeZoneCenterY - pxY) / (height / 2)) * 6
         return { x: Number(xFeet.toFixed(3)), y: Number(yFeet.toFixed(3)) }
+    }
+
+    function toSvgCoords(xFeet: number, yFeet: number) {
+        const cx = width / 2
+        const cy = height / 2
+        // Add half strike zone height to center y at strike zone center
+        const strikeZoneCenterY = cy + (strikeH / 2)
+        // Reverse the toFeet calculation
+        const svgX = cx + (xFeet * (width / 2)) / 12
+        const svgY = strikeZoneCenterY - (yFeet * (height / 2)) / 6
+        return { x: svgX, y: svgY }
     }
 
     const handleClick = async (e: React.MouseEvent<SVGSVGElement>) => {
@@ -196,6 +219,50 @@ export default function PitchSVG({ onRecord }: Props) {
                         fill="var(--home-plate-color)"
                         d="m4301 6615v70h-1424v-70z"
                     />
+                </g>
+
+                {/* Pitch markers group */}
+                <g id="pitch-markers">
+                    {pitches.map((pitch) => {
+                        const { x: svgX, y: svgY } = toSvgCoords(pitch.x, pitch.y)
+                        const isSelected = selectedPitchIds.includes(pitch.id)
+                        const ballSize = 120 // Size of the ball in SVG units
+
+                        return (
+                            <g key={pitch.id}>
+                                {/* Ball SVG */}
+                                <image
+                                    href="/ball-sized.svg"
+                                    x={svgX - ballSize / 2}
+                                    y={svgY - ballSize / 2}
+                                    width={ballSize}
+                                    height={ballSize}
+                                    opacity={isSelected ? 1 : 0.8}
+                                    style={{
+                                        filter: isSelected ? 'drop-shadow(0 0 10px #00ff00)' : 'none',
+                                        cursor: onPitchClick ? 'pointer' : 'default'
+                                    }}
+                                    onClick={(e) => {
+                                        e.stopPropagation()
+                                        onPitchClick?.(pitch)
+                                    }}
+                                />
+
+                                {/* Selection indicator for selected pitches */}
+                                {isSelected && (
+                                    <circle
+                                        cx={svgX}
+                                        cy={svgY}
+                                        r={ballSize / 2 + 20}
+                                        fill="none"
+                                        stroke="#00ff00"
+                                        strokeWidth="8"
+                                        opacity="0.8"
+                                    />
+                                )}
+                            </g>
+                        )
+                    })}
                 </g>
             </svg>
         </div>

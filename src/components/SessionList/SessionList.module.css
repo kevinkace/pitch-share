@@ -1,5 +1,15 @@
 .sessionHeader {
   margin-bottom: 16px;
+  display: flex;
+  flex-direction: column;
+
+  h3 {
+    margin-bottom: 0;
+  }
+}
+
+.sessionId {
+  font-size: 0.8em;
 }
 
 .sessionDate {

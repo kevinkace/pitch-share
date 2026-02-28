@@ -23,23 +23,35 @@ interface SessionData {
     Video: string;
 }
 
+interface PlacementData {
+    id: string;
+    x: number;
+    y: number;
+    strike: boolean;
+    ground: boolean;
+    timestamp: string;
+}
+
 export interface SessionSummary {
     id: string;
     date: string;
     time: string;
     playerName: string;
+    sessionTitle: string;
     pitchCount: number;
     maxSpeed: number;
     avgSpeed: number;
     unit: string;
     sport: string;
     activity: string;
+    hasPlacementData: boolean;
+    placementData?: PlacementData[];
 }
 
 async function getAllSessionsUncached(): Promise<SessionSummary[]> {
     try {
         const dataDir = path.join(process.cwd(), 'src', 'lib', 'data');
-        const files = readdirSync(dataDir).filter(file => file.endsWith('.csv'));
+        const files = readdirSync(dataDir).filter(file => file.endsWith('.csv') && !file.includes('_placement'));
 
         return files.map(filename => {
             const filePath = path.join(dataDir, filename);
@@ -63,17 +75,54 @@ async function getAllSessionsUncached(): Promise<SessionSummary[]> {
             const maxSpeed = speeds.length > 0 ? Math.max(...speeds) : 0;
             const avgSpeed = speeds.length > 0 ? Math.round(speeds.reduce((a, b) => a + b, 0) / speeds.length) : 0;
 
+            // Check for placement data file
+            const baseId = filename.replace('.csv', '');
+            const placementFileName = `${baseId}_placement.csv`;
+            const placementFilePath = path.join(dataDir, placementFileName);
+
+            let hasPlacementData = false;
+            let placementData: PlacementData[] = [];
+
+            try {
+                const placementCsvContent = readFileSync(placementFilePath, 'utf-8');
+                const placementResult = Papa.parse(placementCsvContent, {
+                    header: false,
+                    skipEmptyLines: true,
+                });
+
+                // Handle both formats: with and without headers
+                const hasHeaders = placementResult.data[0] && typeof placementResult.data[0][0] === 'string' && placementResult.data[0][0].includes('id');
+                const dataRows = hasHeaders ? placementResult.data.slice(1) : placementResult.data;
+
+                placementData = dataRows.map((row: any[]) => ({
+                    id: row[0],
+                    x: parseFloat(row[1]),
+                    y: parseFloat(row[2]),
+                    strike: row[3] === 'true',
+                    ground: row[4] === 'true',
+                    timestamp: row[5]
+                })).filter(item => item.id && !isNaN(item.x) && !isNaN(item.y));
+
+                hasPlacementData = placementData.length > 0;
+            } catch (placementError) {
+                // Placement file doesn't exist or is invalid
+                hasPlacementData = false;
+            }
+
             return {
                 id: filename.replace('.csv', ''),
                 date: firstRow.Date,
                 time: firstRow.Time,
                 playerName: firstRow['Player Name'] || 'Unknown',
+                sessionTitle: firstRow['Session Title'] || 'Training Session',
                 pitchCount: data.length,
                 maxSpeed,
                 avgSpeed,
                 unit: firstRow.Unit || 'MPH',
                 sport: firstRow.Sport || 'Baseball',
-                activity: firstRow.Activity || 'Pitching'
+                activity: firstRow.Activity || 'Pitching',
+                hasPlacementData,
+                placementData: hasPlacementData ? placementData : undefined
             };
         }).filter(Boolean) as SessionSummary[];
     } catch (error) {
@@ -144,6 +193,11 @@ export default async function SessionList() {
                                 </div>
                                 <div className={styles.sessionMeta}>
                                     {session.sport} • {session.activity}
+                                    {session.hasPlacementData && (
+                                        <span className={styles.placementIndicator}>
+                                            • Placement Data Available
+                                        </span>
+                                    )}
                                 </div>
                             </Link>
 

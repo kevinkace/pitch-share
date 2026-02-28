@@ -4,6 +4,8 @@ import path from 'path';
 import Papa from 'papaparse';
 
 import SessionDataGrid from '@/components/SessionDataGrid/SessionDataGrid';
+import PlacementDataGrid from '@/components/PlacementDataGrid/PlacementDataGrid';
+import MergedDataGrid from '@/components/MergedDataGrid/MergedDataGrid';
 import SessionStats from '@/components/SessionStats/SessionStats';
 import SessionSummary from '@/components/SessionSummary/SessionSummary';
 import SpeedGauge from '@/components/SpeedGauge/SpeedGauge';
@@ -11,8 +13,11 @@ import SessionNavigation from '@/components/SessionNavigation/SessionNavigation'
 import { getSessionNavigation } from '@/lib/sessionNavigation';
 import Container from '@/components/Container/Container';
 
+import { mergeSpeedAndPlacementData, analyzeTimestampAlignment } from '@/lib/mergeData';
+
 import style from './page.module.css';
 import { Flex } from '@radix-ui/themes';
+
 interface SessionData {
     Date: string;
     Time: string;
@@ -27,6 +32,15 @@ interface SessionData {
     Sport: string;
     Activity: string;
     Video: string;
+}
+
+interface PlacementData {
+    id: string;
+    x: number;
+    y: number;
+    strike: boolean;
+    ground: boolean;
+    timestamp: string;
 }
 
 interface SessionPageProps {
@@ -52,11 +66,40 @@ async function loadSessionData(session: string): Promise<SessionData[]> {
     }
 }
 
+async function loadPlacementData(session: string): Promise<PlacementData[]> {
+    try {
+        const filePath = path.join(process.cwd(), 'src', 'lib', 'data', `${session}_placement.csv`);
+        const csvContent = readFileSync(filePath, 'utf-8');
+
+        const result = Papa.parse(csvContent, {
+            header: false,
+            skipEmptyLines: true,
+        });
+
+        // Handle both formats: with and without headers
+        const hasHeaders = result.data[0] && typeof result.data[0][0] === 'string' && result.data[0][0].includes('id');
+        const dataRows = hasHeaders ? result.data.slice(1) : result.data;
+
+        return dataRows.map((row: any[]) => ({
+            id: row[0],
+            x: parseFloat(row[1]),
+            y: parseFloat(row[2]),
+            strike: row[3] === 'true',
+            ground: row[4] === 'true',
+            timestamp: row[5]
+        })).filter(item => item.id && !isNaN(item.x) && !isNaN(item.y));
+    } catch (error) {
+        console.error('Error loading placement data:', error);
+        return [];
+    }
+}
+
 export default async function SessionPage({ params }: SessionPageProps) {
     const { session } = await params;
 
-  const data = await loadSessionData(session);
-  const { previousSession, nextSession, previousDate, nextDate } = await getSessionNavigation(session);
+    const data = await loadSessionData(session);
+    const { previousSession, nextSession, previousDate, nextDate } = await getSessionNavigation(session);
+    const placementData = await loadPlacementData(session);
 
     // Calculate statistics
     const speeds = data.map(pitch => parseFloat(pitch.Speed)).filter(speed => !isNaN(speed));
@@ -70,12 +113,21 @@ export default async function SessionPage({ params }: SessionPageProps) {
     const date = data[0]?.Date || 'Unknown Date';
     const startTime = data[0]?.Time || 'Unknown Time';
 
-  return (
-    <Container>
-      <div className={style.topBar}>
-        <h1 className={style.header}>
-          {data[0]?.['Player Name'] || 'Unknown'}
-        </h1>
+    // Analyze and merge data if both speed and placement data are available
+    const analysisResults = placementData.length > 0 && data.length > 0
+        ? analyzeTimestampAlignment(data, placementData)
+        : null;
+
+    const mergedData = placementData.length > 0 && data.length > 0
+        ? mergeSpeedAndPlacementData(data, placementData)
+        : null;
+
+    return (
+        <Container>
+          <div className={style.topBar}>
+            <h1 className={style.header}>
+              {data[0]?.['Player Name'] || 'Unknown'}
+            </h1>
 
         {/* date */}
         <div className={style.date}>
@@ -94,8 +146,6 @@ export default async function SessionPage({ params }: SessionPageProps) {
 
       </div>
 
-
-
       {data.length > 0 ? (
         <>
           <SessionSummary
@@ -113,6 +163,14 @@ export default async function SessionPage({ params }: SessionPageProps) {
             </Flex>
 
           <SessionDataGrid data={data} />
+
+          {mergedData && analysisResults ? (
+              <MergedDataGrid data={mergedData} analysisResults={analysisResults} />
+          ) : (
+              placementData.length > 0 && (
+                  <PlacementDataGrid data={placementData} />
+              )
+          )}
         </>
       ) : (
         <p>No data found for session: {session}</p>

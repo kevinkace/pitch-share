@@ -4,6 +4,8 @@ import path from 'path';
 export interface SessionNavigation {
   previousSession: string | null;
   nextSession: string | null;
+  previousDate: string | null;
+  nextDate: string | null;
 }
 
 export async function getSessionNavigation(currentSession: string): Promise<SessionNavigation> {
@@ -22,18 +24,29 @@ export async function getSessionNavigation(currentSession: string): Promise<Sess
     const currentIndex = files.indexOf(currentSession);
 
     if (currentIndex === -1) {
-      return { previousSession: null, nextSession: null };
+      return { previousSession: null, nextSession: null, previousDate: null, nextDate: null };
     }
 
     const previousSession = currentIndex > 0 ? files[currentIndex - 1] : null;
     const nextSession = currentIndex < files.length - 1 ? files[currentIndex + 1] : null;
 
+    // Extract dates from session names
+    const formatDate = (sessionName: string | null): string | null => {
+      if (!sessionName) return null;
+      const dateMatch = sessionName.match(/PR_(\d{4})(\d{2})(\d{2})/);
+      if (!dateMatch) return null;
+      const [, year, month, day] = dateMatch;
+      return new Date(`${year}-${month}-${day}`).toLocaleDateString();
+    };
+
     return {
       previousSession,
-      nextSession
+      nextSession,
+      previousDate: formatDate(previousSession),
+      nextDate: formatDate(nextSession)
     };
   } catch (error) {
     console.error('Error getting session navigation:', error);
-    return { previousSession: null, nextSession: null };
+    return { previousSession: null, nextSession: null, previousDate: null, nextDate: null };
   }
 }

@@ -55,7 +55,7 @@ export default async function SessionPage({ params }: SessionPageProps) {
   const { session } = await params;
 
   const data = await loadSessionData(session);
-  const { previousSession, nextSession } = await getSessionNavigation(session);
+  const { previousSession, nextSession, previousDate, nextDate } = await getSessionNavigation(session);
 
   // Calculate statistics
   const speeds = data.map(pitch => parseFloat(pitch.Speed)).filter(speed => !isNaN(speed));
@@ -87,7 +87,9 @@ export default async function SessionPage({ params }: SessionPageProps) {
         <SessionNavigation
           previousSession={previousSession}
           nextSession={nextSession}
-          inline="true"
+          previousDate={previousDate}
+          nextDate={nextDate}
+          inline={true}
         />
 
       </div>
@@ -119,6 +121,8 @@ export default async function SessionPage({ params }: SessionPageProps) {
       <SessionNavigation
         previousSession={previousSession}
         nextSession={nextSession}
+        previousDate={previousDate}
+        nextDate={nextDate}
       />
     </>
   );

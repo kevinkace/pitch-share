@@ -77,7 +77,11 @@ async function getAllSessionsUncached(): Promise<SessionSummary[]> {
       };
     })
     .filter(Boolean)
-    .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()) as SessionSummary[];
+    .sort((a, b) => {
+      if (!a || !b) return 0;
+
+      return new Date(b.date).getTime() - new Date(a.date).getTime()
+    }) as SessionSummary[];
   } catch (error) {
     console.error('Error reading session data:', error);
     return [];

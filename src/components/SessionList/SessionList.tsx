@@ -192,12 +192,13 @@ export default async function SessionList() {
 
                                 </div>
                                 <div className={styles.sessionMeta}>
-                                    {session.sport} • {session.activity}
                                     {session.hasPlacementData && (
-                                        <span className={styles.placementIndicator}>
-                                            • Placement Data Available
-                                        </span>
+                                        <div>
+                                            Placement Data Available
+                                        </div>
                                     )}
+                                    {session.sport} • {" "}
+                                    {session.activity}
                                 </div>
                             </Link>
 

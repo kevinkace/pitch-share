@@ -1,8 +1,11 @@
 'use client';
 
 import { AgGridReact } from 'ag-grid-react';
-import { ColDef,ModuleRegistry, AllCommunityModule, colorSchemeDark, themeQuartz  } from 'ag-grid-community';
+import { ColDef,ModuleRegistry, AllCommunityModule } from 'ag-grid-community';
+
 import { getSpeedColor } from '@/lib/speedRanges';
+import { theme } from '@/lib/datagrid-theme';
+
 import SpeedColorIndicator from '@/components/SpeedColorIndicator/SpeedColorIndicator';
 
 ModuleRegistry.registerModules([ AllCommunityModule ]);
@@ -53,12 +56,6 @@ export default function SessionDataGrid({ data }: SessionDataGridProps) {
     resizable: true,
     flex: 1,
   };
-
-  const theme = themeQuartz
-    .withPart(colorSchemeDark)
-    .withParams({
-        backgroundColor: 'transparent',
-    });
 
   return (
       <AgGridReact<SessionData>

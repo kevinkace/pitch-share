@@ -15,7 +15,7 @@ export interface PitchData {
 /**
  * Loads pitch placement data from CSV file (uncached)
  */
-function loadPitchPlacementDataUncached(): PitchData[] {
+async function loadPitchPlacementDataUncached(): Promise<PitchData[]> {
   try {
     const csvPath = path.join(process.cwd(), 'src', 'lib', 'data', 'pitch_placement.csv');
     const csvData = readFileSync(csvPath, 'utf-8');

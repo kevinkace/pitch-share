@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { loadPitchPlacementData, filterPitchesByDateRange } from '@/lib/pitchData';
+import { isPitchPlacementEnabled } from '@/lib/featureFlags';
 
 export async function GET(request: NextRequest) {
   try {
@@ -38,6 +39,14 @@ export async function GET(request: NextRequest) {
 }
 
 export async function POST(request: NextRequest) {
+  // Disable pitch placement in production
+  if (!isPitchPlacementEnabled()) {
+    return NextResponse.json(
+      { error: 'Pitch placement feature is not available' },
+      { status: 404 }
+    );
+  }
+
   try {
     // This could be extended to save new pitch data
     // For now, just echo back the received data

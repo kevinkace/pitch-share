@@ -14,6 +14,35 @@ pnpm dev
 bun dev
 ```
 
+## Feature Flags
+
+### Pitch Placement
+
+The pitch placement feature (including the demo page and placement data visualization) is controlled by environment variables and is **disabled by default**.
+
+To enable pitch placement, set both environment variables to `true`:
+
+```bash
+# Server-side (for API endpoints)
+ENABLE_PLACEMENT_CREATE=true
+
+# Client-side (for UI components)
+NEXT_PUBLIC_ENABLE_PLACEMENT_CREATE=true
+
+# Server creates CSV if DNE
+ENABLE_CREATE_CSV=false
+```
+
+#### Local Development
+
+Create a `.env.local` file:
+
+```bash
+ENABLE_PLACEMENT_CREATE=true
+NEXT_PUBLIC_ENABLE_PLACEMENT_CREATE=true
+ENABLE_CREATE_CSV=true
+```
+
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
 You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.

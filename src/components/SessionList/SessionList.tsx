@@ -3,9 +3,9 @@ import path from 'path';
 import Link from 'next/link';
 import Papa from 'papaparse';
 import { unstable_cache } from 'next/cache';
+import { Card, Flex } from '@radix-ui/themes';
 
 import styles from './SessionList.module.css';
-import { Card, Flex } from '@radix-ui/themes';
 
 interface SessionData {
     Date: string;

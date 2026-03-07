@@ -9,7 +9,7 @@ export async function GET(request: NextRequest) {
     const endDate = searchParams.get('endDate');
     const sessionId = searchParams.get('sessionId');
 
-    let pitches = loadPitchPlacementData();
+    let pitches = await loadPitchPlacementData();
 
     // Filter by date range if provided
     if (startDate) {

@@ -1,5 +1,5 @@
 import { NextRequest } from 'next/server';
-import { readFileSync } from 'fs';
+import { readFileSync, readdirSync } from 'fs';
 import path from 'path';
 import Papa from 'papaparse';
 import { generateSessionImage } from '@/components/SessionMetadata/SessionMetadata';
@@ -25,7 +25,7 @@ interface SessionData {
 async function loadSessionData(session: string): Promise<SessionData[]> {
   try {
     // glob then match the file
-    const files = fs.readdirSync(path.join(process.cwd(), 'src', 'lib', 'data'));
+    const files = readdirSync(path.join(process.cwd(), 'src', 'lib', 'data'));
     const matchingFile = files.find(file => file.includes(`${session}.csv`));
 
     if (!matchingFile) {

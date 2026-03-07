@@ -6,7 +6,7 @@ interface SessionSummaryProps {
   avgSpeed: number;
   medSpeed: number;
   unit: string;
-  fastestStrike: number;
+  fastestStrike: number | null;
 }
 
 export default function SessionSummary({

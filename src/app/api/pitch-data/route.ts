@@ -3,7 +3,7 @@ import fs from 'fs';
 import path from 'path';
 import { randomUUID } from 'crypto';
 
-import { isPitchDeleteEnabled } from "../../../lib/featureFlags.ts";
+import { isPitchDeleteEnabled, isPitchPlacementEnabled } from "@/lib/featureFlags";
 
 const csvPath = path.join(process.cwd(), 'src', 'lib', 'data', 'pitch_placement.csv')
 

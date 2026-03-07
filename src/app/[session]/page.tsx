@@ -96,7 +96,7 @@ async function loadPlacementDataUncached(session: string): Promise<PlacementData
 
         const csvContent = readFileSync(path.join(process.cwd(), 'src', 'lib', 'data', matchingFile), 'utf-8');
 
-        const result = Papa.parse(csvContent, {
+        const result = Papa.parse<string[]>(csvContent, {
             header: false,
             skipEmptyLines: true,
         });
@@ -165,6 +165,8 @@ export default async function SessionPage({ params }: SessionPageProps) {
         return parseFloat(b.sessionData.Speed) - parseFloat(a.sessionData.Speed);
     })[0]?.sessionData.Speed;
 
+    const fastestStrikeNumber = fastestStrike ? parseFloat(fastestStrike) : null;
+
     return (
         <Container>
             <h1 className={style.header}>
@@ -187,7 +189,7 @@ export default async function SessionPage({ params }: SessionPageProps) {
                         avgSpeed={avgSpeed}
                         medSpeed={medSpeed}
                         unit={unit}
-                        fastestStrike={fastestStrike}
+                        fastestStrike={fastestStrikeNumber}
                     />
 
                     <Flex className={style.gaugeStats} align="center">

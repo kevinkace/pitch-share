@@ -1,0 +1,30 @@
+.wrapper {
+    position: relative;
+}
+
+.svg {
+    cursor: crosshair;
+
+    /* Color variables */
+    --strike-zone-color: rgb(137, 37, 37);
+    --strike-zone-inner-color: #636363;
+    --outer-regions-color: rgb(0, 73, 98);
+    --boundary-frame-color: rgb(96, 87, 17);
+    --ground-color: rgb(6, 71, 32);
+    --home-plate-color: #636363;
+
+    .hoverable {
+        &:hover {
+            filter: brightness(2);
+        }
+    }
+}
+
+.tooltip {
+    pointer-events: none;
+    position: absolute;
+    background: #444b;
+    padding: 0.2em 0.5em;
+    border-radius: 0.2em;
+    text-align: center;
+}

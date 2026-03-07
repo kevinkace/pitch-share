@@ -6,6 +6,7 @@ interface SessionSummaryProps {
   avgSpeed: number;
   medSpeed: number;
   unit: string;
+  fastestStrike: number | null;
 }
 
 export default function SessionSummary({
@@ -13,7 +14,8 @@ export default function SessionSummary({
   topSpeed,
   avgSpeed,
   medSpeed,
-  unit
+  unit,
+  fastestStrike
 }: SessionSummaryProps) {
   return (
     <div className={styles.container}>
@@ -36,6 +38,13 @@ export default function SessionSummary({
         <div className={styles.statValue}>{medSpeed}</div>
         <div className={styles.statLabel}>Median ({unit})</div>
       </div>
+
+      {fastestStrike && (
+      <div className={styles.statCard}>
+        <div className={styles.statValue}>{fastestStrike}</div>
+        <div className={styles.statLabel}>Fastest Strike ({unit})</div>
+      </div>
+      )}
     </div>
   );
 }

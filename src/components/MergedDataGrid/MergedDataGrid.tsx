@@ -140,7 +140,7 @@ export default function MergedDataGrid({ data, analysisResults }: MergedDataGrid
     flex: 1,
   };
 
-  const ar = {
+  const ar = analysisResults ? {
     "Speed Entries"       : analysisResults.totalSpeedEntries,
     "Placement Entries"   : analysisResults.totalPlacementEntries,
     "Matched"             : analysisResults.potentialMatches,
@@ -149,7 +149,7 @@ export default function MergedDataGrid({ data, analysisResults }: MergedDataGrid
     "Avg Delay"           : analysisResults.averageDelay.toFixed(1),
     "Delay Range"         : `${analysisResults.delayRange.min.toFixed(1)}s - ${analysisResults.delayRange.max.toFixed(1)}s`,
     "Match Rate"          : ((analysisResults.potentialMatches / analysisResults.totalSpeedEntries) * 100).toFixed(1) + '%'
-  }
+  } : {};
 
   return (
     <div>

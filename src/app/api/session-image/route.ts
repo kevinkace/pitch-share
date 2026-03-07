@@ -24,8 +24,16 @@ interface SessionData {
 
 async function loadSessionData(session: string): Promise<SessionData[]> {
   try {
-    const filePath = path.join(process.cwd(), 'src', 'lib', 'data', `${session}.csv`);
-    const csvContent = readFileSync(filePath, 'utf-8');
+    // glob then match the file
+    const files = fs.readdirSync(path.join(process.cwd(), 'src', 'lib', 'data'));
+    const matchingFile = files.find(file => file.includes(`${session}.csv`));
+
+    if (!matchingFile) {
+      console.error('No matching session data file found for session:', session);
+      return [];
+    }
+
+    const csvContent = readFileSync(path.join(process.cwd(), 'src', 'lib', 'data', matchingFile), 'utf-8');
 
     const result = Papa.parse<SessionData>(csvContent, {
       header: true,

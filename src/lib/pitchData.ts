@@ -1,4 +1,4 @@
-import { readFileSync } from 'fs';
+import { readFileSync, existsSync, readdirSync } from 'fs';
 import path from 'path';
 import Papa from 'papaparse';
 import { unstable_cache } from 'next/cache';
@@ -13,34 +13,57 @@ export interface PitchData {
 }
 
 /**
- * Loads pitch placement data from CSV file (uncached)
+ * Loads pitch placement data from CSV files (uncached)
  */
 async function loadPitchPlacementDataUncached(): Promise<PitchData[]> {
   try {
-    const csvPath = path.join(process.cwd(), 'src', 'lib', 'data', 'pitch_placement.csv');
-    const csvData = readFileSync(csvPath, 'utf-8');
+    const dataDir = path.join(process.cwd(), 'src', 'lib', 'data');
+    let allPitches: PitchData[] = [];
 
-    const parsed = Papa.parse(csvData, {
-      header: true,
-      skipEmptyLines: true,
-      transform: (value, field) => {
-        // Convert numeric fields
-        if (field === 'x' || field === 'y') {
-          return parseFloat(value);
+    // Load from session-specific placement files only
+    const files = readdirSync(dataDir);
+    const placementFiles = files.filter((file: string) =>
+      file.includes('session_placement.csv') && file.endsWith('.csv')
+    );
+
+    for (const file of placementFiles) {
+      try {
+        const csvPath = path.join(dataDir, file);
+        const csvData = readFileSync(csvPath, 'utf-8');
+
+        const parsed = Papa.parse(csvData, {
+          header: true,
+          skipEmptyLines: true,
+          transform: (value, field) => {
+            if (field === 'x' || field === 'y') {
+              return parseFloat(value);
+            }
+            if (field === 'strike' || field === 'ground') {
+              return value.toLowerCase() === 'true';
+            }
+            return value;
+          }
+        });
+
+        if (parsed.data && parsed.data.length > 0) {
+          allPitches = allPitches.concat(parsed.data as PitchData[]);
         }
-        // Convert boolean fields
-        if (field === 'strike' || field === 'ground') {
-          return value.toLowerCase() === 'true';
-        }
-        return value;
+      } catch (error) {
+        console.warn(`Error loading ${file}:`, error);
       }
-    });
+    }
+          });
 
-    if (parsed.errors.length > 0) {
-      console.error('CSV parsing errors:', parsed.errors);
+          if (parsed.data && parsed.data.length > 0) {
+            allPitches = allPitches.concat(parsed.data as PitchData[]);
+          }
+        } catch (error) {
+          console.warn(`Error loading ${file}:`, error);
+        }
+      }
     }
 
-    return parsed.data as PitchData[];
+    return allPitches;
   } catch (error) {
     console.error('Error loading pitch placement data:', error);
     return [];

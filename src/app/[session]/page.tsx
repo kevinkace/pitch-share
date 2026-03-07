@@ -1,7 +1,8 @@
-import { readFileSync } from 'fs';
+import { readFileSync, readdirSync } from 'fs';
 import path from 'path';
 
 import Papa from 'papaparse';
+import { unstable_cache } from 'next/cache';
 
 import SessionDataGrid from '@/components/SessionDataGrid/SessionDataGrid';
 import PlacementDataGrid from '@/components/PlacementDataGrid/PlacementDataGrid';
@@ -47,10 +48,18 @@ interface SessionPageProps {
     }>;
 }
 
-async function loadSessionData(session: string): Promise<SessionData[]> {
+async function loadSessionDataUncached(session: string): Promise<SessionData[]> {
     try {
-        const filePath = path.join(process.cwd(), 'src', 'lib', 'data', `${session}.csv`);
-        const csvContent = readFileSync(filePath, 'utf-8');
+        // glob and match
+        const files = readdirSync(path.join(process.cwd(), 'src', 'lib', 'data'));
+        const matchingFile = files.find(file => file.includes(`${session}.csv`));
+
+        if (!matchingFile) {
+            console.error('No matching session data file found for session:', session);
+            return [];
+        }
+
+        const csvContent = readFileSync(path.join(process.cwd(), 'src', 'lib', 'data', matchingFile), 'utf-8');
 
         const result = Papa.parse<SessionData>(csvContent, {
             header: true,
@@ -64,10 +73,28 @@ async function loadSessionData(session: string): Promise<SessionData[]> {
     }
 }
 
-async function loadPlacementData(session: string): Promise<PlacementData[]> {
+// Cached version that revalidates every 5 minutes
+const loadSessionData = unstable_cache(
+    (session: string) => loadSessionDataUncached(session),
+    ['session-data'],
+    {
+        revalidate: 300, // 5 minutes
+        tags: ['session-data']
+    }
+);
+
+async function loadPlacementDataUncached(session: string): Promise<PlacementData[]> {
     try {
-        const filePath = path.join(process.cwd(), 'src', 'lib', 'data', `${session}_placement.csv`);
-        const csvContent = readFileSync(filePath, 'utf-8');
+        //glob files and match, don't look up by params
+        const files = readdirSync(path.join(process.cwd(), 'src', 'lib', 'data'));
+        const matchingFile = files.find(file => file.includes(`${session}_placement.csv`));
+
+        if (!matchingFile) {
+            console.error('No matching placement data file found for session:', session);
+            return [];
+        }
+
+        const csvContent = readFileSync(path.join(process.cwd(), 'src', 'lib', 'data', matchingFile), 'utf-8');
 
         const result = Papa.parse(csvContent, {
             header: false,
@@ -91,6 +118,16 @@ async function loadPlacementData(session: string): Promise<PlacementData[]> {
         return [];
     }
 }
+
+// Cached version that revalidates every 5 minutes
+const loadPlacementData = unstable_cache(
+    (session: string) => loadPlacementDataUncached(session),
+    ['placement-data'],
+    {
+        revalidate: 300, // 5 minutes
+        tags: ['placement-data']
+    }
+);
 
 export default async function SessionPage({ params }: SessionPageProps) {
     const { session } = await params;

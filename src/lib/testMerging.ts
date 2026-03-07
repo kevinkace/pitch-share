@@ -50,7 +50,7 @@ export async function testDataMerging() {
     const placementFilePath = path.join(process.cwd(), 'src', 'lib', 'data', 'PR_20260207_516_session_placement.csv');
     const placementCsvContent = readFileSync(placementFilePath, 'utf-8');
 
-    const placementResult = Papa.parse(placementCsvContent, {
+    const placementResult = Papa.parse<string[]>(placementCsvContent, {
       header: false,
       skipEmptyLines: true,
     });

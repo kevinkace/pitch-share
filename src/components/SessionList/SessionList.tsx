@@ -85,7 +85,7 @@ async function getAllSessionsUncached(): Promise<SessionSummary[]> {
 
             try {
                 const placementCsvContent = readFileSync(placementFilePath, 'utf-8');
-                const placementResult = Papa.parse(placementCsvContent, {
+                const placementResult = Papa.parse<string[]>(placementCsvContent, {
                     header: false,
                     skipEmptyLines: true,
                 });

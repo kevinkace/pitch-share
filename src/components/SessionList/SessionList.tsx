@@ -51,7 +51,7 @@ export interface SessionSummary {
 async function getAllSessionsUncached(): Promise<SessionSummary[]> {
     try {
         const dataDir = path.join(process.cwd(), 'src', 'lib', 'data');
-        const files = readdirSync(dataDir).filter(file => file.endsWith('.csv') && !file.includes('_placement'));
+        const files = readdirSync(dataDir).filter(file => file.endsWith('_session.csv'));
 
         return files.map(filename => {
             const filePath = path.join(dataDir, filename);

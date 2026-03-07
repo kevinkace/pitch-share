@@ -12,7 +12,7 @@ export async function getSessionNavigation(currentSession: string): Promise<Sess
   try {
     const dataDir = path.join(process.cwd(), 'src', 'lib', 'data');
     const files = readdirSync(dataDir)
-      .filter(file => file.endsWith('.csv'))
+      .filter(file => file.endsWith('_session.csv'))
       .map(filename => filename.replace('.csv', ''))
       .sort((a, b) => {
         // Extract date from filename (format: PR_YYYYMMDD_XXX_session)

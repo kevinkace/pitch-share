@@ -52,16 +52,6 @@ async function loadPitchPlacementDataUncached(): Promise<PitchData[]> {
         console.warn(`Error loading ${file}:`, error);
       }
     }
-          });
-
-          if (parsed.data && parsed.data.length > 0) {
-            allPitches = allPitches.concat(parsed.data as PitchData[]);
-          }
-        } catch (error) {
-          console.warn(`Error loading ${file}:`, error);
-        }
-      }
-    }
 
     return allPitches;
   } catch (error) {

@@ -6,6 +6,7 @@ import { AgGridReact } from 'ag-grid-react'
 import { ColDef, ModuleRegistry, AllCommunityModule } from 'ag-grid-community'
 
 import { theme } from '@/lib/datagrid-theme'
+import { isPitchPlacementEnabled } from '@/lib/featureFlags'
 
 ModuleRegistry.registerModules([AllCommunityModule])
 
@@ -28,6 +29,11 @@ export default function PitchHistory({ rows, onDeleteLocal, onRestore }: Props) 
     const gridRef = useRef<any>(null)
 
     const deleteRow = useCallback((row: PitchRow) => {
+        if (!isPitchPlacementEnabled()) {
+            console.error('Pitch placement is disabled via feature flag');
+
+            return;
+        }
         // optimistic remove and allow undo
         onDeleteLocal(row.id)
 

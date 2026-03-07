@@ -8,6 +8,7 @@ import Analytics from "@/components/Analytics/Analytics";
 import "./globals.css";
 import style from "./layout.module.css";
 import { Button } from "@/components/Button/Button";
+import { isPitchPlacementEnabled } from "@/lib/featureFlags";
 
 export const metadata: Metadata = {
     title: "Pitch Share | Baseball Pitching Analysis",
@@ -44,9 +45,11 @@ export default function RootLayout({
                             <p>Baseball pitching session analysis and tracking</p>
                         </div>
 
-                        <Button href="/pitch-tracker">
-                            Pitch Tracker
-                        </Button>
+                        {isPitchPlacementEnabled() && (
+                            <Button href="/pitch-tracker">
+                                Pitch Tracker
+                            </Button>
+                        )}
                     </header>
 
                     {children}

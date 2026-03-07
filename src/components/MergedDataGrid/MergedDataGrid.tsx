@@ -2,10 +2,20 @@
 
 import { AgGridReact } from 'ag-grid-react';
 import { ColDef, ModuleRegistry, AllCommunityModule } from 'ag-grid-community';
+import { Card, Grid } from '@radix-ui/themes';
+
 import { theme } from '@/lib/datagrid-theme';
 import { getSpeedColor } from '@/lib/speedRanges';
-import SpeedColorIndicator from '@/components/SpeedColorIndicator/SpeedColorIndicator';
 import type { MergedPitchData } from '@/lib/mergeData';
+
+import SpeedColorIndicator from '@/components/SpeedColorIndicator/SpeedColorIndicator';
+
+import styles from "./MergedDataGrid.module.css";
+
+const colors = {
+  match : "#0099ff30",
+  noMatch : "#ff00002c"
+}
 
 ModuleRegistry.registerModules([AllCommunityModule]);
 
@@ -64,7 +74,7 @@ export default function MergedDataGrid({ data, analysisResults }: MergedDataGrid
       width: 100,
       valueFormatter: (params) => params.value ? params.value.toFixed(3) : '-',
       cellStyle: (params) => ({
-        backgroundColor: params.value ? '#f0f9ff' : '#fef2f2'
+        backgroundColor: params.value ? colors.match : colors.noMatch
       })
     },
     {
@@ -74,7 +84,7 @@ export default function MergedDataGrid({ data, analysisResults }: MergedDataGrid
       width: 100,
       valueFormatter: (params) => params.value ? params.value.toFixed(3) : '-',
       cellStyle: (params) => ({
-        backgroundColor: params.value ? '#f0f9ff' : '#fef2f2'
+        backgroundColor: params.value ? colors.match : colors.noMatch
       })
     },
     {
@@ -103,12 +113,12 @@ export default function MergedDataGrid({ data, analysisResults }: MergedDataGrid
         return `${params.value.toFixed(1)}s`;
       },
       cellStyle: (params) => {
-        if (params.value === undefined || params.value === null) return { backgroundColor: '#fef2f2' };
+        if (params.value === undefined || params.value === null) return { backgroundColor: colors.noMatch };
         const value = params.value;
         if (value >= 1 && value <= 5) {
-          return { backgroundColor: '#f0fdf4', color: '#166534' };
+          return { backgroundColor: '#00ff4c1a' };
         } else {
-          return { backgroundColor: '#fef3c7', color: '#92400e' };
+          return { backgroundColor: '#f200ff40' };
         }
       }
     },
@@ -130,46 +140,30 @@ export default function MergedDataGrid({ data, analysisResults }: MergedDataGrid
     flex: 1,
   };
 
+  const ar = {
+    "Speed Entries"       : analysisResults.totalSpeedEntries,
+    "Placement Entries"   : analysisResults.totalPlacementEntries,
+    "Matched"             : analysisResults.potentialMatches,
+    "Unmatched Speed"     : analysisResults.unmatchedSpeedEntries,
+    "Unmatched Placement" : analysisResults.unmatchedPlacementEntries,
+    "Avg Delay"           : analysisResults.averageDelay.toFixed(1),
+    "Delay Range"         : `${analysisResults.delayRange.min.toFixed(1)}s - ${analysisResults.delayRange.max.toFixed(1)}s`,
+    "Match Rate"          : ((analysisResults.potentialMatches / analysisResults.totalSpeedEntries) * 100).toFixed(1) + '%'
+  }
+
   return (
-    <div style={{ marginTop: '20px' }}>
-      <h3 style={{ marginBottom: '10px' }}>Merged Speed & Placement Data</h3>
+    <div>
 
       {analysisResults && (
-        <div style={{
-          backgroundColor: '#f8fafc',
-          padding: '16px',
-          borderRadius: '8px',
-          marginBottom: '16px',
-          border: '1px solid #e2e8f0'
-        }}>
-          <h4 style={{ margin: '0 0 12px 0', color: '#334155' }}>Analysis Summary</h4>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '12px', fontSize: '14px' }}>
-            <div>
-              <strong>Speed Entries:</strong> {analysisResults.totalSpeedEntries}
-            </div>
-            <div>
-              <strong>Placement Entries:</strong> {analysisResults.totalPlacementEntries}
-            </div>
-            <div style={{ color: '#22c55e' }}>
-              <strong>Matched:</strong> {analysisResults.potentialMatches}
-            </div>
-            <div style={{ color: '#ef4444' }}>
-              <strong>Unmatched Speed:</strong> {analysisResults.unmatchedSpeedEntries}
-            </div>
-            <div style={{ color: '#ef4444' }}>
-              <strong>Unmatched Placement:</strong> {analysisResults.unmatchedPlacementEntries}
-            </div>
-            <div>
-              <strong>Avg Delay:</strong> {analysisResults.averageDelay.toFixed(1)}s
-            </div>
-            <div>
-              <strong>Delay Range:</strong> {analysisResults.delayRange.min.toFixed(1)}s - {analysisResults.delayRange.max.toFixed(1)}s
-            </div>
-            <div>
-              <strong>Match Rate:</strong> {((analysisResults.potentialMatches / analysisResults.totalSpeedEntries) * 100).toFixed(1)}%
-            </div>
-          </div>
-        </div>
+        <Card className={styles.analysisCard}>
+          <Grid columns="4" rows="auto" width="auto" gap="3">
+            {Object.entries(ar).map(([key, value]) => (
+              <div key={key}>
+                <strong>{key}:</strong> {value}
+              </div>
+            ))}
+          </Grid>
+        </Card>
       )}
 
       <AgGridReact<MergedPitchData>

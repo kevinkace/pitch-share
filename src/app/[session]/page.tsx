@@ -4,7 +4,6 @@ import path from 'path';
 import Papa from 'papaparse';
 import { unstable_cache } from 'next/cache';
 
-import SessionDataGrid from '@/components/SessionDataGrid/SessionDataGrid';
 import PlacementDataGrid from '@/components/PlacementDataGrid/PlacementDataGrid';
 import MergedDataGrid from '@/components/MergedDataGrid/MergedDataGrid';
 import SessionStats from '@/components/SessionStats/SessionStats';
@@ -185,8 +184,6 @@ export default async function SessionPage({ params }: SessionPageProps) {
 
                         <SessionStats speeds={speeds} unit={unit} />
                     </Flex>
-
-                    <SessionDataGrid data={data} />
 
                     {mergedData && analysisResults ? (
                         <MergedDataGrid data={mergedData} analysisResults={analysisResults} />

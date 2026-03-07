@@ -1,6 +1,7 @@
 import { readFileSync } from 'fs';
 import path from 'path';
 import Papa from 'papaparse';
+import { unstable_cache } from 'next/cache';
 
 export interface PitchData {
   id: string;
@@ -12,9 +13,9 @@ export interface PitchData {
 }
 
 /**
- * Loads pitch placement data from CSV file
+ * Loads pitch placement data from CSV file (uncached)
  */
-export function loadPitchPlacementData(): PitchData[] {
+function loadPitchPlacementDataUncached(): PitchData[] {
   try {
     const csvPath = path.join(process.cwd(), 'src', 'lib', 'data', 'pitch_placement.csv');
     const csvData = readFileSync(csvPath, 'utf-8');
@@ -45,6 +46,18 @@ export function loadPitchPlacementData(): PitchData[] {
     return [];
   }
 }
+
+/**
+ * Cached version of loadPitchPlacementData that revalidates every 5 minutes
+ */
+export const loadPitchPlacementData = unstable_cache(
+  loadPitchPlacementDataUncached,
+  ['pitch-placement-data'],
+  {
+    revalidate: 300, // 5 minutes
+    tags: ['pitch-placement']
+  }
+);
 
 /**
  * Filter pitches by date range, useful for session-specific data

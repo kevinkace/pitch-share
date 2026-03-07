@@ -1,11 +1,25 @@
 "use client"
 
-import React, { useState } from 'react';
+import React from 'react';
 import PitchTrackerWithHistory from '@/components/PitchTracker/PitchTrackerWithHistory';
 import { useTodaysPitches } from '@/lib/hooks/usePitchData';
+import { isPitchPlacementEnabled } from '@/lib/featureFlags';
 
 export default function PitchPlacementDemo() {
   const { pitches, loading, error, refetch } = useTodaysPitches();
+
+  // Show not available message when feature is disabled
+  if (!isPitchPlacementEnabled()) {
+    return (
+      <div style={{ padding: '2rem', textAlign: 'center' }}>
+        <h1>Feature Not Available</h1>
+        <p style={{ color: '#666', marginTop: '1rem' }}>
+          The pitch placement feature is currently disabled.
+          Contact your administrator to enable this feature.
+        </p>
+      </div>
+    );
+  }
 
   const handleNewPitch = (pitchData: any) => {
     console.log('New pitch recorded:', pitchData);

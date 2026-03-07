@@ -3,6 +3,7 @@
 import React, { useState } from 'react'
 
 import style from './PitchTracker.module.css'
+import { isPitchPlacementEnabled } from '@/lib/featureFlags'
 
 type Pitch = {
     id: string
@@ -55,6 +56,12 @@ export default function PitchSVG({ onRecord, pitches = [], selectedPitchIds = []
     }
 
     const handleClick = async (e: React.MouseEvent<SVGSVGElement>) => {
+        if (!isPitchPlacementEnabled()) {
+            console.error('Pitch placement is disabled via feature flag');
+
+            return;
+        }
+
         const rect = (e.currentTarget as SVGSVGElement).getBoundingClientRect()
 
         const pxX = e.clientX - rect.left

@@ -8,6 +8,11 @@ const csvPath = path.join(process.cwd(), 'src', 'lib', 'data', 'pitch_placement.
 function ensureCsv() {
     if (!fs.existsSync(csvPath)) {
         const header = 'id,x,y,strike,ground,timestamp\n'
+
+        if (process.env.ENABLE_CREATE_CSV !== 'true') {
+            throw new Error('CSV creation is disabled via feature flag');
+        };
+
         fs.mkdirSync(path.dirname(csvPath), { recursive: true })
         fs.writeFileSync(csvPath, header, 'utf-8')
     }
@@ -15,7 +20,7 @@ function ensureCsv() {
 
 export async function GET() {
     try {
-        ensureCsv()
+        ensureCsv();
         const csv = fs.readFileSync(csvPath, 'utf-8')
         const lines = csv.trim().split('\n')
         const headers = lines[0].split(',')
@@ -39,7 +44,7 @@ export async function GET() {
 
 export async function POST(request: Request) {
     try {
-        ensureCsv()
+        ensureCsv();
         const body = await request.json()
         const id = body.id || randomUUID()
         const x = typeof body.x === 'number' ? body.x : Number(body.x || 0)
@@ -60,7 +65,7 @@ export async function POST(request: Request) {
 
 export async function DELETE(request: Request) {
     try {
-        ensureCsv()
+        ensureCsv();
         const body = await request.json()
         const idToRemove = body.id
         if (!idToRemove) return NextResponse.json({ error: 'missing id' }, { status: 400 })

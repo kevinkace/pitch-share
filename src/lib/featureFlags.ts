@@ -16,6 +16,16 @@ export const isPitchPlacementEnabled = (): boolean => {
   return process.env.NEXT_PUBLIC_ENABLE_PLACEMENT_CREATE === 'true';
 };
 
+export const isPitchDeleteEnabled = (): boolean => {
+  // Server-side check
+  if (typeof window === 'undefined') {
+    return process.env.ENABLE_PLACEMENT_DELETE === 'true';
+  }
+
+  // Client-side check
+  return process.env.NEXT_PUBLIC_ENABLE_PLACEMENT_DELETE === 'true';
+};
+
 /**
  * Environment information
  */

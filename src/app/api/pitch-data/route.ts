@@ -1,7 +1,9 @@
-import { NextResponse } from 'next/server'
-import fs from 'fs'
-import path from 'path'
-import { randomUUID } from 'crypto'
+import { NextResponse } from 'next/server';
+import fs from 'fs';
+import path from 'path';
+import { randomUUID } from 'crypto';
+
+import { isPitchDeleteEnabled } from "../../../lib/featureFlags.ts";
 
 const csvPath = path.join(process.cwd(), 'src', 'lib', 'data', 'pitch_placement.csv')
 
@@ -43,6 +45,10 @@ export async function GET() {
 }
 
 export async function POST(request: Request) {
+    if (!isPitchPlacementEnabled()) {
+        return NextResponse.json({ error: 'Pitch placement is disabled' }, { status: 403 });
+    }
+
     try {
         ensureCsv();
         const body = await request.json()
@@ -64,6 +70,10 @@ export async function POST(request: Request) {
 }
 
 export async function DELETE(request: Request) {
+    if (!isPitchDeleteEnabled()) {
+        return NextResponse.json({ error: 'Pitch delete is disabled' }, { status: 403 });
+    }
+
     try {
         ensureCsv();
         const body = await request.json()

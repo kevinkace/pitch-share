@@ -6,6 +6,7 @@ import { unstable_cache } from 'next/cache';
 
 import PlacementDataGrid from '@/components/PlacementDataGrid/PlacementDataGrid';
 import MergedDataGrid from '@/components/MergedDataGrid/MergedDataGrid';
+import SessionDataGrid from '@/components/SessionDataGrid/SessionDataGrid';
 import SessionStats from '@/components/SessionStats/SessionStats';
 import SessionSummary from '@/components/SessionSummary/SessionSummary';
 import SpeedGauge from '@/components/SpeedGauge/SpeedGauge';
@@ -149,6 +150,7 @@ export default async function SessionPage({ params }: SessionPageProps) {
     const date = data[0]?.Date || 'Unknown Date';
     const startTime = data[0]?.Time || 'Unknown Time';
 
+
     // Analyze and merge data if both speed and placement data are available
     const analysisResults = placementData.length > 0 && data.length > 0
         ? analyzeTimestampAlignment(data, placementData)
@@ -157,6 +159,14 @@ export default async function SessionPage({ params }: SessionPageProps) {
     const mergedData = placementData.length > 0 && data.length > 0
         ? mergeSpeedAndPlacementData(data, placementData)
         : null;
+
+    const strikes = mergedData?.filter(p => p.placementData?.strike) || [];
+
+    const fastestStrike = strikes.sort((a, b) => {
+        if (!a.sessionData || !b.sessionData) return 0;
+
+        return parseFloat(b.sessionData.Speed) - parseFloat(a.sessionData.Speed);
+    })[0]?.sessionData.Speed;
 
     return (
         <Container>
@@ -182,21 +192,26 @@ export default async function SessionPage({ params }: SessionPageProps) {
 
       </div>
 
-      {data.length > 0 ? (
-        <>
-          <SessionSummary
-            pitchCount={data.length}
-            topSpeed={fastestPitch}
-            avgSpeed={avgSpeed}
-            medSpeed={medSpeed}
-            unit={unit}
-          />
+            {data.length > 0 ? (
+                <>
+                    <SessionSummary
+                        pitchCount={data.length}
+                        topSpeed={fastestPitch}
+                        avgSpeed={avgSpeed}
+                        medSpeed={medSpeed}
+                        unit={unit}
+                        fastestStrike={fastestStrike}
+                    />
 
             <Flex className={style.gaugeStats} align="center">
                 <SpeedGauge speed={fastestPitch} speeds={speeds} unit={unit} />
 
-                <SessionStats speeds={speeds} unit={unit} />
-            </Flex>
+                        <SessionStats speeds={speeds} unit={unit} />
+                    </Flex>
+
+                    {!mergedData?.length && (
+                        <SessionDataGrid data={data} />
+                    )}
 
           {mergedData && analysisResults ? (
               <MergedDataGrid data={mergedData} analysisResults={analysisResults} />

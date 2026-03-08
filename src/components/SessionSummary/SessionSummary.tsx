@@ -1,10 +1,10 @@
 import styles from './SessionSummary.module.css';
 
 interface SessionSummaryProps {
-  pitchCount: number;
-  topSpeed: number;
-  avgSpeed: number;
-  medSpeed: number;
+  pitchCount: number | null;
+  topSpeed: number | null;
+  avgSpeed: number | null;
+  medSpeed: number | null;
   unit: string;
   fastestStrike: number | null;
 }

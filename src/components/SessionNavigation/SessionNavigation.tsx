@@ -3,21 +3,10 @@ import { Button, Flex } from '@radix-ui/themes';
 
 import styles from './SessionNavigation.module.css';
 
-interface SessionNavigationProps {
-  previousSession: string | null;
-  nextSession: string | null;
-  previousDate: string | null;
-  nextDate: string | null;
-  inline?: boolean;
-}
 
-export default function SessionNavigation({
-  previousSession,
-  nextSession,
-  previousDate,
-  nextDate,
-  inline,
-}: SessionNavigationProps) {
+export default function SessionNavigation({session, inline }: {session: string, inline?: boolean}) {
+  const { previousSession, nextSession, previousDate, nextDate } = {};
+
   return (
     <Flex className={inline ? styles.navigationInline : styles.navigation} justify="between" align="center">
         {previousSession && (

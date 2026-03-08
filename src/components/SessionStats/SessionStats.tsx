@@ -12,6 +12,10 @@ interface SessionStatsProps {
 }
 
 export default function SessionStats({ speeds, unit }: SessionStatsProps) {
+    if (!speeds || speeds.length === 0) {
+        return <p>No speed data available.</p>;
+    }
+
     const speedCounts: Record<number, number> = {};
 
     speeds.forEach(speed => {

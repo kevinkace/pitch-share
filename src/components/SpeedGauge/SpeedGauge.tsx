@@ -38,6 +38,8 @@ export default function SpeedGauge({ speed, speeds = [], unit }: SpeedGaugeProps
 
     return (
         <div className={styles.container}>
+            {rangeData.length ?
+            (<>
             <ResponsiveContainer width="100%" height="100%">
                 <PieChart>
                     <Pie
@@ -108,6 +110,7 @@ export default function SpeedGauge({ speed, speeds = [], unit }: SpeedGaugeProps
                     </div>
                 ))}
             </div>
+            </>) : <p>No speed data available.</p>}
 
         </div>
     );

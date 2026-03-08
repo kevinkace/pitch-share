@@ -15,13 +15,12 @@ type Pitch = {
 }
 
 type Props = {
-    onRecord: (row: any) => void
     pitches?: Pitch[]
     selectedPitchIds?: string[]
     onPitchClick?: (pitch: Pitch) => void
 }
 
-export default function PitchSVG({ onRecord, pitches = [], selectedPitchIds = [], onPitchClick }: Props) {
+export default function PitchSVG({ pitches = [], selectedPitchIds = [], onPitchClick }: Props) {
     const width = 7182
     const height = 7182
     const strikeW = 1419  // width from strike-zone-2.svg (4301-2882)
@@ -76,21 +75,7 @@ export default function PitchSVG({ onRecord, pitches = [], selectedPitchIds = []
         const isGround = (e.target as Element)?.id === 'ground'
         const isStrike = (e.target as Element)?.id === 'strike-zone'
 
-        const res = await fetch('/api/pitch-data', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-                x,
-                y,
-                strike: !!isStrike,
-                ground: !!isGround,
-                timestamp: new Date().toISOString()
-            }),
-        })
-
-        const row = await res.json()
-
-        onRecord(row)
+        // set data
     }
 
     return (

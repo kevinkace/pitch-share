@@ -1,9 +1,18 @@
+import { redirect } from 'next/navigation';
+
+import { isTrackerEnabled } from '@/lib/featureFlags';
+
 import Container from '@/components/Container/Container'
 import PitchTracker from '@/components/PitchTracker/PitchTracker'
 
 export const metadata = {
     title: 'Pitch Tracker',
 }
+
+if (!isTrackerEnabled()) {
+    redirect('/');
+}
+
 
 export default function Page() {
     return (

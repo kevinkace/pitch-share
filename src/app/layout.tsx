@@ -1,14 +1,29 @@
 import type { Metadata } from "next";
-import { Link, Theme } from "@radix-ui/themes";
+import { Theme } from "@radix-ui/themes";
+import { Bungee, Jost } from "next/font/google";
 import "@radix-ui/themes/styles.css";
 
-import { LogoSVG } from "@/components/Logo/Logo";
+import { AuthProvider } from "@/lib/hooks/useAuth";
+
 import Analytics from "@/components/Analytics/Analytics";
+import { HeaderWrapper } from "@/components/HeaderWrapper/HeaderWrapper";
 
 import "./globals.css";
 import style from "./layout.module.css";
-import { Button } from "@/components/Button/Button";
-import { isPitchPlacementEnabled } from "@/lib/featureFlags";
+
+const bungee = Bungee({
+    weight: "400",
+    subsets: ["latin"],
+    display: "swap",
+    variable: "--font-bungee",
+});
+
+const jost = Jost({
+    weight: ["400", "500", "600", "700"],
+    subsets: ["latin"],
+    display: "swap",
+    variable: "--font-jost",
+});
 
 export const metadata: Metadata = {
     title: "Pitch Share | Baseball Pitching Analysis",
@@ -32,28 +47,11 @@ export default function RootLayout({
             </head>
 
             <Theme appearance="dark" asChild>
-                <body className={style.body}>
-
-                    <header className={style.header}>
-                        <div>
-                            <Link href="/">
-                                <div className={style.logoContainer}>
-                                    <LogoSVG width={32} height={32} />
-                                    <h1>Pitch Share</h1>
-                                </div>
-                            </Link>
-                            <p>Baseball pitching session analysis and tracking</p>
-                        </div>
-
-                        {isPitchPlacementEnabled() && (
-                            <Button href="/pitch-tracker">
-                                Pitch Tracker
-                            </Button>
-                        )}
-                    </header>
-
-                    {children}
-
+                <body className={`${style.body} ${bungee.variable} ${jost.variable}`}>
+                    <AuthProvider>
+                        <HeaderWrapper />
+                        {children}
+                    </AuthProvider>
                 </body>
             </Theme>
         </html>

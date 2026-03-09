@@ -1,0 +1,28 @@
+.userNav {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.userEmail {
+  color: var(--gray-11);
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+
+.loading {
+  color: var(--gray-11);
+  font-size: 0.875rem;
+}
+
+@media (max-width: 768px) {
+  .userNav {
+    flex-direction: column;
+    gap: 0.5rem;
+    align-items: flex-end;
+  }
+
+  .userEmail {
+    font-size: 0.75rem;
+  }
+}

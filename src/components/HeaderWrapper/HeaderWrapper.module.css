@@ -1,0 +1,38 @@
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  gap: 3em;
+  width: 100%;
+  padding: 0.4em 2em;
+
+  line-height: 1;
+
+  background: #ffffff0b;
+
+  a {
+    color: var(--foreground);
+  }
+
+  h1 {
+    margin: 0;
+  }
+
+  p {
+    margin: 0 0 0.5em;
+  }
+}
+
+.headerActions {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.logoContainer {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+

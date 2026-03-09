@@ -1,0 +1,44 @@
+.wrapper {
+    width: 100%;
+
+
+    background: url("/textured-bg.jpg");
+    background-size: cover;
+    background-position: center;
+}
+
+.container {
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.card {
+    padding: 0;
+}
+
+.left,
+.right {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.left {
+    padding: 4em;
+}
+
+.right {
+    @media screen and (max-width: 1024px) {
+        display: none;
+    }
+
+    img {
+        display: block;
+        max-width: 100%;
+        height: auto;
+    }
+}

@@ -17,6 +17,9 @@ body {
 body {
   color: var(--foreground);
   background-color: var(--background);
+
+  --font-logo: var(--font-bungee), cursive;
+  font-family: var(--font-jost), sans-serif;
 }
 
 *,
@@ -38,4 +41,8 @@ h4,
 h5,
 h6 {
   margin-top: 0;
+}
+
+.font-logo {
+  font-family: var(--font-logo);
 }

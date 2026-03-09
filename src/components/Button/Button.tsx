@@ -1,20 +1,23 @@
 import Link from "next/link";
 
+import { Button as RadixButton } from "@radix-ui/themes";
+
 import style from "./Button.module.css";
 
-export function Button({ children, href, onclick }: { children: React.ReactNode, href?: string, onclick?: () => void }) {
+export function Button({ children, href, onClick }: { children: React.ReactNode, href?: string, onClick?: () => void }) {
     if (href) {
         return (
-            <Link href={href} className={style.button}
-                >
-                {children}
-            </Link>
-        )
+            <RadixButton asChild>
+                <Link href={href} className={style.button}>
+                    {children}
+                </Link>
+            </RadixButton>
+        );
     }
 
     return (
-        <button onClick={onclick} className={style.button}>
+        <RadixButton onClick={onClick} className={style.button}>
             {children}
-        </button>
+        </RadixButton>
     )
 }

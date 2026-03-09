@@ -43,6 +43,13 @@ h6 {
   margin-top: 0;
 }
 
+button {
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+}
+
 .font-logo {
   font-family: var(--font-logo);
 }

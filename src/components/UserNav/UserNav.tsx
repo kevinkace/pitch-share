@@ -1,36 +1,95 @@
-'use client'
+'use client';
 
-import { useAuth } from '@/lib/hooks/useAuth'
-import { Button } from '@/components/Button/Button'
-import styles from './UserNav.module.css'
+import { useState } from 'react';
+import Link from 'next/link';
+import { Separator, Card, Flex } from '@radix-ui/themes';
+import { PersonIcon, GearIcon, ExitIcon, MixIcon } from "@radix-ui/react-icons"
+
+import { useAuth } from '@/lib/hooks/useAuth';
+
+import { Button } from '@/components/Button/Button';
+import UserAvatar from '@/components/UserAvatar/UserAvatar';
+
+
+import styles from './UserNav.module.css';
 
 export function UserNav() {
-  const { user, loading, signOut } = useAuth()
+    const { user, loading, signOut } = useAuth()
+    const [showMenu, setShowMenu] = useState(false);
 
-  if (loading) {
+    if (loading) {
+        return (
+            <div className={styles.loading}>
+                Loading...
+            </div>
+        )
+    }
+
+    if (!user) {
+        return (
+            <Button href="/login">
+                Sign In
+            </Button>
+        )
+    }
+
+    const menuItems = [
+        {
+            label : "Profile",
+            href : "/profile",
+            icon : <PersonIcon />
+        },
+        {
+            label : "My sessions",
+            href : `/user/${user.name}/sessions`,
+            icon : <MixIcon />
+        },
+        {
+            label : "Settings",
+            href : "/settings",
+            icon : <GearIcon />
+        }
+    ];
+
     return (
-      <div className={styles.loading}>
-        Loading...
-      </div>
-    )
-  }
+        <div className={styles.userNav}>
+            <button onClick={() => setShowMenu(!showMenu)}>
+                <UserAvatar user={user} />
+            </button>
+            {showMenu && (
+                <Card className={styles.menu}>
+                    <Flex direction="column" gap="2">
+                        <Flex gap="3" align="center">
+                            <UserAvatar user={user} />
+                            <Flex direction="column" gap="1" className={styles.names}>
+                                <div className={styles.userName}>
+                                    {user.name || "user name"}
+                                </div>
+                                <div className={styles.fullName}>
+                                    {user.fullname || "Full Name"}
+                                </div>
+                            </Flex>
+                        </Flex>
+                        <Separator size="4"/>
 
-  if (!user) {
-    return (
-      <Button href="/login">
-        Sign In
-      </Button>
-    )
-  }
+                        {menuItems.map(( {label, href, icon} ) => (
+                            <Link href={href} key={label} className={styles.menuItem}>
+                                <span className={styles.menuItemIcon}>{icon}</span>
+                                {label}
+                            </Link>
+                        ))}
 
-  return (
-    <div className={styles.userNav}>
-      <span className={styles.userEmail}>
-        {user.email}
-      </span>
-      <Button onclick={signOut}>
-        Sign Out
-      </Button>
-    </div>
-  )
+                        <Button
+                            onClick={() => {
+                                setShowMenu(false);
+                                signOut();
+                            }
+                        }>
+                            <ExitIcon /> Sign Out
+                        </Button>
+                    </Flex>
+                </Card>
+            )}
+        </div>
+    )
 }

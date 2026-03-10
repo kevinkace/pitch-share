@@ -1,8 +1,4 @@
 .userNav {
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-
   position: relative;
 }
 
@@ -22,6 +18,7 @@
   top: 100%;
   right: 0;
   min-width: 16em;
+  z-index: 1000;
 
   white-space: nowrap;
 }

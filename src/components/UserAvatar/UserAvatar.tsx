@@ -1,8 +1,9 @@
 import { Avatar } from "@radix-ui/themes";
+import { User } from '@supabase/supabase-js';
 
-export default function UserAvatar({ user }: { user: { avatarUrl: string; email: string } }) {
+export default function UserAvatar({ user }: { user : User }) {
     return <Avatar
-        src={user.avatarUrl}
+        src={user.avatar_url}
         alt={user.email}
         fallback={user?.email?.[0] || "U"}
         radius="full"

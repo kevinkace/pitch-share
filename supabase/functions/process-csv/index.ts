@@ -91,7 +91,6 @@ Deno.serve(async (req) => {
 
     // Get user from JWT using anon key (for JWT validation)
     const authHeader = req.headers.get('Authorization');
-    console.log('Auth header received:', authHeader ? 'Present' : 'Missing');
 
     if (!authHeader) {
       return new Response(
@@ -108,7 +107,6 @@ Deno.serve(async (req) => {
     }
 
     const token = authHeader.replace('Bearer ', '');
-    console.log('Token extracted, length:', token.length);
 
     if (!token || token.trim() === '') {
       return new Response(
@@ -134,10 +132,8 @@ Deno.serve(async (req) => {
         },
       },
     });
-    console.log('Supabase client created successfully');
 
     // Validate the user token
-    console.log('Validating user token...');
     const { data: { user }, error: userError } = await supabase.auth.getUser();
 
     if (userError) {
@@ -159,8 +155,6 @@ Deno.serve(async (req) => {
         { status: 401, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
       );
     }
-
-    console.log('User validated successfully:', user.id);
 
     const { filePath, isPrivate = true }: ProcessCsvRequest = await req.json();
 

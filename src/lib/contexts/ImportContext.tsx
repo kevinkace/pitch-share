@@ -77,28 +77,29 @@ export function ImportProvider({ children }: { children: ReactNode }) {
 
       console.log('Using token, expires at:', new Date(activeSession.expires_at! * 1000).toISOString());
 
-      const response = await fetch(
-        'https://omtxkfjevtsjbymlzvni.supabase.co/functions/v1/process-csv',
-        {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${activeSession.access_token}`,
-          },
-          body: JSON.stringify({
-            filePath,
-            isPrivate
-          })
-        }
-      );
+      const apiUrl = `${process.env.NEXT_PUBLIC_SUPABASE_URL}/functions/v1/process-csv`;
+
+      const response = await fetch(apiUrl, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${activeSession.access_token}`,
+        },
+        body: JSON.stringify({
+          filePath,
+          isPrivate
+        })
+      });
+
+      // Read the response body once as text
+      const responseText = await response.text();
 
       if (!response.ok) {
-        const errorText = await response.text();
-        console.error('API Error Response:', errorText);
+        console.error('API Error Response:', responseText);
 
         // Try to parse the error as JSON for better error messages
         try {
-          const errorObj = JSON.parse(errorText);
+          const errorObj = JSON.parse(responseText);
           if (errorObj.error && errorObj.details) {
             throw new Error(`${errorObj.error}: ${errorObj.details}`);
           } else if (errorObj.error) {
@@ -106,13 +107,19 @@ export function ImportProvider({ children }: { children: ReactNode }) {
           }
         } catch (parseError) {
           // If not JSON or parsing failed, use the raw text
-          throw new Error(`Processing failed: ${errorText}`);
+          throw new Error(`Processing failed: ${responseText}`);
         }
       }
 
       setUploadProgress(90);
 
-      const result = await response.json();
+      // Parse the successful response
+      let result;
+      try {
+        result = JSON.parse(responseText);
+      } catch (parseError) {
+        throw new Error('Invalid response format from server');
+      }
 
       if (!result.success) {
         throw new Error(result.error || 'Processing failed');
@@ -122,14 +129,15 @@ export function ImportProvider({ children }: { children: ReactNode }) {
 
       // Success! Redirect to session page
       setTimeout(() => {
-        router.push(`/${result.sessionId}`);
+        router.push(`/users/${user.id}/sessions/${result.sessionId}`);
         setIsUploading(false);
         setUploadProgress(0);
       }, 500);
 
-    } catch (error) {
-      console.error('Error importing CSV:', error);
-      alert(`Import failed: ${error.message}`);
+    } catch (err) {
+      console.error('Error importing CSV:', err);
+
+      alert(`Import failed: ${err.message}`);
       setIsUploading(false);
       setUploadProgress(0);
     }

@@ -41,6 +41,59 @@ export type Database = {
           },
         ]
       }
+      sessions: {
+        Row: {
+          id: string
+          user_id: string
+          title: string
+          player_name: string
+          date: string | null
+          sport: string | null
+          activity: string | null
+          unit: string | null
+          pitch_count: number | null
+          raw_data: Json | null
+          created_at: string
+          updated_at: string
+        }
+        Insert: {
+          id: string
+          user_id: string
+          title: string
+          player_name: string
+          date?: string | null
+          sport?: string | null
+          activity?: string | null
+          unit?: string | null
+          pitch_count?: number | null
+          raw_data?: Json | null
+          created_at?: string
+          updated_at?: string
+        }
+        Update: {
+          id?: string
+          user_id?: string
+          title?: string
+          player_name?: string
+          date?: string | null
+          sport?: string | null
+          activity?: string | null
+          unit?: string | null
+          pitch_count?: number | null
+          raw_data?: Json | null
+          created_at?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "sessions_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
       [_ in never]: never

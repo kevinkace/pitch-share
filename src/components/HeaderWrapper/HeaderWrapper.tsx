@@ -9,11 +9,13 @@ import { UserNav } from "@/components/UserNav/UserNav";
 import Logotype from "@/components/Logotype/Logotype";
 
 import { isTrackerEnabled, isImportEnabled } from "@/lib/featureFlags";
+import { useImport } from "@/lib/contexts/ImportContext";
 
 import style from "./HeaderWrapper.module.css";
 
 export function HeaderWrapper() {
   const pathname = usePathname();
+  const { processAndImportFile, isUploading } = useImport();
 
   // Hide header on login page
   if (pathname === '/login') {
@@ -40,8 +42,24 @@ export function HeaderWrapper() {
         )}
 
         {isImportEnabled() && (
-          <Button href="/import">
-            Import
+          <Button
+            onClick={() => {
+              const input = document.createElement('input');
+              input.type = 'file';
+              input.accept = '.csv';
+              input.multiple = false; // Explicitly allow only 1 file
+              input.onchange = async (event: Event) => {
+                const target = event.target as HTMLInputElement;
+                if (target.files && target.files.length === 1) {
+                  const file = target.files[0];
+                  await processAndImportFile(file, true); // Private by default
+                }
+              };
+              input.click();
+            }}
+            disabled={isUploading}
+          >
+            {isUploading ? 'Importing...' : 'Import'}
           </Button>
         )}
 

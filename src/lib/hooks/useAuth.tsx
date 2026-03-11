@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import { User } from '@supabase/supabase-js';
 
 import { createClient } from '@/lib/supabase/client';
+import { useSessionRefresh } from './useSessionRefresh';
 
 type AuthContextType = {
   user: User | null
@@ -20,6 +21,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const router = useRouter()
   const supabase = createClient()
 
+  // Handle session refresh on tab visibility changes globally
+  useSessionRefresh()
+
   useEffect(() => {
     const getInitialSession = async () => {
       const { data: { session } } = await supabase.auth.getSession()
@@ -34,8 +38,14 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         setUser(session?.user ?? null)
         setLoading(false)
 
+        // Only redirect on explicit sign in/out events, not on session refresh
         if (event === 'SIGNED_IN') {
-          router.push('/')
+          // Check if this is a real sign-in (from login page) or just session refresh
+          // Only redirect if we're currently on login or auth pages
+          const currentPath = window.location.pathname
+          if (currentPath.startsWith('/login') || currentPath.startsWith('/auth')) {
+            router.push('/')
+          }
         }
 
         if (event === 'SIGNED_OUT') {

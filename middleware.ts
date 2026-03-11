@@ -31,9 +31,36 @@ export async function middleware(request: NextRequest) {
   // supabase.auth.getUser(). A simple mistake could make it very hard to debug
   // issues with users being randomly logged out.
 
-  const {
+  let {
     data: { user },
   } = await supabase.auth.getUser()
+
+  // If no user found, attempt to refresh the session before redirecting
+  if (!user) {
+    try {
+      const { data: { session }, error } = await supabase.auth.getSession()
+
+      if (session && session.expires_at) {
+        const now = Math.floor(Date.now() / 1000)
+        const timeUntilExpiry = session.expires_at - now
+
+        // If token is expired or expires soon, try to refresh
+        if (timeUntilExpiry <= 0) {
+          const { data: refreshData, error: refreshError } = await supabase.auth.refreshSession()
+
+          if (!refreshError && refreshData.session && refreshData.user) {
+            user = refreshData.user
+          }
+        } else {
+          // Session is still valid, user should be available
+          user = session.user
+        }
+      }
+    } catch (refreshError) {
+      // Refresh failed, user will remain null and redirect will happen
+      console.error('Session refresh failed in middleware:', refreshError)
+    }
+  }
 
   if (
     !user &&

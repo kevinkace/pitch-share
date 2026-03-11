@@ -53,11 +53,24 @@ export default function SessionPage({ params }: SessionPageProps) {
             const supabase = createClient();
 
             // Get current user to check permissions
-            const { data: { user } } = await supabase.auth.getUser();
+            let { data: { user } } = await supabase.auth.getUser();
 
+            // If no user, try refreshing the session first
             if (!user) {
-                notFound();
-                return;
+                try {
+                    const { data: refreshData, error: refreshError } = await supabase.auth.refreshSession();
+
+                    if (refreshError || !refreshData.session) {
+                        notFound();
+                        return;
+                    }
+
+                    user = refreshData.user;
+                } catch (error) {
+                    console.error('Session refresh failed:', error);
+                    notFound();
+                    return;
+                }
             }
 
             // Fetch session data

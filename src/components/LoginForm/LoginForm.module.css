@@ -1,0 +1,31 @@
+.sent,
+.unsent {
+    display: grid;
+    grid-template-areas: "content";
+}
+
+.sent {
+    & .form {
+        opacity: 0;
+        pointer-events: none;
+    }
+
+    & .msg {
+        opacity: 1;
+    }
+}
+
+.form {
+    transition: opacity 0.3s;
+    grid-area: content;
+}
+
+.msg {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: opacity 0.3s;
+    grid-area: content;
+    opacity: 0;
+    pointer-events: none;
+}

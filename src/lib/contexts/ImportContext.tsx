@@ -2,8 +2,10 @@
 
 import React, { createContext, useContext, useState, ReactNode } from 'react';
 import { useRouter } from 'next/navigation';
+
 import { createClient } from '@/lib/supabase/client';
-import { useAuth } from '@/lib/hooks/useAuth';
+
+import { useAuth } from '@/lib/contexts/useAuth';
 
 interface ImportContextType {
   isUploading: boolean;

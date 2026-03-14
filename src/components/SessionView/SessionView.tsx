@@ -35,8 +35,6 @@ export default function SessionView({
     loading,
     error,
     sessionId,
-    user,
-    isOwner,
     sessionMeta,
     pitchSpeeds
   } = useSession();
@@ -92,7 +90,6 @@ export default function SessionView({
   return (
     <Container>
       <div className={style.topBar}>
-        <SessionOwnershipBadge />
         <h1 className={style.header}>
           {sessionMeta.player}
         </h1>
@@ -104,6 +101,9 @@ export default function SessionView({
         </div>
 
         <SessionNavigation session={sessionId} inline={true} />
+
+        <SessionOwnershipBadge />
+
       </div>
 
       {pitches && pitches.length > 0 ? (

@@ -9,8 +9,9 @@ import { UserNav } from "@/components/UserNav/UserNav";
 import Logotype from "@/components/Logotype/Logotype";
 
 import { isTrackerEnabled, isImportEnabled } from "@/lib/featureFlags";
+
 import { useImport } from "@/lib/contexts/ImportContext";
-import { useAuth } from '@/lib/hooks/useAuth';
+import { useAuth } from '@/lib/contexts/useAuth';
 
 import style from "./HeaderWrapper.module.css";
 

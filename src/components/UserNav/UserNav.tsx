@@ -6,7 +6,7 @@ import { Separator, Card, Flex } from '@radix-ui/themes';
 import { PersonIcon, GearIcon, ExitIcon, MixIcon } from "@radix-ui/react-icons"
 import { motion, AnimatePresence } from "framer-motion";
 
-import { useAuth } from '@/lib/hooks/useAuth';
+import { useAuth } from '@/lib/contexts/useAuth';
 
 import { Button } from '@/components/Button/Button';
 import UserAvatar from '@/components/UserAvatar/UserAvatar';

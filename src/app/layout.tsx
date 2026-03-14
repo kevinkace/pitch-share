@@ -3,7 +3,7 @@ import { Theme } from "@radix-ui/themes";
 import { Bungee, Jost } from "next/font/google";
 import "@radix-ui/themes/styles.css";
 
-import { AuthProvider } from "@/lib/hooks/useAuth";
+import { AuthProvider } from "@/lib/contexts/useAuth";
 import { ImportProvider } from "@/lib/contexts/ImportContext";
 
 import Analytics from "@/components/Analytics/Analytics";

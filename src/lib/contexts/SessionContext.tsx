@@ -43,6 +43,7 @@ interface SessionContextType {
   pitchSpeeds: number[];
   medianSpeed: number;
   togglePrivacy: () => Promise<void>;
+  deletePitch: (pitchId: string) => Promise<void>;
   sessionMeta: {
     player: string;
     date: string;
@@ -208,6 +209,40 @@ export function SessionProvider({ children, sessionId, userId, requireAuth = fal
     }
   };
 
+  // Function to delete a pitch
+  const deletePitch = async (pitchId: string): Promise<void> => {
+    if (!isOwner) {
+      throw new Error('You can only delete pitches from your own sessions.');
+    }
+
+    try {
+      const supabase = createClient();
+
+      const { error } = await supabase
+        .from('pitches')
+        .delete()
+        .eq('id', pitchId)
+        .eq('session_id', sessionId); // Extra safety check
+
+      if (error) {
+        throw new Error(`Failed to delete pitch: ${error.message}`);
+      }
+
+      // Update local state by removing the deleted pitch
+      setPitches(prevPitches => prevPitches.filter(pitch => pitch.id !== pitchId));
+
+      // Update session data pitch count if it exists
+      if (sessionData?.pitch_count) {
+        setSessionData(prevData =>
+          prevData ? { ...prevData, pitch_count: prevData.pitch_count! - 1 } : null
+        );
+      }
+    } catch (error) {
+      console.error('Error deleting pitch:', error);
+      throw error;
+    }
+  };
+
   // Calculate session duration (placeholder - you might want to calculate from first/last pitch)
   const duration = pitches?.length ? Math.round(pitches.length * 1.2) : 0;
 
@@ -237,6 +272,7 @@ export function SessionProvider({ children, sessionId, userId, requireAuth = fal
     pitchSpeeds,
     medianSpeed,
     togglePrivacy,
+    deletePitch,
     sessionMeta,
   };
 

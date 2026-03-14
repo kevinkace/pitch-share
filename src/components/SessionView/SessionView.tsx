@@ -1,9 +1,11 @@
 'use client';
 
+import { useState } from 'react';
 import { Flex } from '@radix-ui/themes';
 import { AgGridReact } from 'ag-grid-react';
 import type { ColDef } from 'ag-grid-community';
 import { ModuleRegistry, AllCommunityModule } from 'ag-grid-community';
+import { TrashIcon } from '@radix-ui/react-icons';
 
 import 'ag-grid-community/styles/ag-theme-alpine.css';
 
@@ -34,10 +36,14 @@ export default function SessionView({
     pitches,
     loading,
     error,
-    sessionId,
     sessionMeta,
-    pitchSpeeds
+    pitchSpeeds,
+    sessionId,
+    isOwner,
+    deletePitch
   } = useSession();
+
+  const [deletingPitchId, setDeletingPitchId] = useState<string | null>(null);
 
   if (loading) {
     return (
@@ -54,6 +60,25 @@ export default function SessionView({
       </Container>
     );
   }
+
+  // Handler to delete a pitch with confirmation
+  const handleDeletePitch = async (pitchId: string) => {
+    const confirmed = window.confirm('Are you sure you want to delete this pitch? This action cannot be undone.');
+    if (!confirmed) {
+      return;
+    }
+
+    setDeletingPitchId(pitchId);
+
+    try {
+      await deletePitch(pitchId);
+    } catch (err) {
+      console.error('Error deleting pitch:', err);
+      alert(err instanceof Error ? err.message : 'Failed to delete pitch. Please try again.');
+    } finally {
+      setDeletingPitchId(null);
+    }
+  };
 
   // Column definitions for the data grid
   const columnDefs: ColDef[] = [
@@ -78,7 +103,41 @@ export default function SessionView({
     },
     { field: 'pitch_type', headerName: 'Type', width: 120 },
     { field: 'pitch_zone', headerName: 'Zone', width: 120 },
-    { field: 'pitch_view', headerName: 'View', width: 120 }
+    { field: 'pitch_view', headerName: 'View', width: 120 },
+    // Conditionally add actions column for session owners
+    ...(isOwner ? [{
+      field: 'actions',
+      headerName: 'Actions',
+      width: 100,
+      sortable: false,
+      filter: false,
+      resizable: false,
+      cellRenderer: (params: { data: { id: string } }) => {
+        const isDeleting = deletingPitchId === params.data.id;
+        return (
+          <div style={{ display: 'flex', alignItems: 'center', height: '100%' }}>
+            <button
+              onClick={() => handleDeletePitch(params.data.id)}
+              disabled={isDeleting}
+              style={{
+                background: 'none',
+                border: 'none',
+                cursor: isDeleting ? 'not-allowed' : 'pointer',
+                padding: '4px',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                color: isDeleting ? '#999' : '#ef4444',
+                opacity: isDeleting ? 0.5 : 1
+              }}
+              title="Delete pitch"
+            >
+              <TrashIcon width="16" height="16" />
+            </button>
+          </div>
+        );
+      }
+    }] : [])
   ];
 
   const defaultColDef: ColDef = {

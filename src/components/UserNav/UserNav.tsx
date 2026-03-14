@@ -42,7 +42,7 @@ export function UserNav() {
         },
         {
             label : "My sessions",
-            href : `/user/${user.name}/sessions`,
+            href : "/profile",
             icon : <MixIcon />
         },
         {

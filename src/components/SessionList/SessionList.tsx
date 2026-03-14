@@ -8,23 +8,25 @@ import styles from './SessionList.module.css';
 export default async function SessionList() {
     const supabase = await createClient();
 
-    // Get the current user to show their sessions
+    // Get the current user
     const { data: { user } } = await supabase.auth.getUser();
 
-    if (!user) {
-        return (
-            <div className={styles.sessionsContainer}>
-                <p>Please log in to view your sessions.</p>
-            </div>
-        );
-    }
-
-    // Fetch user's sessions from the database
-    const { data: sessions, error } = await supabase
+    // Fetch sessions based on authentication status
+    let query = supabase
         .from('sessions')
         .select('*')
-        .eq('user_id', user.id)
-        .order('created_at', { ascending: false });
+        .order('created_at', { ascending: false })
+        .limit(20);
+
+    if (user) {
+        // If logged in, show user's own sessions (private and public)
+        query = query.eq('user_id', user.id);
+    } else {
+        // If not logged in, show only public sessions
+        query = query.eq('is_private', false);
+    }
+
+    const { data: sessions, error } = await query;
 
     if (error) {
         console.error('Error fetching sessions:', error);
@@ -37,8 +39,13 @@ export default async function SessionList() {
 
     return (
         <div className={styles.sessionsContainer}>
+            {!user && (
+                <div style={{ marginBottom: '1rem', padding: '0.5rem', background: 'rgba(255,255,255,0.1)', borderRadius: '6px' }}>
+                    <p>Viewing public sessions. <Link href="/login" style={{ textDecoration: 'underline' }}>Log in</Link> to see your own sessions.</p>
+                </div>
+            )}
             {sessions.length === 0 ? (
-                <p>No sessions found.</p>
+                <p>{user ? 'No sessions found.' : 'No public sessions available.'}</p>
             ) : (
                 <Flex wrap="wrap" gap="3">
                     {sessions.map((session) => (
@@ -49,7 +56,7 @@ export default async function SessionList() {
                             <Link
                                 id={session.id}
                                 key={session.id}
-                                href={`/users/${session.user_id}/sessions/${session.id}`}
+                                href={user ? `/profile/sessions/${session.id}` : `/users/${session.user_id}/sessions/${session.id}`}
                             >
                                 <div className={styles.sessionHeader}>
                                     <h3>{session.player_name}</h3>

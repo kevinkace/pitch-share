@@ -5,31 +5,28 @@ import Container from '@/components/Container/Container';
 import SessionView from '@/components/SessionView/SessionView';
 import { SessionProvider } from '@/lib/contexts/SessionContext';
 
-interface SessionPageProps {
+interface ProfileSessionPageProps {
   params: Promise<{
-    userId: string;
     sessionId: string;
   }>;
 }
 
-function SessionContent() {
-  return <SessionView showOwnershipBadge="public" />;
+function ProfileSessionContent() {
+  return <SessionView showOwnershipBadge="profile" />;
 }
 
-export default function SessionPage({ params }: SessionPageProps) {
-  const [userId, setUserId] = useState<string>('');
+export default function ProfileSessionPage({ params }: ProfileSessionPageProps) {
   const [sessionId, setSessionId] = useState<string>('');
 
   useEffect(() => {
     async function loadParams() {
       const resolvedParams = await params;
-      setUserId(resolvedParams.userId);
       setSessionId(resolvedParams.sessionId);
     }
     loadParams();
   }, [params]);
 
-  if (!userId || !sessionId) {
+  if (!sessionId) {
     return (
       <Container>
         <p>Loading...</p>
@@ -38,8 +35,8 @@ export default function SessionPage({ params }: SessionPageProps) {
   }
 
   return (
-    <SessionProvider sessionId={sessionId} userId={userId} requireAuth={false}>
-      <SessionContent />
+    <SessionProvider sessionId={sessionId} requireAuth={true}>
+      <ProfileSessionContent />
     </SessionProvider>
   );
 }

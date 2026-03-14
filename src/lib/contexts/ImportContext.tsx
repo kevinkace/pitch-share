@@ -127,9 +127,9 @@ export function ImportProvider({ children }: { children: ReactNode }) {
 
       setUploadProgress(100);
 
-      // Success! Redirect to session page
+      // Success! Redirect to user's profile session page
       setTimeout(() => {
-        router.push(`/users/${user.id}/sessions/${result.sessionId}`);
+        router.push(`/profile/sessions/${result.sessionId}`);
         setIsUploading(false);
         setUploadProgress(0);
       }, 500);

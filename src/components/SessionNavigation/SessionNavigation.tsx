@@ -11,7 +11,7 @@ export default function SessionNavigation({session, inline }: {session: string, 
     <Flex className={inline ? styles.navigationInline : styles.navigation} justify="between" align="center">
         {previousSession && (
           <Button asChild variant="soft" size="3">
-            <Link href={`/${previousSession}`} className={styles.navButton}>
+            <Link href={`/profile/sessions/${previousSession}`} className={styles.navButton}>
               <div className={styles.buttonContent}>
                 <div>Previous Session</div>
                 {previousDate && (
@@ -23,7 +23,7 @@ export default function SessionNavigation({session, inline }: {session: string, 
         )}
         {nextSession && (
           <Button asChild variant="soft" size="3">
-            <Link href={`/${nextSession}`} className={styles.navButton}>
+            <Link href={`/profile/sessions/${nextSession}`} className={styles.navButton}>
               <div className={styles.buttonContent}>
                 <div>Next Session</div>
                 {nextDate && (

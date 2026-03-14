@@ -6,6 +6,7 @@ import { useRouter } from 'next/navigation';
 import { createClient } from '@/lib/supabase/client';
 
 import { useAuth } from '@/lib/contexts/useAuth';
+import { DuplicateSessionDialog } from '@/components/DuplicateSessionDialog/DuplicateSessionDialog';
 
 interface ImportContextType {
     isUploading: boolean;
@@ -20,6 +21,13 @@ export function ImportProvider({ children }: { children: ReactNode }) {
     const { user } = useAuth();
     const [isUploading, setIsUploading] = useState(false);
     const [uploadProgress, setUploadProgress] = useState(0);
+    const [showDuplicateDialog, setShowDuplicateDialog] = useState(false);
+    const [duplicateSessionData, setDuplicateSessionData] = useState<{
+        filename: string;
+        session: any;
+        file: File;
+        isPrivate: boolean;
+    } | null>(null);
 
     // Function to check for existing sessions with same CSV filename
     const checkForDuplicateSession = async (filename: string, userId: string) => {
@@ -63,26 +71,47 @@ export function ImportProvider({ children }: { children: ReactNode }) {
 
             if (duplicateSessions.length > 0) {
                 const existingSession = duplicateSessions[0];
-                const sessionDate = existingSession.date || 'Unknown Date';
-                const playerName = existingSession.player_name || 'Unknown Player';
-
-                const message = `You already have a session with file "${file.name}"\n\nPlayer: ${playerName}\nDate: ${sessionDate}\n\nWould you like to:\n• OK - View existing session\n• Cancel - Import anyway`;
-
-                const viewExisting = confirm(message);
-
-                if (viewExisting) {
-                    // Navigate to existing session
-                    router.push(`/profile/sessions/${existingSession.id}`);
-
-                    return;
-                }
-                // If user chooses Cancel, continue with import
+                
+                // Show dialog instead of confirm
+                setDuplicateSessionData({
+                    filename: file.name,
+                    session: existingSession,
+                    file,
+                    isPrivate
+                });
+                setShowDuplicateDialog(true);
+                return;
             }
         } catch (error) {
             console.error('Error checking for duplicates:', error);
             // Continue with import if check fails
         }
 
+        // If no duplicates, continue with import
+        continueWithImport(file, isPrivate);
+    };
+
+    const handleViewExisting = () => {
+        if (duplicateSessionData) {
+            router.push(`/profile/sessions/${duplicateSessionData.session.id}`);
+            setShowDuplicateDialog(false);
+            setDuplicateSessionData(null);
+        }
+    };
+
+    const handleImportAnyway = () => {
+        if (duplicateSessionData) {
+            setShowDuplicateDialog(false);
+            // Continue with the import by calling processAndImportFile with the stored data
+            const { file, isPrivate } = duplicateSessionData;
+            setDuplicateSessionData(null);
+            
+            // Call the import logic directly without duplicate check
+            continueWithImport(file, isPrivate);
+        }
+    };
+
+    const continueWithImport = async (file: File, isPrivate: boolean = true) => {
         setIsUploading(true);
         setUploadProgress(0);
 
@@ -91,7 +120,7 @@ export function ImportProvider({ children }: { children: ReactNode }) {
 
             // Generate unique file path
             const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
-            const filePath = `${user.id}/${timestamp}-${file.name}`;
+            const filePath = `${user!.id}/${timestamp}-${file.name}`;
 
             setUploadProgress(25);
 
@@ -197,7 +226,7 @@ export function ImportProvider({ children }: { children: ReactNode }) {
         } catch (err) {
             console.error('Error importing CSV:', err);
 
-            alert(`Import failed: ${err.message}`);
+            alert(`Import failed: ${(err as Error).message}`);
             setIsUploading(false);
             setUploadProgress(0);
         }
@@ -210,6 +239,16 @@ export function ImportProvider({ children }: { children: ReactNode }) {
             processAndImportFile
         }}>
             {children}
+            
+            {duplicateSessionData && (
+                <DuplicateSessionDialog
+                    open={showDuplicateDialog}
+                    onViewExisting={handleViewExisting}
+                    onImportAnyway={handleImportAnyway}
+                    filename={duplicateSessionData.filename}
+                    existingSession={duplicateSessionData.session}
+                />
+            )}
         </ImportContext.Provider>
     );
 }

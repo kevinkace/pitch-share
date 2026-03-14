@@ -83,7 +83,6 @@ export default function SessionView({
   // Column definitions for the data grid
   const columnDefs: ColDef[] = [
     { field: 'count', headerName: '#', type: 'numericColumn', width: 80, flex: 0 },
-    { field: 'date', minWidth: 120, flex: 1 },
     { field: 'time', minWidth: 100, flex: 1 },
     {
       field: 'speed',
@@ -194,15 +193,14 @@ export default function SessionView({
           {/* Pitch Data Grid */}
           <div className={style.dataGridSection}>
             <h2>All Pitches</h2>
-            <div className="ag-theme-alpine-dark" style={{ height: '500px', width: '100%' }}>
+            <div className="ag-theme-alpine-dark" style={{ width: '100%' }}>
               <AgGridReact
                 rowData={pitches}
                 columnDefs={columnDefs}
                 defaultColDef={defaultColDef}
                 animateRows={true}
                 rowSelection="multiple"
-                pagination={true}
-                paginationPageSize={20}
+                domLayout="autoHeight"
               />
             </div>
           </div>

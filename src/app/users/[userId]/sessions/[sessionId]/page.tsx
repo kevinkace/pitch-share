@@ -13,7 +13,7 @@ interface SessionPageProps {
 }
 
 function SessionContent() {
-  return <SessionView showOwnershipBadge="public" />;
+  return <SessionView />;
 }
 
 export default function SessionPage({ params }: SessionPageProps) {

@@ -42,6 +42,7 @@ interface SessionContextType {
   isOwner: boolean;
   pitchSpeeds: number[];
   medianSpeed: number;
+  togglePrivacy: () => Promise<void>;
   sessionMeta: {
     player: string;
     date: string;
@@ -178,6 +179,35 @@ export function SessionProvider({ children, sessionId, userId, requireAuth = fal
   const medianSpeed = pitchSpeeds.length > 0 ? calculateMedian(pitchSpeeds) : 0;
   const isOwner = user ? sessionData?.user_id === user.id : false;
 
+  // Function to toggle session privacy
+  const togglePrivacy = async (): Promise<void> => {
+    if (!isOwner || !sessionData) {
+      throw new Error('Only session owners can change privacy settings');
+    }
+
+    try {
+      const supabase = createClient();
+      const newPrivacyState = !sessionData.is_private;
+
+      const { error } = await supabase
+        .from('sessions')
+        .update({ is_private: newPrivacyState })
+        .eq('id', sessionId);
+
+      if (error) {
+        throw new Error(`Failed to update session privacy: ${error.message}`);
+      }
+
+      // Update local state
+      setSessionData(prevData =>
+        prevData ? { ...prevData, is_private: newPrivacyState } : null
+      );
+    } catch (error) {
+      console.error('Error toggling session privacy:', error);
+      throw error;
+    }
+  };
+
   // Calculate session duration (placeholder - you might want to calculate from first/last pitch)
   const duration = pitches?.length ? Math.round(pitches.length * 1.2) : 0;
 
@@ -206,6 +236,7 @@ export function SessionProvider({ children, sessionId, userId, requireAuth = fal
     isOwner,
     pitchSpeeds,
     medianSpeed,
+    togglePrivacy,
     sessionMeta,
   };
 

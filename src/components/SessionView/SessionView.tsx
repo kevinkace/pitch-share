@@ -13,6 +13,7 @@ import SessionNavigation from '@/components/SessionNavigation/SessionNavigation'
 import Container from '@/components/Container/Container';
 import SpeedGauge from '@/components/SpeedGauge/SpeedGauge';
 import SpeedColorIndicator from '@/components/SpeedColorIndicator/SpeedColorIndicator';
+import SessionOwnershipBadge from '@/components/SessionOwnershipBadge/SessionOwnershipBadge';
 import { useSession } from '@/lib/contexts/SessionContext';
 
 import { getSpeedColor } from '@/lib/speedRanges';
@@ -22,12 +23,10 @@ import style from './SessionView.module.css';
 ModuleRegistry.registerModules([AllCommunityModule]);
 
 interface SessionViewProps {
-  showOwnershipBadge?: 'profile' | 'public' | 'none'; // Controls what ownership badge to show
   emptyMessage?: string; // Custom message when no pitch data
 }
 
 export default function SessionView({
-  showOwnershipBadge = 'public',
   emptyMessage = 'No pitch data found for this session.'
 }: SessionViewProps) {
   const {
@@ -90,38 +89,10 @@ export default function SessionView({
     resizable: true,
   };
 
-  const renderOwnershipBadge = () => {
-    if (showOwnershipBadge === 'none') return null;
-
-    return (
-      <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.5rem' }}>
-        {showOwnershipBadge === 'profile' && (
-          <span style={{ opacity: 0.7, fontSize: '0.9rem' }}>Your Session</span>
-        )}
-        {showOwnershipBadge === 'public' && isOwner && (
-          <span style={{ opacity: 0.7, fontSize: '0.9rem' }}>Your Session</span>
-        )}
-        {showOwnershipBadge === 'public' && !user && (
-          <span style={{ opacity: 0.7, fontSize: '0.9rem' }}>Public Session</span>
-        )}
-        {sessionData.is_private && (
-          <span style={{
-            background: 'rgba(255,255,255,0.1)',
-            padding: '0.25rem 0.5rem',
-            borderRadius: '4px',
-            fontSize: '0.8rem'
-          }}>
-            Private
-          </span>
-        )}
-      </div>
-    );
-  };
-
   return (
     <Container>
       <div className={style.topBar}>
-        {renderOwnershipBadge()}
+        <SessionOwnershipBadge />
         <h1 className={style.header}>
           {sessionMeta.player}
         </h1>

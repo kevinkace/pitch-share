@@ -12,7 +12,7 @@ interface ProfileSessionPageProps {
 }
 
 function ProfileSessionContent() {
-  return <SessionView showOwnershipBadge="profile" />;
+  return <SessionView />;
 }
 
 export default function ProfileSessionPage({ params }: ProfileSessionPageProps) {

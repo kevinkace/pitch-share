@@ -5,11 +5,11 @@ export interface SpeedRange {
 }
 
 export const SPEED_RANGES: SpeedRange[] = [
-    { min: 0, max: 30, color: '#666' },      // gray
-    { min: 30, max: 40, color: '#FFEB3B' },  // yellow
-    { min: 40, max: 45, color: '#FF5722' },  // orange
-    { min: 45, max: 50, color: '#E91E63' },  // red
-    { min: 50, max: 100, color: '#673AB7' }, // purple
+    { min: 0, max: 20, color: '#666' },      // gray
+    { min: 20, max: 40, color: '#FFEB3B' },  // yellow
+    { min: 40, max: 60, color: '#FF5722' },  // orange
+    { min: 60, max: 80, color: '#E91E63' },  // red
+    { min: 80, max: 100, color: '#673AB7' }, // purple
 ];
 
 /**

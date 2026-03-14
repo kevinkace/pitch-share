@@ -14,27 +14,29 @@ interface SpeedGaugeProps {
 }
 
 export default function SpeedGauge({ speed, speeds = [], unit }: SpeedGaugeProps) {
-    // Count pitches in each range
+    // Create fixed range segments from 0-100
     const rangeData = SPEED_RANGES.map(range => {
-        const count = speeds.filter(s => s >= range.min && s < range.max).length;
-
+        const rangeSize = range.max - range.min;
         return {
             name: `${range.min}-${range.max} ${unit}`,
-            value: count > 0 ? count : 0.1, // Minimum value to show empty ranges
+            value: rangeSize, // Fixed size based on range span
             fill: range.color,
-            isEmpty: count === 0
+            isEmpty: false
         };
     });
 
     // Calculate needle angle (180° = 0 MPH at 9 o'clock, 0° = 100 MPH at 3 o'clock)
+    // For a half-circle from 180° to 0°, we need to map 0-100 to this range
     const needleAngle = 180 - (speed / 100) * 180;
-    const needleLength = 75;
+
+    const needleLength = 55;
     const centerX = 150; // 50% of 300px width
     const centerY = 130; // 90% of 200px height
 
     // Calculate needle tip coordinates
-    const needleX = centerX + needleLength * Math.cos((needleAngle - 90) * Math.PI / 180);
-    const needleY = centerY + needleLength * Math.sin((needleAngle - 90) * Math.PI / 180);
+    // needleAngle is already in the correct coordinate system (180° = left, 0° = right)
+    const needleX = centerX + needleLength * Math.cos(needleAngle * Math.PI / 180);
+    const needleY = centerY - needleLength * Math.sin(needleAngle * Math.PI / 180);
 
     return (
         <div className={styles.container}>

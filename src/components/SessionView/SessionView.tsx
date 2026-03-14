@@ -84,7 +84,24 @@ export default function SessionView({
   // Column definitions for the data grid
   const columnDefs: ColDef[] = [
     { field: 'count', headerName: '#', type: 'numericColumn', width: 80, flex: 0 },
-    { field: 'time', minWidth: 100, flex: 1 },
+    {
+      field: 'time',
+      minWidth: 100,
+      flex: 1,
+      cellRenderer: (params: { value: string }) => {
+        if (!params.value) return '';
+        // Format time as 12-hour format without seconds
+        const time = new Date(`2000-01-01 ${params.value}`);
+        if (isNaN(time.getTime())) {
+          return params.value; // Return original if parsing fails
+        }
+        return time.toLocaleTimeString('en-US', {
+          hour: 'numeric',
+          minute: '2-digit',
+          hour12: true
+        });
+      }
+    },
     {
       field: 'speed',
       type: 'numericColumn',
@@ -163,8 +180,8 @@ export default function SessionView({
               </Flex>
 
               <div className={style.date}>
-                <div>{sessionMeta.date}</div>
-                <div>{sessionMeta.startTime}</div>
+                <div>{sessionMeta.date}</div> &middot;
+                <div>{sessionMeta.startTime}</div> &middot;
                 <div>{sessionMeta.duration} min</div>
               </div>
             </div>

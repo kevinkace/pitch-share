@@ -248,8 +248,8 @@ export function SessionProvider({ children, sessionId, userId, requireAuth = fal
 
   const sessionMeta = {
     player: sessionData?.player_name || 'Unknown Player',
-    date: sessionData?.date ? new Date(sessionData.date).toLocaleDateString() : 'Unknown Date',
-    startTime: pitches?.[0]?.time || 'Unknown Start Time',
+    date: sessionData?.date ? formatDate(new Date(sessionData.date)) : 'Unknown Date',
+    startTime: pitches?.[0]?.time ? formatTime(pitches[0].time) : 'Unknown Start Time',
     duration: duration,
     sport: sessionData?.sport || 'Unknown Sport',
     activity: sessionData?.activity || 'Unknown Activity',
@@ -300,4 +300,29 @@ function calculateMedian(numbers: number[]): number {
   }
 
   return Math.round(sorted[middle]);
+}
+
+// Format date as "Jan 30, 2026"
+function formatDate(date: Date): string {
+  return date.toLocaleDateString('en-US', {
+    month: 'short',
+    day: 'numeric',
+    year: 'numeric'
+  });
+}
+
+// Format time as 12-hour format without seconds
+function formatTime(timeString: string): string {
+  // Handle various time formats that might come from database
+  const time = new Date(`2000-01-01 ${timeString}`);
+
+  if (isNaN(time.getTime())) {
+    return timeString; // Return original if parsing fails
+  }
+
+  return time.toLocaleTimeString('en-US', {
+    hour: 'numeric',
+    minute: '2-digit',
+    hour12: true
+  });
 }

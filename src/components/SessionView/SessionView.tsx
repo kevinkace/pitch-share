@@ -82,13 +82,14 @@ export default function SessionView({
 
   // Column definitions for the data grid
   const columnDefs: ColDef[] = [
-    { field: 'count', headerName: '#', type: 'numericColumn', width: 80 },
-    { field: 'date', width: 120 },
-    { field: 'time', width: 100 },
+    { field: 'count', headerName: '#', type: 'numericColumn', width: 80, flex: 0 },
+    { field: 'date', minWidth: 120, flex: 1 },
+    { field: 'time', minWidth: 100, flex: 1 },
     {
       field: 'speed',
       type: 'numericColumn',
-      width: 120,
+      minWidth: 120,
+      flex: 1,
       cellRenderer: (params: { value: number }) => {
         if (!params.value) return '';
         const speed = parseFloat(params.value);
@@ -101,14 +102,15 @@ export default function SessionView({
         );
       }
     },
-    { field: 'pitch_type', headerName: 'Type', width: 120 },
-    { field: 'pitch_zone', headerName: 'Zone', width: 120 },
-    { field: 'pitch_view', headerName: 'View', width: 120 },
+    { field: 'pitch_type', headerName: 'Type', minWidth: 120, flex: 1 },
+    { field: 'pitch_zone', headerName: 'Zone', minWidth: 120, flex: 1 },
+    { field: 'pitch_view', headerName: 'View', minWidth: 120, flex: 1 },
     // Conditionally add actions column for session owners
     ...(isOwner ? [{
       field: 'actions',
       headerName: 'Actions',
       width: 100,
+      flex: 0,
       sortable: false,
       filter: false,
       resizable: false,
@@ -144,6 +146,7 @@ export default function SessionView({
     sortable: true,
     filter: true,
     resizable: true,
+    flex: 1,
   };
 
   return (

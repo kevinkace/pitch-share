@@ -59,7 +59,7 @@ export function DuplicateSessionDialog({
               Import Anyway
             </Button>
           </AlertDialog.Cancel>
-          
+
           <AlertDialog.Action>
             <Button size="2" onClick={onViewExisting}>
               View Existing Session

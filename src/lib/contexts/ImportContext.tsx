@@ -71,7 +71,7 @@ export function ImportProvider({ children }: { children: ReactNode }) {
 
             if (duplicateSessions.length > 0) {
                 const existingSession = duplicateSessions[0];
-                
+
                 // Show dialog instead of confirm
                 setDuplicateSessionData({
                     filename: file.name,
@@ -105,7 +105,7 @@ export function ImportProvider({ children }: { children: ReactNode }) {
             // Continue with the import by calling processAndImportFile with the stored data
             const { file, isPrivate } = duplicateSessionData;
             setDuplicateSessionData(null);
-            
+
             // Call the import logic directly without duplicate check
             continueWithImport(file, isPrivate);
         }
@@ -239,7 +239,7 @@ export function ImportProvider({ children }: { children: ReactNode }) {
             processAndImportFile
         }}>
             {children}
-            
+
             {duplicateSessionData && (
                 <DuplicateSessionDialog
                     open={showDuplicateDialog}

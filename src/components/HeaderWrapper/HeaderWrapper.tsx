@@ -10,12 +10,14 @@ import Logotype from "@/components/Logotype/Logotype";
 
 import { isTrackerEnabled, isImportEnabled } from "@/lib/featureFlags";
 import { useImport } from "@/lib/contexts/ImportContext";
+import { useAuth } from '@/lib/hooks/useAuth';
 
 import style from "./HeaderWrapper.module.css";
 
 export function HeaderWrapper() {
   const pathname = usePathname();
   const { processAndImportFile, isUploading } = useImport();
+  const { user } = useAuth();
 
   // Hide header on login page
   if (pathname === '/login') {
@@ -35,33 +37,35 @@ export function HeaderWrapper() {
       </div>
 
       <div className={style.headerActions}>
-        {isTrackerEnabled() && (
-          <Button href="/pitch-tracker">
-            Tracker
-          </Button>
-        )}
+        {user && (<>
+          {isTrackerEnabled() && (
+            <Button href="/pitch-tracker">
+              Tracker
+            </Button>
+          )}
 
-        {isImportEnabled() && (
-          <Button
-            onClick={() => {
-              const input = document.createElement('input');
-              input.type = 'file';
-              input.accept = '.csv';
-              input.multiple = false; // Explicitly allow only 1 file
-              input.onchange = async (event: Event) => {
-                const target = event.target as HTMLInputElement;
-                if (target.files && target.files.length === 1) {
-                  const file = target.files[0];
-                  await processAndImportFile(file, true); // Private by default
-                }
-              };
-              input.click();
-            }}
-            disabled={isUploading}
-          >
-            {isUploading ? 'Importing...' : 'Import'}
-          </Button>
-        )}
+          {isImportEnabled() && (
+            <Button
+              onClick={() => {
+                const input = document.createElement('input');
+                input.type = 'file';
+                input.accept = '.csv';
+                input.multiple = false; // Explicitly allow only 1 file
+                input.onchange = async (event: Event) => {
+                  const target = event.target as HTMLInputElement;
+                  if (target.files && target.files.length === 1) {
+                    const file = target.files[0];
+                    await processAndImportFile(file, true); // Private by default
+                  }
+                };
+                input.click();
+              }}
+              disabled={isUploading}
+            >
+              {isUploading ? 'Importing...' : 'Import'}
+            </Button>
+          )}
+        </>)}
 
         <UserNav />
       </div>

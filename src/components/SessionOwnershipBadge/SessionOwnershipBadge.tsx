@@ -2,7 +2,10 @@
 
 import { useState } from 'react';
 import { Button } from '@radix-ui/themes';
+
 import { useSession } from '@/lib/contexts/SessionContext';
+
+import styles from "./SessionOwnershipBadge.module.css";
 
 export default function SessionOwnershipBadge() {
   const { sessionData, isOwner, togglePrivacy } = useSession();
@@ -25,9 +28,8 @@ export default function SessionOwnershipBadge() {
   if (!isOwner || !sessionData) return null;
 
   return (
-    <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.5rem' }}>
-      <span style={{ opacity: 0.7, fontSize: '0.9rem' }}>Your Session</span>
       <Button
+        className={styles.badge}
         onClick={handleTogglePrivacy}
         disabled={isUpdatingPrivacy}
         size="1"
@@ -36,6 +38,5 @@ export default function SessionOwnershipBadge() {
       >
         {isUpdatingPrivacy ? 'Updating...' : (sessionData.is_private ? 'Private' : 'Public')}
       </Button>
-    </div>
   );
 }

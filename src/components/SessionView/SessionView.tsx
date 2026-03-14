@@ -16,8 +16,9 @@ import Container from '@/components/Container/Container';
 import SpeedGauge from '@/components/SpeedGauge/SpeedGauge';
 import SpeedColorIndicator from '@/components/SpeedColorIndicator/SpeedColorIndicator';
 import SessionOwnershipBadge from '@/components/SessionOwnershipBadge/SessionOwnershipBadge';
-import { useSession } from '@/lib/contexts/SessionContext';
+import UserAvatar from "@/components/UserAvatar/UserAvatar";
 
+import { useSession } from '@/lib/contexts/SessionContext';
 import { getSpeedColor } from '@/lib/speedRanges';
 
 import style from './SessionView.module.css';
@@ -151,19 +152,25 @@ export default function SessionView({
   return (
     <Container>
       <div className={style.topBar}>
-        <h1 className={style.header}>
-          {sessionMeta.player}
-        </h1>
+          <Flex gap="4" align="center">
+            <UserAvatar user={sessionMeta.player} size="5"/>
+            <div>
+              <Flex gap="4" align="center">
+                <h1 className={style.header}>
+                  {sessionMeta.player}
+                </h1>
+                <SessionOwnershipBadge />
+              </Flex>
 
-        <div className={style.date}>
-          <div>{sessionMeta.date}</div>
-          <div>{sessionMeta.startTime}</div>
-          <div>{sessionMeta.duration} min</div>
-        </div>
+              <div className={style.date}>
+                <div>{sessionMeta.date}</div>
+                <div>{sessionMeta.startTime}</div>
+                <div>{sessionMeta.duration} min</div>
+              </div>
+            </div>
+          </Flex>
 
         <SessionNavigation session={sessionId} inline={true} />
-
-        <SessionOwnershipBadge />
 
       </div>
 

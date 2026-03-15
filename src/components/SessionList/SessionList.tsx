@@ -68,11 +68,6 @@ export default async function SessionList() {
                                         {user && user.id === session.user_id && <Lock isLocked={session.is_private} />}
                                     </Flex>
 
-
-                                    <span className={styles.sessionId}>
-                                        {session.id}
-                                    </span>
-
                                     <span className={styles.sessionDate}>
                                         {formatDate(session.date)}
                                     </span>
@@ -96,10 +91,16 @@ export default async function SessionList() {
                                     </div>
 
                                 </div>
-                                <div className={styles.sessionMeta}>
-                                    {session.sport} • {" "}
-                                    {session.activity}
-                                </div>
+
+                                <Flex direction="column" gap="0">
+                                    <div className={styles.sessionMeta}>
+                                        {session.sport} • {" "}
+                                        {session.activity}
+                                    </div>
+                                    <span className={styles.sessionId}>
+                                        {session.id}
+                                    </span>
+                                </Flex>
                             </Link>
 
                         </Card>

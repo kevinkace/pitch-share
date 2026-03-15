@@ -1,7 +1,9 @@
 
 import Link from 'next/link';
 import { Card, Flex } from '@radix-ui/themes';
+
 import { createClient } from '@/lib/supabase/server';
+import { formatTime, formatDate } from '@/lib/formatters';
 
 import styles from './SessionList.module.css';
 
@@ -66,7 +68,7 @@ export default async function SessionList() {
                                     </span>
 
                                     <span className={styles.sessionDate}>
-                                        {new Date(session.date).toLocaleDateString()}
+                                        {formatDate(session.date)}
                                     </span>
                                 </div>
 
@@ -91,9 +93,6 @@ export default async function SessionList() {
                                 <div className={styles.sessionMeta}>
                                     {session.sport} • {" "}
                                     {session.activity}
-                                    {session.is_private && (
-                                        <span className={styles.privateTag}> • Private</span>
-                                    )}
                                 </div>
                             </Link>
 

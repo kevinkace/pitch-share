@@ -37,7 +37,7 @@ export function generateSessionImage({
         {/* Date and Duration */}
         <div style={imageStyles.dateSection}>
           <span>{date}</span>
-          <span>•</span>
+          <span>&middot;</span>
           <span>{duration} min</span>
         </div>
 

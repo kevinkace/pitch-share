@@ -1,8 +1,10 @@
 
 'use client';
 
-import { Card, Grid } from '@radix-ui/themes';
+import Link from "next/link";
 import Image from 'next/image';
+
+import { Card, Grid, Flex } from '@radix-ui/themes';
 
 import LoginForm from '@/components/LoginForm/LoginForm';
 import Container from '@/components/Container/Container';
@@ -21,10 +23,16 @@ function LoginContent() {
         <Card className={styles.card}>
             <Grid columns={{ initial : "1", md : "2"}}>
                 <div className={styles.left}>
-                    <Logo />
-                    <h1 className={styles.title}>
-                        <Logotype />
-                    </h1>
+                    <Flex asChild align="center" direction="column">
+                        <Link href="/">
+                            <Logo />
+                            <h1 className={styles.title}>
+                                <Logotype />
+                            </h1>
+                        </Link>
+                    </Flex>
+
+
                     <p className={styles.subtitle}>
                       {sent ? 'Check your email for the magic link!' : 'Sign in to access your pitch data'}
                     </p>

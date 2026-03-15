@@ -42,11 +42,6 @@ export default async function SessionList() {
 
     return (
         <div className={styles.sessionsContainer}>
-            {!user && (
-                <div style={{ marginBottom: '1rem', padding: '0.5rem', background: 'rgba(255,255,255,0.1)', borderRadius: '6px' }}>
-                    <p>Viewing public sessions. <Link href="/login" style={{ textDecoration: 'underline' }}>Log in</Link> to see your own sessions.</p>
-                </div>
-            )}
             {sessions.length === 0 ? (
                 <p>{user ? 'No sessions found.' : 'No public sessions available.'}</p>
             ) : (

@@ -1,9 +1,10 @@
-
 import Link from 'next/link';
 import { Card, Flex } from '@radix-ui/themes';
 
 import { createClient } from '@/lib/supabase/server';
-import { formatTime, formatDate } from '@/lib/formatters';
+import { formatDate } from '@/lib/formatters';
+
+import Lock from "@/components/Lock/Lock";
 
 import styles from './SessionList.module.css';
 
@@ -61,7 +62,12 @@ export default async function SessionList() {
                                 href={user ? `/profile/sessions/${session.id}` : `/users/${session.user_id}/sessions/${session.id}`}
                             >
                                 <div className={styles.sessionHeader}>
-                                    <h3>{session.player_name}</h3>
+                                    <Flex justify="between" align="center">
+                                        <h3>{session.player_name}</h3>
+
+                                        {user && user.id === session.user_id && <Lock isLocked={session.is_private} />}
+                                    </Flex>
+
 
                                     <span className={styles.sessionId}>
                                         {session.id}

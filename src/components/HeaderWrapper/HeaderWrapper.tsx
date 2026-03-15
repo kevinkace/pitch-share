@@ -34,7 +34,6 @@ export function HeaderWrapper() {
             <h1><Logotype /></h1>
           </div>
         </Link>
-        <p>Baseball pitching session analysis and tracking</p>
       </div>
 
       <div className={style.headerActions}>

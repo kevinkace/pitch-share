@@ -176,6 +176,7 @@ export default function SessionView({
                 <h1 className={style.header}>
                   {sessionMeta.player}
                 </h1>
+
                 <SessionOwnershipBadge />
               </Flex>
 

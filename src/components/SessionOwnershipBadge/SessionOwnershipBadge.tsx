@@ -5,6 +5,8 @@ import { Button } from '@radix-ui/themes';
 
 import { useSession } from '@/lib/contexts/SessionContext';
 
+import Lock from "@/components/Lock/Lock";
+
 import styles from "./SessionOwnershipBadge.module.css";
 
 export default function SessionOwnershipBadge() {
@@ -15,6 +17,7 @@ export default function SessionOwnershipBadge() {
     if (!isOwner || isUpdatingPrivacy || !sessionData) return;
 
     setIsUpdatingPrivacy(true);
+
     try {
       await togglePrivacy();
     } catch (error) {
@@ -29,14 +32,16 @@ export default function SessionOwnershipBadge() {
 
   return (
       <Button
-        className={styles.badge}
+        className={isUpdatingPrivacy ? styles.updating : styles.badge}
         onClick={handleTogglePrivacy}
         disabled={isUpdatingPrivacy}
         size="1"
-        variant={sessionData.is_private ? "soft" : "solid"}
+        variant="soft"
         color={sessionData.is_private ? "gray" : "green"}
       >
-        {isUpdatingPrivacy ? 'Updating...' : (sessionData.is_private ? 'Private' : 'Public')}
+
+        <Lock isLocked={sessionData.is_private} />
+        {sessionData.is_private ? "private" : "public"}
       </Button>
   );
 }

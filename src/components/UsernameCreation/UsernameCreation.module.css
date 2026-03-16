@@ -1,0 +1,12 @@
+/* UsernameCreation component styles */
+
+.container {
+    /* Add any custom container styles if needed */
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .container {
+        padding: 1rem;
+    }
+}

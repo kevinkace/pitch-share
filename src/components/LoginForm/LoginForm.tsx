@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { Button, TextField, Text, Callout, Flex } from '@radix-ui/themes';
 
 import { createClient } from '@/lib/supabase/client';
-import { useAuth } from '@/lib/contexts/useAuth';
+import { useAuth } from '@/lib/contexts/AuthContext';
 
 import AnimatedEnvelope from '@/components/AnimatedEnvelope/AnimatedEnvelope';
 

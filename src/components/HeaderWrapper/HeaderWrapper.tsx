@@ -10,15 +10,17 @@ import Logotype from "@/components/Logotype/Logotype";
 
 import { isTrackerEnabled, isImportEnabled } from "@/lib/featureFlags";
 
-import { useImport } from "@/lib/contexts/ImportContext";
-import { useAuth } from "@/lib/contexts/useAuth";
+import { useImportWithUsernameCheck } from "@/lib/hooks/useImportWithUsernameCheck";
+import { useAuth } from "@/lib/contexts/AuthContext";
+import { useUserProfile } from "@/lib/hooks/useUserProfile";
 
 import style from "./HeaderWrapper.module.css";
 
 export function HeaderWrapper() {
   const pathname = usePathname();
-  const { processAndImportFile, isUploading } = useImport();
+  const { processAndImportFile, isUploading } = useImportWithUsernameCheck();
   const { user } = useAuth();
+  const { hasUsername, loading: profileLoading } = useUserProfile();
 
   // Hide header on login page
   if (pathname === '/login') {
@@ -55,6 +57,12 @@ export function HeaderWrapper() {
                 return;
               }
 
+              // redirect to settings if no username
+              if (!profileLoading && !hasUsername) {
+                window.location.href = '/profile/settings';
+                return;
+              }
+
               const input = document.createElement('input');
               input.type = 'file';
               input.accept = '.csv';
@@ -68,7 +76,7 @@ export function HeaderWrapper() {
               };
               input.click();
             }}
-            disabled={isUploading}
+            disabled={isUploading || profileLoading}
           >
             {isUploading ? 'Importing...' : 'Import'}
           </Button>

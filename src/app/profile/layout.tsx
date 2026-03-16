@@ -1,6 +1,6 @@
 "use client";
 
-import { useRouter, usePathname } from "next/navigation";
+import { usePathname } from "next/navigation";
 import Link from "next/link";
 import {
     Avatar,
@@ -14,7 +14,8 @@ import {
 
 import Container from "@/components/Container/Container";
 
-import { useAuth } from "@/lib/contexts/useAuth";
+import { useAuth } from "@/lib/contexts/AuthContext";
+import { useUserProfile } from "@/lib/hooks/useUserProfile";
 
 import styles from "./layout.module.css";
 
@@ -38,16 +39,30 @@ const userLinks = [
 
 export default function ProfileLayout({ children }: { children: React.ReactNode; }) {
     const { user, loading } = useAuth();
-    const router = useRouter();
+    const { profile } = useUserProfile();
     const currentPath = usePathname();
 
     const pageTitle = userLinks.find(link => link.href === currentPath)?.label || "Profile";
 
-    if (!user && !loading) {
-        router.replace("/login");
-
-        return null;
+    // Show loading state while auth is being determined
+    if (loading) {
+        return (
+            <Container>
+                <Box p="4">
+                    <Text>Loading...</Text>
+                </Box>
+            </Container>
+        );
     }
+
+    // At this point, middleware ensures user exists for /profile routes
+
+    const displayName = profile?.username ||
+                       user?.user_metadata?.preferred_username ||
+                       user?.user_metadata?.full_name ||
+                       "User";
+
+    const avatar_url = profile?.avatar_url || user?.user_metadata?.avatar_url;
 
     return (
         <Container>
@@ -58,14 +73,12 @@ export default function ProfileLayout({ children }: { children: React.ReactNode;
                         <Flex direction="column" align="center" gap="3">
                             <Avatar
                                 size="7"
-                                src={user?.user_metadata?.avatar_url}
+                                src={avatar_url}
                                 fallback={user?.email?.[0]?.toUpperCase() ?? "U"}
                                 radius="full"
                             />
                             <Heading size="4">
-                                {user?.user_metadata?.preferred_username ??
-                                    user?.user_metadata?.full_name ??
-                                    "User"}
+                                {displayName}
                             </Heading>
                             <Text color="gray" size="2">
                                 {user?.email}

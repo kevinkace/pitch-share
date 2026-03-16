@@ -6,16 +6,17 @@ import { Separator, Card, Flex } from '@radix-ui/themes';
 import { PersonIcon, GearIcon, ExitIcon, MixIcon } from "@radix-ui/react-icons"
 import { motion, AnimatePresence } from "framer-motion";
 
-import { useAuth } from '@/lib/contexts/useAuth';
+import { useAuth } from '@/lib/contexts/AuthContext';
+import { useUserProfile } from '@/lib/hooks/useUserProfile';
 
 import { Button } from '@/components/Button/Button';
 import UserAvatar from '@/components/UserAvatar/UserAvatar';
-
 
 import styles from './UserNav.module.css';
 
 export function UserNav() {
     const { user, loading, signOut } = useAuth()
+    const { profile } = useUserProfile();
     const [showMenu, setShowMenu] = useState(false);
 
     if (loading) {
@@ -47,10 +48,13 @@ export function UserNav() {
         },
         {
             label : "Settings",
-            href : "/settings",
+            href : "/profile/settings",
             icon : <GearIcon />
         }
     ];
+
+    const displayUserName = profile?.username || "Set username";
+    const displayFullName = profile?.full_name || user.user_metadata?.full_name || "Full Name";
 
     return (
         <div className={styles.userNav}>
@@ -70,10 +74,10 @@ export function UserNav() {
                                     <UserAvatar user={user} />
                                     <Flex direction="column" gap="1" className={styles.names}>
                                         <div className={styles.userName}>
-                                            {user.name || "user name"}
+                                            {displayUserName}
                                         </div>
                                         <div className={styles.fullName}>
-                                            {user.fullname || "Full Name"}
+                                            {displayFullName}
                                         </div>
                                     </Flex>
                                 </Flex>

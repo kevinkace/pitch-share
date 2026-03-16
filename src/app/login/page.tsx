@@ -10,7 +10,7 @@ import LoginForm from '@/components/LoginForm/LoginForm';
 import Container from '@/components/Container/Container';
 import Logo      from '@/components/Logo/Logo';
 import Logotype from "@/components/Logotype/Logotype";
-import { useAuth } from '@/lib/contexts/useAuth';
+import { useAuth } from '@/lib/contexts/AuthContext';
 
 import styles from './page.module.css'
 

@@ -9,7 +9,7 @@ const debugLog = (...args: any[]) => {
     }
 };
 
-export default async function proxy(request: NextRequest) {
+export async function proxy(request: NextRequest) {
     debugLog('🚀 Proxy running for:', request.nextUrl.pathname);
 
     let supabaseResponse = NextResponse.next({
@@ -86,9 +86,32 @@ export default async function proxy(request: NextRequest) {
         request.nextUrl.pathname.startsWith('/auth') ||
         request.nextUrl.pathname.match(/^\/users\/[^/]+\/sessions\/[^/]+$/);
 
+    // Protected routes that require authentication
+    const protectedRoutes = ['/profile', '/pitch-tracker'];
+    const isProtectedRoute = protectedRoutes.some(route => request.nextUrl.pathname.startsWith(route));
+
+    // Redirect unauthenticated users away from protected routes
+    if (isProtectedRoute && !user) {
+        debugLog('🔒 User not authenticated, redirecting to login from:', request.nextUrl.pathname);
+        const url = request.nextUrl.clone();
+        url.pathname = '/login';
+        return NextResponse.redirect(url);
+    }
+
+    // Redirect authenticated users away from auth pages
+    const authRoutes = ['/login', '/auth'];
+    const isAuthRoute = authRoutes.some(route => request.nextUrl.pathname.startsWith(route));
+
+    if (isAuthRoute && user) {
+        debugLog('👤 Authenticated user accessing auth page, redirecting to home');
+        const url = request.nextUrl.clone();
+        url.pathname = '/';
+        return NextResponse.redirect(url);
+    }
+
+    // Handle remaining non-protected routes for unauthenticated users
     if (!user && !isPublicRoute) {
         debugLog('🔒 User not authenticated, redirecting to login from:', request.nextUrl.pathname);
-        // no user and not a public route, redirect to login page
         const url = request.nextUrl.clone();
         url.pathname = '/login';
         return NextResponse.redirect(url);
@@ -98,11 +121,17 @@ export default async function proxy(request: NextRequest) {
     return supabaseResponse;
 }
 
-// Try multiple matchers
+// Match all request paths except static files, images, and API routes
 export const config = {
     matcher: [
-        '/pitch-tracker',
-        '/pitch-tracker/:path*',
-        '/((?!api|_next/static|_next/image|favicon.ico).*)',
+        /*
+         * Match all request paths except for the ones starting with:
+         * - api (API routes)
+         * - _next/static (static files)
+         * - _next/image (image optimization files)
+         * - favicon.ico (favicon file)
+         * - Static assets (svg, png, jpg, etc.)
+         */
+        '/((?!api|_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)',
     ]
 };

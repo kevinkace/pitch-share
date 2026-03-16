@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation';
 
 import { createClient } from '@/lib/supabase/client';
 
-import { useAuth } from '@/lib/contexts/useAuth';
+import { useAuth } from '@/lib/contexts/AuthContext';
 import { DuplicateSessionDialog } from '@/components/DuplicateSessionDialog/DuplicateSessionDialog';
 
 interface ImportContextType {
@@ -61,7 +61,6 @@ export function ImportProvider({ children }: { children: ReactNode }) {
     const processAndImportFile = async (file: File, isPrivate: boolean = true) => {
         if (!user) {
             alert('You must be logged in to import sessions');
-
             return;
         }
 

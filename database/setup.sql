@@ -52,9 +52,28 @@ CREATE INDEX idx_pitches_user_session ON pitches(user_id, session_id);
 -- For pitch queries by date
 CREATE INDEX idx_pitches_user_id_date ON pitches(user_id, date);
 
+-- 3. Create profiles table
+CREATE TABLE profiles (
+  id UUID REFERENCES auth.users(id) ON DELETE CASCADE PRIMARY KEY,
+  full_name TEXT,
+  username TEXT UNIQUE,
+  avatar_url TEXT,
+  website TEXT,
+  username_updated_at TIMESTAMPTZ,
+  created_at TIMESTAMPTZ DEFAULT NOW(),
+  updated_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+-- Create unique index for usernames (case-insensitive)
+CREATE UNIQUE INDEX idx_profiles_username_lower ON profiles (LOWER(username));
+
+-- Index for username lookup
+CREATE INDEX idx_profiles_username ON profiles (username);
+
 -- 4. Enable Row Level Security
 ALTER TABLE sessions ENABLE ROW LEVEL SECURITY;
 ALTER TABLE pitches ENABLE ROW LEVEL SECURITY;
+ALTER TABLE profiles ENABLE ROW LEVEL SECURITY;
 
 -- 5. Create RLS policies for sessions
 -- Users can always view their own sessions
@@ -104,11 +123,28 @@ CREATE POLICY "Users can update own pitches" ON pitches
 CREATE POLICY "Users can delete own pitches" ON pitches
   FOR DELETE USING (auth.uid() = user_id);
 
--- 7. Create storage bucket for CSV files
+-- 7. Create RLS policies for profiles
+-- Users can view all profiles (for username uniqueness checks and public viewing)
+CREATE POLICY "Anyone can view profiles" ON profiles
+  FOR SELECT USING (true);
+
+-- Users can insert their own profile
+CREATE POLICY "Users can insert own profile" ON profiles
+  FOR INSERT WITH CHECK (auth.uid() = id);
+
+-- Users can update their own profile
+CREATE POLICY "Users can update own profile" ON profiles
+  FOR UPDATE USING (auth.uid() = id);
+
+-- Users can delete their own profile (for account deletion)
+CREATE POLICY "Users can delete own profile" ON profiles
+  FOR DELETE USING (auth.uid() = id);
+
+-- 8. Create storage bucket for CSV files
 INSERT INTO storage.buckets (id, name, public)
 VALUES ('csv-uploads', 'csv-uploads', false);
 
--- 8. Create storage policies
+-- 9. Create storage policies
 -- Allow users to upload their own CSV files
 CREATE POLICY "Users can upload own CSV files" ON storage.objects
   FOR INSERT WITH CHECK (bucket_id = 'csv-uploads' AND auth.uid()::text = (storage.foldername(name))[1]);

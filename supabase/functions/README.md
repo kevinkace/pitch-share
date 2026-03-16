@@ -17,17 +17,59 @@
    supabase link --project-ref YOUR_PROJECT_ID
    ```
 
-## Deploy Process CSV Function
+## Available Functions
+
+### process-csv
+Processes uploaded CSV files containing pitch data.
+
+### download-user-data
+Downloads all user data as JSON (sessions, pitches, profile).
+**Security:** Requires authentication, uses RLS policies.
+
+### delete-user-account
+Permanently deletes user account and all associated data.
+**Security:** Requires authentication + exact confirmation text.
+
+## Deploy Functions
 
 ```bash
+# Deploy all functions
+supabase functions deploy
+
+# Deploy individual functions
 supabase functions deploy process-csv
+supabase functions deploy download-user-data
+supabase functions deploy delete-user-account
 ```
 
-## Test the Function
+## Environment Variables Required
+
+- `SUPABASE_URL` - Automatically provided
+- `SUPABASE_ANON_KEY` - Automatically provided  
+- `SUPABASE_SERVICE_ROLE_KEY` - Required for delete-user-account function
+
+## Test the Functions
 
 ```bash
+# Test process-csv
 supabase functions invoke process-csv --help
+
+# Test download (requires authentication)
+supabase functions invoke download-user-data \
+  --header "Authorization: Bearer YOUR_JWT_TOKEN"
+
+# Test delete (requires authentication + confirmation)
+supabase functions invoke delete-user-account \
+  --header "Authorization: Bearer YOUR_JWT_TOKEN" \
+  --data '{"confirmation": "DELETE MY ACCOUNT"}'
 ```
+
+## Security Notes
+
+- All user data functions validate JWT tokens
+- RLS policies ensure data isolation between users
+- Account deletion requires explicit confirmation text
+- Functions use appropriate permission levels for operations
 
 ## Function Details
 

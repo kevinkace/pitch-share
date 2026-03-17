@@ -104,9 +104,9 @@ export function UserNav() {
 
                                 <Flex direction="column" gap="1">
                                     {menuItems.map(( {label, href, icon} ) => (
-                                        <Link 
-                                            href={href} 
-                                            key={label} 
+                                        <Link
+                                            href={href}
+                                            key={label}
                                             className={styles.menuItem}
                                             onClick={() => setShowMenu(false)}
                                         >

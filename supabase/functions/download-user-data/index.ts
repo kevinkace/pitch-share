@@ -1,4 +1,5 @@
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
+
 import { handleCors, validateMethod, createJsonResponse, createErrorResponse } from '../_shared/cors.ts';
 import { authenticateRequest, validateEnvironment } from '../_shared/auth.ts';
 

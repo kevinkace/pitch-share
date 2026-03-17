@@ -1,5 +1,6 @@
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
-import { handleCors, validateMethod, createJsonResponse, createErrorResponse } from '../_shared/cors.ts';
+
+import { handleCors, createJsonResponse, createErrorResponse } from '../_shared/cors.ts';
 import { authenticateRequest, validateEnvironment } from '../_shared/auth.ts';
 
 interface PitchRow {
@@ -108,10 +109,7 @@ Deno.serve(async (req) => {
 
     if (!user) {
       console.error('No user found after token validation');
-      return new Response(
-        JSON.stringify({ error: 'No user found - token may be expired or invalid' }),
-        { status: 401, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-      );
+      return createErrorResponse('No user found - token may be expired or invalid', 401);
     }
 
     const { filePath, isPrivate = true }: ProcessCsvRequest = await req.json();

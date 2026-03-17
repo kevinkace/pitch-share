@@ -11,10 +11,6 @@ interface ProfileSessionPageProps {
   }>;
 }
 
-function ProfileSessionContent() {
-  return <SessionView />;
-}
-
 export default function ProfileSessionPage({ params }: ProfileSessionPageProps) {
   const [sessionId, setSessionId] = useState<string>('');
 
@@ -35,8 +31,8 @@ export default function ProfileSessionPage({ params }: ProfileSessionPageProps) 
   }
 
   return (
-    <SessionProvider sessionId={sessionId} requireAuth={true}>
-      <ProfileSessionContent />
-    </SessionProvider>
+      <SessionProvider sessionId={sessionId} requireAuth={true}>
+        <SessionView />
+      </SessionProvider>
   );
 }

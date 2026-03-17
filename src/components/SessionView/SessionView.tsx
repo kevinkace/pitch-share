@@ -12,7 +12,6 @@ import 'ag-grid-community/styles/ag-theme-alpine.css';
 import SessionSummary from '@/components/SessionSummary/SessionSummary';
 import SessionStats from '@/components/SessionStats/SessionStats';
 import SessionNavigation from '@/components/SessionNavigation/SessionNavigation';
-import Container from '@/components/Container/Container';
 import SpeedGauge from '@/components/SpeedGauge/SpeedGauge';
 import SpeedColorIndicator from '@/components/SpeedColorIndicator/SpeedColorIndicator';
 import SessionOwnershipBadge from '@/components/SessionOwnershipBadge/SessionOwnershipBadge';

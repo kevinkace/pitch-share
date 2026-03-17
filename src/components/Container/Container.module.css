@@ -8,6 +8,10 @@
     justify-content: flex-start;
     padding: 2em;
     margin: 0 auto;
+
+    > * {
+        width: 100%;
+    }
 }
 
 .flex {

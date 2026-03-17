@@ -38,8 +38,10 @@ export default function SessionPage({ params }: SessionPageProps) {
   }
 
   return (
-    <SessionProvider sessionId={sessionId} userId={userId} requireAuth={false}>
-      <SessionContent />
-    </SessionProvider>
+    <Container>
+      <SessionProvider sessionId={sessionId} userId={userId} requireAuth={false}>
+        <SessionContent />
+      </SessionProvider>
+    </Container>
   );
 }

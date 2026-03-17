@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import Link from 'next/link';
 import { Separator, Card, Flex } from '@radix-ui/themes';
 import { PersonIcon, GearIcon, ExitIcon, MixIcon } from "@radix-ui/react-icons"
@@ -18,8 +18,25 @@ export function UserNav() {
     const { user, loading: authLoading, signOut } = useAuth()
     const { profile, loading: profileLoading } = useUserProfile();
     const [showMenu, setShowMenu] = useState(false);
+    const userNavRef = useRef<HTMLDivElement>(null);
 
     const isLoading = authLoading || profileLoading;
+
+    // Close menu when clicking outside
+    useEffect(() => {
+        function handleClickOutside(event: MouseEvent) {
+            if (userNavRef.current && !userNavRef.current.contains(event.target as Node)) {
+                setShowMenu(false);
+            }
+        }
+
+        if (showMenu) {
+            document.addEventListener('mousedown', handleClickOutside);
+            return () => {
+                document.removeEventListener('mousedown', handleClickOutside);
+            };
+        }
+    }, [showMenu]);
 
     if (isLoading) {
         return (
@@ -59,7 +76,7 @@ export function UserNav() {
     const email = profile?.email || user.user_metadata?.email || "Email";
 
     return (
-        <div className={styles.userNav}>
+        <div className={styles.userNav} ref={userNavRef}>
             <button onClick={() => setShowMenu(!showMenu)}>
                 <UserAvatar profile={profile} loading={isLoading} />
             </button>
@@ -87,7 +104,12 @@ export function UserNav() {
 
                                 <Flex direction="column" gap="1">
                                     {menuItems.map(( {label, href, icon} ) => (
-                                        <Link href={href} key={label} className={styles.menuItem}>
+                                        <Link 
+                                            href={href} 
+                                            key={label} 
+                                            className={styles.menuItem}
+                                            onClick={() => setShowMenu(false)}
+                                        >
                                             <span className={styles.menuItemIcon}>{icon}</span>
                                             {label}
                                         </Link>

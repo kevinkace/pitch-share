@@ -84,6 +84,7 @@ export async function proxy(request: NextRequest) {
         request.nextUrl.pathname === '/' ||
         request.nextUrl.pathname.startsWith('/login') ||
         request.nextUrl.pathname.startsWith('/auth') ||
+        request.nextUrl.pathname.startsWith('/legal') ||
         request.nextUrl.pathname.match(/^\/users\/[^/]+\/sessions\/[^/]+$/);
 
     // Protected routes that require authentication

@@ -42,6 +42,9 @@ export default function ProfileLayout({ children }: { children: React.ReactNode;
     const { profile } = useUserProfile();
     const currentPath = usePathname();
 
+    // Check if we're on a session detail page
+    const isSessionDetailPage = /^\/profile\/sessions\/[^/]+$/.test(currentPath);
+
     const pageTitle = userLinks.find(link => link.href === currentPath)?.label || "Profile";
 
     // Show loading state while auth is being determined
@@ -67,44 +70,48 @@ export default function ProfileLayout({ children }: { children: React.ReactNode;
     return (
         <Container>
             <Flex className={styles.container} gap="6" align="stretch">
-                {/* Left rail */}
-                <Box className={styles.rail}>
-                    <Card size="3" className={styles.profileCard}>
-                        <Flex direction="column" align="center" gap="3">
-                            <Avatar
-                                size="7"
-                                src={avatar_url}
-                                fallback={user?.email?.[0]?.toUpperCase() ?? "U"}
-                                radius="full"
-                            />
-                            <Heading size="4">
-                                {displayName}
-                            </Heading>
-                            <Text color="gray" size="2">
-                                {user?.email}
-                            </Text>
-                        </Flex>
-                    </Card>
+                {/* Left rail - hidden on session detail pages */}
+                {!isSessionDetailPage && (
+                    <>
+                        <Box className={styles.rail}>
+                            <Card size="3" className={styles.profileCard}>
+                                <Flex direction="column" align="center" gap="3">
+                                    <Avatar
+                                        size="7"
+                                        src={avatar_url}
+                                        fallback={user?.email?.[0]?.toUpperCase() ?? "U"}
+                                        radius="full"
+                                    />
+                                    <Heading size="4">
+                                        {displayName}
+                                    </Heading>
+                                    <Text color="gray" size="2">
+                                        {user?.email}
+                                    </Text>
+                                </Flex>
+                            </Card>
 
-                    <nav className={styles.nav}>
-                        {userLinks.map((link) => (
-                            <Link
-                                key={link.href}
-                                href={link.href}
-                                className={link.href === currentPath ? styles.navLinkActive : styles.navLink}
-                            >
-                                {link.label}
-                            </Link>
-                        ))}
-                    </nav>
-                </Box>
+                            <nav className={styles.nav}>
+                                {userLinks.map((link) => (
+                                    <Link
+                                        key={link.href}
+                                        href={link.href}
+                                        className={link.href === currentPath ? styles.navLinkActive : styles.navLink}
+                                    >
+                                        {link.label}
+                                    </Link>
+                                ))}
+                            </nav>
+                        </Box>
 
-                {/* Full-height separator */}
-                <Separator orientation="vertical" className={styles.separator} color="gray" size="4" />
+                        {/* Full-height separator */}
+                        <Separator orientation="vertical" className={styles.separator} color="gray" size="4" />
+                    </>
+                )}
 
                 {/* Main content */}
                 <Box className={styles.content}>
-                    <h2 className={styles.pageTitle}>{pageTitle}</h2>
+                    {!isSessionDetailPage && (<><h2 className={styles.pageTitle}>{pageTitle}</h2></>)}
                     {children}
                 </Box>
             </Flex>

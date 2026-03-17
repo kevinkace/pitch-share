@@ -5,6 +5,7 @@ import { notFound, redirect } from 'next/navigation';
 import { User } from '@supabase/supabase-js';
 
 import { createClient } from '@/lib/supabase/client';
+import { UserProfile } from '@/lib/hooks/useUserProfile';
 
 import { formatTime, formatDate } from '@/lib/formatters';
 
@@ -42,6 +43,7 @@ interface SessionContextType {
   sessionId: string;
   userId?: string;
   user: User | null;
+  ownerProfile: UserProfile | null;
   isOwner: boolean;
   pitchSpeeds: number[];
   medianSpeed: number;
@@ -77,6 +79,7 @@ export function SessionProvider({ children, sessionId, userId, requireAuth = fal
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [user, setUser] = useState<User | null>(null);
+  const [ownerProfile, setOwnerProfile] = useState<UserProfile | null>(null);
 
   useEffect(() => {
     async function loadSessionData() {
@@ -161,6 +164,20 @@ export function SessionProvider({ children, sessionId, userId, requireAuth = fal
         if (pitchError) {
           console.error('Error fetching pitches:', pitchError);
           setError('Error loading pitch data');
+        }
+
+        // Fetch session owner profile
+        const { data: profileData, error: profileError } = await supabase
+          .from('profiles')
+          .select('*')
+          .eq('id', session.user_id)
+          .single();
+
+        if (profileError) {
+          console.warn('Could not load session owner profile:', profileError);
+          setOwnerProfile(null);
+        } else {
+          setOwnerProfile(profileData);
         }
 
         setSessionData(session);
@@ -271,6 +288,7 @@ export function SessionProvider({ children, sessionId, userId, requireAuth = fal
     sessionId,
     userId,
     user,
+    ownerProfile,
     isOwner,
     pitchSpeeds,
     medianSpeed,

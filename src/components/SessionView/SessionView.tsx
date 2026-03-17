@@ -41,6 +41,7 @@ export default function SessionView({
     pitchSpeeds,
     sessionId,
     isOwner,
+    ownerProfile,
     deletePitch
   } = useSession();
 
@@ -170,11 +171,11 @@ export default function SessionView({
     <Container>
       <div className={style.topBar}>
           <Flex gap="4" align="center">
-            <UserAvatar user={sessionMeta.player} size="5"/>
+            <UserAvatar profile={ownerProfile} size="5"/>
             <div>
               <Flex gap="4" align="center">
                 <h1 className={style.header}>
-                  {sessionMeta.player}
+                  {ownerProfile?.username || sessionMeta.player}
                 </h1>
 
                 <SessionOwnershipBadge />

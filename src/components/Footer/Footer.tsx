@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Flex, Text, Separator } from "@radix-ui/themes";
+import { Flex, Text } from "@radix-ui/themes";
 
 import Logo      from '@/components/Logo/Logo';
 import Logotype from "@/components/Logotype/Logotype";

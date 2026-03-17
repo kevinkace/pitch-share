@@ -9,6 +9,7 @@ import { ImportProvider } from "@/lib/contexts/ImportContext";
 
 import Analytics from "@/components/Analytics/Analytics";
 import { HeaderWrapper } from "@/components/HeaderWrapper/HeaderWrapper";
+import Footer from "@/components/Footer/Footer";
 
 import "./globals.css";
 import style from "./layout.module.css";
@@ -55,6 +56,7 @@ export default function RootLayout({
                             <ImportProvider>
                                 <HeaderWrapper />
                                 {children}
+                                <Footer />
                             </ImportProvider>
                         </ProfileProvider>
                     </AuthProvider>

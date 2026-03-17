@@ -49,18 +49,15 @@ export function useUserProfile() {
             }
 
             if (!data || data.length === 0) {
-                // No profile exists yet - this is normal for new users
-                console.log('No profile found for user, will need to create one');
-                setProfile(null);
-            } else {
-                // Profile exists
-                setProfile(data[0]);
-            }
-
-            if (!data || data.length === 0) {
-                // No profile exists yet - this is normal for new users
-                console.log('No profile found for user, will need to create one');
-                setProfile(null);
+                // No profile exists yet - auto-create one for legacy users
+                console.log('No profile found for user, creating one automatically');
+                try {
+                    const newProfile = await createProfile({});
+                    setProfile(newProfile);
+                } catch (createError) {
+                    console.error('Failed to auto-create profile:', createError);
+                    setProfile(null);
+                }
             } else {
                 // Profile exists
                 setProfile(data[0]);
@@ -170,6 +167,7 @@ export function useUserProfile() {
         updateUsername,
         canChangeUsername,
         daysUntilUsernameChange,
-        refetch: () => user?.id && fetchProfile(user.id)
+        refetch: () => user?.id && fetchProfile(user.id),
+        refreshProfile: () => user?.id && fetchProfile(user.id)
     };
 }

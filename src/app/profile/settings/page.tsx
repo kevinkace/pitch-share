@@ -6,6 +6,7 @@ import { InfoCircledIcon, ExclamationTriangleIcon } from "@radix-ui/react-icons"
 
 import { createClient } from "@/lib/supabase/client";
 import { useUserProfile } from "@/lib/hooks/useUserProfile";
+import { AvatarUpload } from "@/components/AvatarUpload/AvatarUpload";
 
 export default function SettingsPage() {
     const { profile, canChangeUsername, daysUntilUsernameChange, updateUsername } = useUserProfile();
@@ -170,6 +171,15 @@ export default function SettingsPage() {
                     {success}
                 </Text>
             )}
+
+            {/* Profile Image Section */}
+            <Flex direction="column" gap="3" style={{ width: '100%' }}>
+                <Heading size="4">Profile Image</Heading>
+                <Text color="gray" size="2">
+                    Upload and crop a profile image to personalize your account.
+                </Text>
+                <AvatarUpload />
+            </Flex>
 
             {/* Username Management Section */}
             <Flex direction="column" gap="3" style={{ width: '100%' }}>

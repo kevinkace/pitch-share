@@ -1,75 +1,29 @@
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
-
-// CORS headers for web requests
-const corsHeaders = {
-  'Access-Control-Allow-Origin': '*',
-  'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
-  'Access-Control-Allow-Methods': 'POST, GET, OPTIONS, PUT, DELETE',
-};
+import { handleCors, validateMethod, createJsonResponse, createErrorResponse } from '../_shared/cors.ts';
+import { authenticateRequest, validateEnvironment } from '../_shared/auth.ts';
 
 interface DeleteAccountRequest {
   confirmation: string; // User must type "DELETE MY ACCOUNT" to confirm
 }
 
 Deno.serve(async (req) => {
-  const { method } = req;
-
   // Handle CORS preflight requests
-  if (method === 'OPTIONS') {
-    return new Response('ok', { headers: corsHeaders });
-  }
+  const corsResponse = handleCors(req);
+  if (corsResponse) return corsResponse;
 
   // Only allow POST requests
-  if (method !== 'POST') {
-    return new Response(
-      JSON.stringify({ error: 'Method not allowed' }),
-      {
-        status: 405,
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' }
-      }
-    );
-  }
+  const methodResponse = validateMethod(req, ['POST']);
+  if (methodResponse) return methodResponse;
 
   try {
     const supabaseUrl = Deno.env.get('SUPABASE_URL')!;
     const supabaseServiceKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!; // Need service key for user deletion
     const supabaseAnonKey = Deno.env.get('SUPABASE_ANON_KEY')!;
 
-    if (!supabaseServiceKey) {
-      console.error('Missing SUPABASE_SERVICE_ROLE_KEY');
-      return new Response(
-        JSON.stringify({ error: 'Server configuration error' }),
-        {
-          status: 500,
-          headers: { ...corsHeaders, 'Content-Type': 'application/json' }
-        }
-      );
-    }
-
-    // Validate authentication
-    const authHeader = req.headers.get('Authorization');
-    if (!authHeader || !authHeader.startsWith('Bearer ')) {
-      return new Response(
-        JSON.stringify({ error: 'Missing or invalid Authorization header' }),
-        {
-          status: 401,
-          headers: { ...corsHeaders, 'Content-Type': 'application/json' }
-        }
-      );
-    }
-
-    const token = authHeader.replace('Bearer ', '');
-
-    // Basic JWT format validation
-    const jwtParts = token.split('.');
-    if (jwtParts.length !== 3) {
-      return new Response(
-        JSON.stringify({ error: 'Invalid JWT format' }),
-        {
-          status: 401,
-          headers: { ...corsHeaders, 'Content-Type': 'application/json' }
-        }
-      );
+    // Validate environment variables
+    const envValidation = validateEnvironment(['SUPABASE_URL', 'SUPABASE_SERVICE_ROLE_KEY', 'SUPABASE_ANON_KEY']);
+    if (!envValidation.success) {
+      return envValidation.response;
     }
 
     // Parse request body
@@ -77,59 +31,36 @@ Deno.serve(async (req) => {
     try {
       requestData = await req.json();
     } catch (error) {
-      return new Response(
-        JSON.stringify({ error: 'Invalid JSON in request body' }),
-        {
-          status: 400,
-          headers: { ...corsHeaders, 'Content-Type': 'application/json' }
-        }
-      );
+      return createErrorResponse('Invalid JSON in request body');
     }
 
     // Validate confirmation text
     if (requestData.confirmation !== 'DELETE MY ACCOUNT') {
-      return new Response(
-        JSON.stringify({
-          error: 'Invalid confirmation',
-          message: 'You must type "DELETE MY ACCOUNT" exactly to confirm account deletion'
-        }),
-        {
-          status: 400,
-          headers: { ...corsHeaders, 'Content-Type': 'application/json' }
-        }
-      );
+      return createErrorResponse({
+        error: 'Invalid confirmation',
+        message: 'You must type "DELETE MY ACCOUNT" exactly to confirm account deletion'
+      });
     }
 
-    // Create Supabase client with user token to validate identity
+    // Authenticate user
+    const authResult = await authenticateRequest(req, supabaseUrl, supabaseAnonKey);
+    if (!authResult.success) {
+      return authResult.response;
+    }
+
+    const user = authResult.user;
+    const userId = user.id;
+    console.log(`Starting account deletion for user: ${userId}`);
+
+    // Create user client for RLS-protected queries and admin client for deletions
     const supabaseUser = createClient(supabaseUrl, supabaseAnonKey, {
       global: {
         headers: {
-          Authorization: `Bearer ${token}`,
+          Authorization: req.headers.get('Authorization')!,
         },
       },
     });
 
-    // Validate the user token and get user ID
-    const { data: { user }, error: userError } = await supabaseUser.auth.getUser();
-
-    if (userError || !user) {
-      console.error('Auth validation error:', userError);
-      return new Response(
-        JSON.stringify({
-          error: 'Authentication failed',
-          details: userError?.message || 'No user found'
-        }),
-        {
-          status: 401,
-          headers: { ...corsHeaders, 'Content-Type': 'application/json' }
-        }
-      );
-    }
-
-    const userId = user.id;
-    console.log(`Starting account deletion for user: ${userId}`);
-
-    // Create admin client for deletions
     const supabaseAdmin = createClient(supabaseUrl, supabaseServiceKey, {
       auth: {
         autoRefreshToken: false,
@@ -154,16 +85,10 @@ Deno.serve(async (req) => {
 
     if (sessionsError) {
       console.error('Error fetching sessions for deletion:', sessionsError);
-      return new Response(
-        JSON.stringify({
-          error: 'Failed to prepare for deletion',
-          details: sessionsError.message
-        }),
-        {
-          status: 500,
-          headers: { ...corsHeaders, 'Content-Type': 'application/json' }
-        }
-      );
+      return createErrorResponse({
+        error: 'Failed to prepare for deletion',
+        details: sessionsError.message
+      }, 500);
     }
 
     // Step 2: Delete CSV files from storage
@@ -242,41 +167,23 @@ Deno.serve(async (req) => {
       !deletionResults.userAccount.success;
 
     if (hasCriticalErrors) {
-      return new Response(
-        JSON.stringify({
-          error: 'Account deletion completed with errors',
-          details: deletionResults
-        }),
-        {
-          status: 207, // Multi-status
-          headers: { ...corsHeaders, 'Content-Type': 'application/json' }
-        }
-      );
+      return createJsonResponse({
+        error: 'Account deletion completed with errors',
+        details: deletionResults
+      }, 207); // Multi-status
     }
 
-    return new Response(
-      JSON.stringify({
-        success: true,
-        message: 'Account successfully deleted',
-        details: deletionResults
-      }),
-      {
-        status: 200,
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' }
-      }
-    );
+    return createJsonResponse({
+      success: true,
+      message: 'Account successfully deleted',
+      details: deletionResults
+    });
 
   } catch (error) {
     console.error('Unexpected error during account deletion:', error);
-    return new Response(
-      JSON.stringify({
-        error: 'Internal server error during account deletion',
-        details: error.message
-      }),
-      {
-        status: 500,
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' }
-      }
-    );
+    return createErrorResponse({
+      error: 'Internal server error during account deletion',
+      details: error.message
+    }, 500);
   }
 });

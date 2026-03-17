@@ -140,11 +140,15 @@ CREATE POLICY "Users can update own profile" ON profiles
 CREATE POLICY "Users can delete own profile" ON profiles
   FOR DELETE USING (auth.uid() = id);
 
--- 8. Create storage bucket for CSV files
+-- 8. Create storage buckets
 INSERT INTO storage.buckets (id, name, public)
 VALUES ('csv-uploads', 'csv-uploads', false);
 
+INSERT INTO storage.buckets (id, name, public)
+VALUES ('avatars', 'avatars', true);
+
 -- 9. Create storage policies
+-- CSV files policies
 -- Allow users to upload their own CSV files
 CREATE POLICY "Users can upload own CSV files" ON storage.objects
   FOR INSERT WITH CHECK (bucket_id = 'csv-uploads' AND auth.uid()::text = (storage.foldername(name))[1]);
@@ -152,3 +156,20 @@ CREATE POLICY "Users can upload own CSV files" ON storage.objects
 -- Allow users to read their own CSV files
 CREATE POLICY "Users can read own CSV files" ON storage.objects
   FOR SELECT USING (bucket_id = 'csv-uploads' AND auth.uid()::text = (storage.foldername(name))[1]);
+
+-- Avatar policies
+-- Allow users to upload their own avatars
+CREATE POLICY "Users can upload own avatars" ON storage.objects
+  FOR INSERT WITH CHECK (bucket_id = 'avatars' AND auth.uid()::text = (storage.foldername(name))[1]);
+
+-- Allow users to update their own avatars
+CREATE POLICY "Users can update own avatars" ON storage.objects
+  FOR UPDATE USING (bucket_id = 'avatars' AND auth.uid()::text = (storage.foldername(name))[1]);
+
+-- Allow users to delete their own avatars
+CREATE POLICY "Users can delete own avatars" ON storage.objects
+  FOR DELETE USING (bucket_id = 'avatars' AND auth.uid()::text = (storage.foldername(name))[1]);
+
+-- Allow public read access to avatars (since bucket is public)
+CREATE POLICY "Public avatar read access" ON storage.objects
+  FOR SELECT USING (bucket_id = 'avatars');

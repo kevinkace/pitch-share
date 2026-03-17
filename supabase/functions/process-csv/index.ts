@@ -1,11 +1,6 @@
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
-
-// CORS headers for web requests
-const corsHeaders = {
-  'Access-Control-Allow-Origin': '*',
-  'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
-  'Access-Control-Allow-Methods': 'POST, GET, OPTIONS, PUT, DELETE',
-};
+import { handleCors, validateMethod, createJsonResponse, createErrorResponse } from '../_shared/cors.ts';
+import { authenticateRequest, validateEnvironment } from '../_shared/auth.ts';
 
 interface PitchRow {
   Date: string;
@@ -80,73 +75,36 @@ function calculateSessionStats(pitchRows: PitchRow[]) {
 }
 
 Deno.serve(async (req) => {
-  // Handle CORS
-  if (req.method === 'OPTIONS') {
-    return new Response('ok', { headers: corsHeaders });
-  }
+  // Handle CORS preflight requests
+  const corsResponse = handleCors(req);
+  if (corsResponse) return corsResponse;
 
   try {
     const supabaseUrl = Deno.env.get('SUPABASE_URL')!;
     const supabaseAnonKey = Deno.env.get('SUPABASE_ANON_KEY')!;
 
-    // Get user from JWT using anon key (for JWT validation)
-    const authHeader = req.headers.get('Authorization');
-
-    if (!authHeader) {
-      return new Response(
-        JSON.stringify({ error: 'Missing Authorization header' }),
-        { status: 401, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-      );
+    // Validate environment variables
+    const envValidation = validateEnvironment(['SUPABASE_URL', 'SUPABASE_ANON_KEY']);
+    if (!envValidation.success) {
+      return envValidation.response;
     }
 
-    if (!authHeader.startsWith('Bearer ')) {
-      return new Response(
-        JSON.stringify({ error: 'Authorization header must start with "Bearer "' }),
-        { status: 401, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-      );
+    // Authenticate user
+    const authResult = await authenticateRequest(req, supabaseUrl, supabaseAnonKey);
+    if (!authResult.success) {
+      return authResult.response;
     }
 
-    const token = authHeader.replace('Bearer ', '');
+    const user = authResult.user;
 
-    if (!token || token.trim() === '') {
-      return new Response(
-        JSON.stringify({ error: 'Invalid token format - token is empty' }),
-        { status: 401, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-      );
-    }
-
-    // Basic JWT format validation (should have 3 parts separated by dots)
-    const jwtParts = token.split('.');
-    if (jwtParts.length !== 3) {
-      return new Response(
-        JSON.stringify({ error: `Invalid JWT format - expected 3 parts, got ${jwtParts.length}` }),
-        { status: 401, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-      );
-    }
-
-    // Create client with user's token for RLS-protected operations
+    // Create Supabase client with user token for RLS-protected operations
     const supabase = createClient(supabaseUrl, supabaseAnonKey, {
       global: {
         headers: {
-          Authorization: `Bearer ${token}`,
+          Authorization: req.headers.get('Authorization')!,
         },
       },
     });
-
-    // Validate the user token
-    const { data: { user }, error: userError } = await supabase.auth.getUser();
-
-    if (userError) {
-      console.error('Auth validation error:', userError);
-      return new Response(
-        JSON.stringify({
-          error: 'Token validation failed',
-          details: userError.message,
-          code: userError.status || 401
-        }),
-        { status: 401, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-      );
-    }
 
     if (!user) {
       console.error('No user found after token validation');
@@ -228,19 +186,13 @@ Deno.serve(async (req) => {
       throw new Error(`Failed to insert pitches: ${pitchError.message}`);
     }
 
-    return new Response(
-      JSON.stringify({
-        success: true,
-        sessionId,
-        pitchCount,
-        fastestSpeed,
-        averageSpeed
-      }),
-      {
-        status: 200,
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' }
-      }
-    );
+    return createJsonResponse({
+      success: true,
+      sessionId,
+      pitchCount,
+      fastestSpeed,
+      averageSpeed
+    });
 
   } catch (error) {
     console.error('Error processing CSV:', error);
@@ -248,28 +200,16 @@ Deno.serve(async (req) => {
 
     // Check if it's a specific auth error
     if (error.message?.includes('JWT') || error.message?.includes('Unauthorized')) {
-      return new Response(
-        JSON.stringify({
-          error: 'Authentication failed',
-          details: error.message,
-          code: 401
-        }),
-        {
-          status: 401,
-          headers: { ...corsHeaders, 'Content-Type': 'application/json' }
-        }
-      );
+      return createErrorResponse({
+        error: 'Authentication failed',
+        details: error.message,
+        code: 401
+      }, 401);
     }
 
-    return new Response(
-      JSON.stringify({
-        error: error.message,
-        type: error.constructor.name
-      }),
-      {
-        status: 500,
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' }
-      }
-    );
+    return createErrorResponse({
+      error: error.message,
+      type: error.constructor.name
+    }, 500);
   }
 });

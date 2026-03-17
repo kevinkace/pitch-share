@@ -9,7 +9,7 @@ import { Area, Point } from "react-easy-crop/types";
 import UserAvatar from "@/components/UserAvatar/UserAvatar";
 
 import { createClient } from "@/lib/supabase/client";
-import { useUserProfile } from "@/lib/hooks/useUserProfile";
+import { useProfile } from "@/lib/contexts/ProfileContext";
 import { useAuth } from "@/lib/contexts/AuthContext";
 
 import styles from "./AvatarUpload.module.css";
@@ -21,7 +21,7 @@ interface CropData {
 
 export function AvatarUpload() {
   const { user } = useAuth();
-  const { profile, refreshProfile } = useUserProfile();
+  const { profile, refreshProfile } = useProfile();
   const [isOpen, setIsOpen] = useState(false);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [imageSrc, setImageSrc] = useState<string | null>(null);

@@ -1,5 +1,5 @@
 import { Avatar } from "@radix-ui/themes";
-import { UserProfile } from '@/lib/hooks/useUserProfile';
+import { UserProfile } from '@/lib/contexts/ProfileContext';
 
 interface UserAvatarProps {
     profile?: UserProfile | null;

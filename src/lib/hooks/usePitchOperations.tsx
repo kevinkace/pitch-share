@@ -2,7 +2,7 @@
 
 import { useAuth } from '@/lib/contexts/AuthContext';
 import { createClient } from '@/lib/supabase/client';
-import { requireUsername } from '@/lib/contexts/UsernameContext';
+import { requireUsername } from '@/lib/helpers/requireUsername';
 
 /**
  * Hook for pitch operations that require username

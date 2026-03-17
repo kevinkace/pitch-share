@@ -15,7 +15,7 @@ import {
 import Container from "@/components/Container/Container";
 
 import { useAuth } from "@/lib/contexts/AuthContext";
-import { useUserProfile } from "@/lib/hooks/useUserProfile";
+import { useProfile } from "@/lib/contexts/ProfileContext";
 
 import styles from "./layout.module.css";
 
@@ -39,7 +39,7 @@ const userLinks = [
 
 export default function ProfileLayout({ children }: { children: React.ReactNode; }) {
     const { user, loading } = useAuth();
-    const { profile } = useUserProfile();
+    const { profile } = useProfile();
     const currentPath = usePathname();
 
     // Check if we're on a session detail page

@@ -7,11 +7,11 @@ import { Flex, Text, Spinner } from '@radix-ui/themes';
 import Container from '@/components/Container/Container';
 import PitchTracker from '@/components/PitchTracker/PitchTracker';
 import { useAuth } from '@/lib/contexts/AuthContext';
-import { useUserProfile } from '@/lib/hooks/useUserProfile';
+import { useProfile } from '@/lib/contexts/ProfileContext';
 
 export default function Page() {
     const { user, loading: authLoading } = useAuth();
-    const { profile, hasUsername, loading: profileLoading } = useUserProfile();
+    const { profile, hasUsername, loading: profileLoading } = useProfile();
     const router = useRouter();
 
     useEffect(() => {

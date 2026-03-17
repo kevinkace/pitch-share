@@ -4,7 +4,7 @@ import { useState } from "react";
 import { Button, Flex, Text, TextField, Callout } from "@radix-ui/themes";
 import { InfoCircledIcon, ExclamationTriangleIcon } from "@radix-ui/react-icons";
 
-import { useUserProfile } from "@/lib/hooks/useUserProfile";
+import { useProfile } from "@/lib/contexts/ProfileContext";
 
 interface UsernameEditorProps {
     onSuccess?: (message: string) => void;
@@ -12,7 +12,7 @@ interface UsernameEditorProps {
 }
 
 export function UsernameEditor({ onSuccess, onError }: UsernameEditorProps) {
-    const { profile, loading, canChangeUsername, daysUntilUsernameChange, updateUsername } = useUserProfile();
+    const { profile, loading, canChangeUsername, daysUntilUsernameChange, updateUsername } = useProfile();
 
     // Username editing state
     const [isEditingUsername, setIsEditingUsername] = useState(false);

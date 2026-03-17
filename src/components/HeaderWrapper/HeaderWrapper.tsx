@@ -12,7 +12,7 @@ import { isTrackerEnabled, isImportEnabled } from "@/lib/featureFlags";
 
 import { useImportWithUsernameCheck } from "@/lib/hooks/useImportWithUsernameCheck";
 import { useAuth } from "@/lib/contexts/AuthContext";
-import { useUserProfile } from "@/lib/hooks/useUserProfile";
+import { useProfile } from "@/lib/contexts/ProfileContext";
 
 import style from "./HeaderWrapper.module.css";
 
@@ -20,7 +20,7 @@ export function HeaderWrapper() {
   const pathname = usePathname();
   const { processAndImportFile, isUploading } = useImportWithUsernameCheck();
   const { user } = useAuth();
-  const { hasUsername, loading: profileLoading } = useUserProfile();
+  const { hasUsername, loading: profileLoading } = useProfile();
 
   // Hide header on login page
   if (pathname === '/login') {

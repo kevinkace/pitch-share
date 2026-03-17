@@ -7,7 +7,7 @@ import { PersonIcon, GearIcon, ExitIcon, MixIcon } from "@radix-ui/react-icons"
 import { motion, AnimatePresence } from "framer-motion";
 
 import { useAuth } from '@/lib/contexts/AuthContext';
-import { useUserProfile } from '@/lib/hooks/useUserProfile';
+import { useProfile } from '@/lib/contexts/ProfileContext';
 
 import { Button } from '@/components/Button/Button';
 import UserAvatar from '@/components/UserAvatar/UserAvatar';
@@ -16,7 +16,7 @@ import styles from './UserNav.module.css';
 
 export function UserNav() {
     const { user, loading: authLoading, signOut } = useAuth()
-    const { profile, loading: profileLoading } = useUserProfile();
+    const { profile, loading: profileLoading } = useProfile();
     const [showMenu, setShowMenu] = useState(false);
     const userNavRef = useRef<HTMLDivElement>(null);
 

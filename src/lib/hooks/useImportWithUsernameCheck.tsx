@@ -1,7 +1,7 @@
 "use client";
 
 import { useImport } from '@/lib/contexts/ImportContext';
-import { requireUsername } from '@/lib/contexts/UsernameContext';
+import { requireUsername } from '@/lib/helpers/requireUsername';
 
 /**
  * Hook that wraps the import functionality with username requirements.

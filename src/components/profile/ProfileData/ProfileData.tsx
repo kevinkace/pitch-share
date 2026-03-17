@@ -3,7 +3,7 @@
 import { Card } from "@radix-ui/themes";
 
 import { useAuth } from "@/lib/contexts/AuthContext";
-import { useUserProfile } from "@/lib/hooks/useUserProfile";
+import { useProfile } from "@/lib/contexts/ProfileContext";
 
 import { DefList } from "@/components/DefList/DefList";
 
@@ -21,7 +21,7 @@ const profileKeys = [
 
 export function ProfileData() {
     const { user } = useAuth();
-    const { profile, loading } = useUserProfile();
+    const { profile, loading } = useProfile();
 
     if (!user) return <p>No user data</p>;
 

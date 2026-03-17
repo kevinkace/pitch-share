@@ -4,8 +4,8 @@ import { Bungee, Jost } from "next/font/google";
 import "@radix-ui/themes/styles.css";
 
 import { AuthProvider } from "@/lib/contexts/AuthContext";
+import { ProfileProvider } from "@/lib/contexts/ProfileContext";
 import { ImportProvider } from "@/lib/contexts/ImportContext";
-import { UsernameProvider } from "@/lib/contexts/UsernameContext";
 
 import Analytics from "@/components/Analytics/Analytics";
 import { HeaderWrapper } from "@/components/HeaderWrapper/HeaderWrapper";
@@ -51,12 +51,12 @@ export default function RootLayout({
             <Theme appearance="dark" asChild>
                 <body className={`${style.body} ${bungee.variable} ${jost.variable}`}>
                     <AuthProvider>
-                        <UsernameProvider>
+                        <ProfileProvider>
                             <ImportProvider>
                                 <HeaderWrapper />
                                 {children}
                             </ImportProvider>
-                        </UsernameProvider>
+                        </ProfileProvider>
                     </AuthProvider>
                 </body>
             </Theme>

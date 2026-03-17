@@ -5,7 +5,7 @@ import { notFound, redirect } from 'next/navigation';
 import { User } from '@supabase/supabase-js';
 
 import { createClient } from '@/lib/supabase/client';
-import { UserProfile } from '@/lib/hooks/useUserProfile';
+import { UserProfile } from '@/lib/contexts/ProfileContext';
 
 import { formatTime, formatDate } from '@/lib/formatters';
 

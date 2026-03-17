@@ -13,20 +13,36 @@ export default function Footer() {
     return (
         <footer className={styles.footer}>
             <Container className={styles.container}>
-                <Flex justify="between" align="center" wrap="wrap">
-                    {/* Left side - Logo/Brand */}
-                    <Flex align="center" gap="2" asChild>
-                        <Link href="/">
-                            <Logo />
-                            <Logotype />
-                        </Link>
-                    </Flex>
+                <Flex direction="column" gap="4">
+                    {/* Main footer content */}
+                    <Flex justify="between" align="center" wrap="wrap" gap="4">
+                        {/* Left side - Logo/Brand */}
+                        <Flex align="center" gap="2" asChild>
+                            <Link href="/">
+                                <Logo />
+                                <Logotype />
+                            </Link>
+                        </Flex>
 
-                    {/* Right side - Copyright */}
-                    <Flex align="center" gap="4" className={styles.copyright}>
-                        <Text size="2" color="gray">
-                            © {currentYear} Pitch Share
-                        </Text>
+                        {/* Center - Legal Links */}
+                        <Flex align="center" gap="4" wrap="wrap">
+                            <Text size="2" asChild>
+                                <Link href="/legal/privacy-policy">Privacy Policy</Link>
+                            </Text>
+                            <Text size="2" asChild>
+                                <Link href="/legal/terms-of-service">Terms of Service</Link>
+                            </Text>
+                            <Text size="2" asChild>
+                                <Link href="/legal/cookie-policy">Cookie Policy</Link>
+                            </Text>
+                        </Flex>
+
+                        {/* Right side - Copyright */}
+                        <Flex align="center" gap="4" className={styles.copyright}>
+                            <Text size="2" color="gray">
+                                © {currentYear} Pitch Share
+                            </Text>
+                        </Flex>
                     </Flex>
                 </Flex>
             </Container>

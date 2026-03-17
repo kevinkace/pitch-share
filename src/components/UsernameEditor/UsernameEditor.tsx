@@ -12,7 +12,7 @@ interface UsernameEditorProps {
 }
 
 export function UsernameEditor({ onSuccess, onError }: UsernameEditorProps) {
-    const { profile, canChangeUsername, daysUntilUsernameChange, updateUsername } = useUserProfile();
+    const { profile, loading, canChangeUsername, daysUntilUsernameChange, updateUsername } = useUserProfile();
 
     // Username editing state
     const [isEditingUsername, setIsEditingUsername] = useState(false);
@@ -60,6 +60,19 @@ export function UsernameEditor({ onSuccess, onError }: UsernameEditorProps) {
         setIsEditingUsername(false);
         setUsernameError(null);
     };
+
+    // Show loading state to prevent flash of content
+    if (loading) {
+        return (
+            <Flex direction="column" gap="3">
+                <Flex align="center" gap="3">
+                    <Text size="3" weight="medium" color="gray">
+                        Loading username info...
+                    </Text>
+                </Flex>
+            </Flex>
+        );
+    }
 
     if (profile?.username && !isEditingUsername) {
         // Display current username with change button

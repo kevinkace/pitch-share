@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Flex, Text, Heading } from "@radix-ui/themes";
+import { Flex, Text, Heading, Separator } from "@radix-ui/themes";
 
 import { AvatarUpload } from "@/components/AvatarUpload/AvatarUpload";
 import { UsernameEditor } from "@/components/UsernameEditor/UsernameEditor";
@@ -31,6 +31,8 @@ export default function SettingsPage() {
 
             <AvatarUpload />
 
+            <Separator size="4"/>
+
 
             <UsernameEditor
                 onSuccess={(message) => {
@@ -42,6 +44,8 @@ export default function SettingsPage() {
                     setSuccess(null);
                 }}
             />
+
+            <Separator size="4"/>
 
             {/* Data Export Section */}
             <Heading size="4">Export Your Data</Heading>
@@ -58,6 +62,8 @@ export default function SettingsPage() {
                     setSuccess(null);
                 }}
             />
+
+            <Separator size="4"/>
 
             {/* Account Deletion Section */}
             <Heading size="4" color="red">Delete Account</Heading>

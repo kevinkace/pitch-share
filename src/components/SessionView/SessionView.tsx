@@ -17,6 +17,7 @@ import SpeedGauge from '@/components/SpeedGauge/SpeedGauge';
 import SpeedColorIndicator from '@/components/SpeedColorIndicator/SpeedColorIndicator';
 import SessionOwnershipBadge from '@/components/SessionOwnershipBadge/SessionOwnershipBadge';
 import UserAvatar from "@/components/UserAvatar/UserAvatar";
+import UserLink from '@/components/UserLink/UserLink';
 
 import { useSession } from '@/lib/contexts/SessionContext';
 import { getSpeedColor } from '@/lib/speedRanges';
@@ -171,11 +172,15 @@ export default function SessionView({
     <Container>
       <div className={style.topBar}>
           <Flex gap="4" align="center">
-            <UserAvatar profile={ownerProfile} size="5"/>
+            <UserLink userId={ownerProfile?.id || sessionData?.user_id}>
+              <UserAvatar profile={ownerProfile} size="5"/>
+            </UserLink>
             <div>
               <Flex gap="4" align="center">
                 <h1 className={style.header}>
-                  {ownerProfile?.username || sessionMeta.player}
+                  <UserLink userId={ownerProfile?.id || sessionData?.user_id}>
+                    {ownerProfile?.username || sessionMeta.player}
+                  </UserLink>
                 </h1>
 
                 <SessionOwnershipBadge />

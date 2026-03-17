@@ -62,7 +62,7 @@ export function UserNav() {
         },
         {
             label : "My sessions",
-            href : "/profile",
+            href : "/profile/sessions",
             icon : <MixIcon />
         },
         {

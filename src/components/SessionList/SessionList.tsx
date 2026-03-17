@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { Card, Flex } from '@radix-ui/themes';
+import { Card, Flex, Grid } from '@radix-ui/themes';
 
 import { createClient } from '@/lib/supabase/server';
 import { formatDate } from '@/lib/formatters';
@@ -45,7 +45,7 @@ export default async function SessionList() {
             {sessions.length === 0 ? (
                 <p>{user ? 'No sessions found.' : 'No public sessions available.'}</p>
             ) : (
-                <Flex wrap="wrap" gap="3">
+                <Grid columns="4" gap="3">
                     {sessions.map((session) => (
                         <Card
                             asChild
@@ -100,7 +100,7 @@ export default async function SessionList() {
 
                         </Card>
                     ))}
-                </Flex>
+                </Grid>
             )}
         </div>
     );

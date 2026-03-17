@@ -50,17 +50,13 @@ export default function SessionView({
 
   if (loading) {
     return (
-      <Container>
         <p>Loading session...</p>
-      </Container>
     );
   }
 
   if (error || !sessionData) {
     return (
-      <Container>
         <p>Session not found</p>
-      </Container>
     );
   }
 
@@ -169,7 +165,7 @@ export default function SessionView({
   };
 
   return (
-    <Container>
+    <Flex direction="column" gap="4">
       <div className={style.topBar}>
           <Flex gap="4" align="center">
             <UserLink userId={ownerProfile?.id || sessionData?.user_id}>
@@ -241,6 +237,6 @@ export default function SessionView({
       )}
 
       <SessionNavigation session={sessionId} />
-    </Container>
+    </Flex>
   );
 }

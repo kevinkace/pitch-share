@@ -1,10 +1,12 @@
 "use client";
 
 import { useState, useCallback, useRef } from "react";
-import { Button, Flex, Text, Dialog, Box, Avatar } from "@radix-ui/themes";
-import { CameraIcon, Cross2Icon } from "@radix-ui/react-icons";
+import { Button, Flex, Text, Dialog, Box } from "@radix-ui/themes";
+import { CameraIcon } from "@radix-ui/react-icons";
 import Cropper from "react-easy-crop";
 import { Area, Point } from "react-easy-crop/types";
+
+import UserAvatar from "@/components/UserAvatar/UserAvatar";
 
 import { createClient } from "@/lib/supabase/client";
 import { useUserProfile } from "@/lib/hooks/useUserProfile";
@@ -208,12 +210,7 @@ export function AvatarUpload() {
   return (
     <>
       <Flex direction="column" gap="3" align="center">
-        <Avatar
-          size="9"
-          src={currentAvatar}
-          fallback={user?.email?.[0]?.toUpperCase() ?? "U"}
-          radius="full"
-        />
+        <UserAvatar profile={profile} size="9"/>
 
         <Button
           variant="outline"

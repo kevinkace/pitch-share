@@ -54,12 +54,12 @@ export function UserNav() {
     ];
 
     const displayUserName = profile?.username || "Set username";
-    const displayFullName = profile?.full_name || user.user_metadata?.full_name || "Full Name";
+    const email = profile?.email || user.user_metadata?.email || "Email";
 
     return (
         <div className={styles.userNav}>
             <button onClick={() => setShowMenu(!showMenu)}>
-                <UserAvatar user={user} />
+                <UserAvatar profile={profile} />
             </button>
             <AnimatePresence>
                 {showMenu && (
@@ -77,7 +77,7 @@ export function UserNav() {
                                             {displayUserName}
                                         </div>
                                         <div className={styles.fullName}>
-                                            {displayFullName}
+                                            {email}
                                         </div>
                                     </Flex>
                                 </Flex>

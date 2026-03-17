@@ -15,14 +15,16 @@ import UserAvatar from '@/components/UserAvatar/UserAvatar';
 import styles from './UserNav.module.css';
 
 export function UserNav() {
-    const { user, loading, signOut } = useAuth()
-    const { profile } = useUserProfile();
+    const { user, loading: authLoading, signOut } = useAuth()
+    const { profile, loading: profileLoading } = useUserProfile();
     const [showMenu, setShowMenu] = useState(false);
 
-    if (loading) {
+    const isLoading = authLoading || profileLoading;
+
+    if (isLoading) {
         return (
             <div className={styles.loading}>
-                Loading...
+                <UserAvatar profile={null} loading={true} />
             </div>
         )
     }
@@ -59,7 +61,7 @@ export function UserNav() {
     return (
         <div className={styles.userNav}>
             <button onClick={() => setShowMenu(!showMenu)}>
-                <UserAvatar profile={profile} />
+                <UserAvatar profile={profile} loading={isLoading} />
             </button>
             <AnimatePresence>
                 {showMenu && (
@@ -69,9 +71,9 @@ export function UserNav() {
                         transition={{ duration: 0.2 }}
                     >
                         <Card className={styles.menu}>
-                            <Flex direction="column" gap="2">
+                            <Flex direction="column" gap="3">
                                 <Flex gap="3" align="center">
-                                    <UserAvatar user={user} />
+                                    <UserAvatar profile={profile} />
                                     <Flex direction="column" gap="1" className={styles.names}>
                                         <div className={styles.userName}>
                                             {displayUserName}
@@ -83,12 +85,16 @@ export function UserNav() {
                                 </Flex>
                                 <Separator size="4"/>
 
-                                {menuItems.map(( {label, href, icon} ) => (
-                                    <Link href={href} key={label} className={styles.menuItem}>
-                                        <span className={styles.menuItemIcon}>{icon}</span>
-                                        {label}
-                                    </Link>
-                                ))}
+                                <Flex direction="column" gap="1">
+                                    {menuItems.map(( {label, href, icon} ) => (
+                                        <Link href={href} key={label} className={styles.menuItem}>
+                                            <span className={styles.menuItemIcon}>{icon}</span>
+                                            {label}
+                                        </Link>
+                                    ))}
+                                </Flex>
+
+                                <Separator size="4"/>
 
                                 <Button
                                     onClick={() => {

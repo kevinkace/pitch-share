@@ -13,7 +13,7 @@ export default function LegalIndexPage() {
     const lastUpdated = 'March 17, 2026';
 
     return (
-        <div>
+        <>
             <h1>Legal Information</h1>
 
             <p>
@@ -73,6 +73,6 @@ export default function LegalIndexPage() {
             <p>
                 We're committed to transparency and will be happy to address any concerns you may have.
             </p>
-        </div>
+        </>
     );
 }

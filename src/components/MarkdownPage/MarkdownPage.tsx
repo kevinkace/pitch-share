@@ -10,44 +10,6 @@ interface MarkdownPageProps {
 }
 
 const markdownComponents: Components = {
-    h1: ({ children, ...props }) => (
-        <Heading size="8" mb="4" {...props}>
-            {children}
-        </Heading>
-    ),
-    h2: ({ children, ...props }) => (
-        <Heading size="5" mb="3" {...props}>
-            {children}
-        </Heading>
-    ),
-    h3: ({ children, ...props }) => (
-        <Heading size="3" mb="2" {...props}>
-            {children}
-        </Heading>
-    ),
-    p: ({ children, ...props }) => (
-        <Text mb="3" {...props}>
-            {children}
-        </Text>
-    ),
-    em: ({ children, ...props }) => (
-        <Text size="2" color="gray" mb="6" {...props}>
-            {children}
-        </Text>
-    ),
-    ul: ({ children, ...props }) => (
-        <ul style={{ marginLeft: '1.5rem', marginBottom: '1rem' }} {...props}>
-            {children}
-        </ul>
-    ),
-    li: ({ children, ...props }) => (
-        <li style={{ marginBottom: '0.25rem' }} {...props}>
-            {children}
-        </li>
-    ),
-    strong: ({ children, ...props }) => (
-        <strong {...props}>{children}</strong>
-    ),
     hr: ({ ...props }) => (
         <Separator my="5" size="4" {...props} />
     ),

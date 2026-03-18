@@ -1,6 +1,7 @@
 import { Metadata } from 'next';
 
 import Container from '@/components/Container/Container';
+import LegalNavigation from './components/LegalNavigation';
 
 export const metadata: Metadata = {
     title: 'Legal - Pitch Share',
@@ -14,7 +15,10 @@ export default function LegalLayout({
 }) {
     return (
         <Container>
-            {children}
+            <div>
+                <LegalNavigation />
+                {children}
+            </div>
         </Container>
     );
 }

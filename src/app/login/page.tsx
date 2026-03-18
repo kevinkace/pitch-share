@@ -26,7 +26,7 @@ function LoginContent() {
                 <div className={styles.left}>
                     <Flex asChild align="center" direction="column">
                         <Link href="/">
-                            <Logo />
+                            <Logo size="4"/>
                             <h1 className={styles.title}>
                                 <Logotype />
                             </h1>
@@ -35,7 +35,7 @@ function LoginContent() {
 
 
                     <p className={styles.subtitle}>
-                      {sent ? 'Check your email for the magic link!' : 'Sign in to access your pitch data'}
+                      {sent ? 'Check your email for the magic link!' : 'Sign in to track your pitch data'}
                     </p>
 
                     <LoginForm />

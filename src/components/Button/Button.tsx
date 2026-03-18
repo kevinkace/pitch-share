@@ -4,12 +4,12 @@ import { Button as RadixButton } from "@radix-ui/themes";
 
 import style from "./Button.module.css";
 
-export function Button({ children, href, onClick, variant }: { children: React.ReactNode, href?: string, onClick?: () => void, variant?: "soft" | "solid" }) {
+export function Button({ children, href, ...props }: { children: React.ReactNode, href?: string }) {
     if (href) {
         return (
             <RadixButton
                 asChild
-                variant={variant}
+                {...props}
             >
                 <Link
                     href={href}
@@ -23,9 +23,8 @@ export function Button({ children, href, onClick, variant }: { children: React.R
 
     return (
         <RadixButton
-            onClick={onClick}
             className={style.button}
-            variant={variant}
+            {...props}
         >
             {children}
         </RadixButton>

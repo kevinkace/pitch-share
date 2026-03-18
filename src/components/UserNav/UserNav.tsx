@@ -3,7 +3,7 @@
 import { useState, useRef, useEffect } from 'react';
 import Link from 'next/link';
 import { Separator, Card, Flex } from '@radix-ui/themes';
-import { PersonIcon, GearIcon, ExitIcon, MixIcon } from "@radix-ui/react-icons"
+import { PersonIcon, GearIcon, ExitIcon, ShadowInnerIcon } from "@radix-ui/react-icons"
 import { motion, AnimatePresence } from "framer-motion";
 
 import { useAuth } from '@/lib/contexts/AuthContext';
@@ -63,7 +63,7 @@ export function UserNav() {
         {
             label : "My sessions",
             href : "/profile/sessions",
-            icon : <MixIcon />
+            icon : <ShadowInnerIcon />
         },
         {
             label : "Settings",

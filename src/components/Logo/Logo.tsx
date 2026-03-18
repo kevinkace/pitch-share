@@ -1,14 +1,31 @@
+type LogoSize = "1" | "2" | "3" | "4" | "5" | "6" | "7" | "8";
+
 interface LogoProps {
+  size?: LogoSize;
   width?: number;
   height?: number;
   className?: string;
 }
 
-export default function Logo({ width = 32, height = 32, className }: LogoProps) {
+const sizeMap: Record<LogoSize, number> = {
+  "1": 16,
+  "2": 24,
+  "3": 32,
+  "4": 48,
+  "5": 64,
+  "6": 96,
+  "7": 128,
+  "8": 192,
+};
+
+export default function Logo({ size, width, height, className }: LogoProps) {
+  const computedSize = size ? sizeMap[size] : undefined;
+  const finalWidth = width ?? computedSize ?? 32;
+  const finalHeight = height ?? computedSize ?? 32;
   return (
     <svg
-      width={width}
-      height={height}
+      width={finalWidth}
+      height={finalHeight}
       viewBox="0 0 32 32"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
@@ -25,11 +42,20 @@ export default function Logo({ width = 32, height = 32, className }: LogoProps) 
 }
 
 // For use in ImageResponse where we need the raw SVG JSX
-export function LogoSVG({ width = 32, height = 32 }) {
+interface LogoSVGProps {
+  size?: LogoSize;
+  width?: number;
+  height?: number;
+}
+
+export function LogoSVG({ size, width, height }: LogoSVGProps) {
+  const computedSize = size ? sizeMap[size] : undefined;
+  const finalWidth = width ?? computedSize ?? 32;
+  const finalHeight = height ?? computedSize ?? 32;
   return (
     <svg
-      width={width}
-      height={height}
+      width={finalWidth}
+      height={finalHeight}
       viewBox="0 0 32 32"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"

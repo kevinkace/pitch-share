@@ -19,7 +19,7 @@ export default function Footer() {
                         {/* Left side - Logo/Brand */}
                         <Flex align="center" gap="2" asChild>
                             <Link href="/">
-                                <Logo />
+                                <Logo size="1"/>
                                 <Logotype />
                             </Link>
                         </Flex>

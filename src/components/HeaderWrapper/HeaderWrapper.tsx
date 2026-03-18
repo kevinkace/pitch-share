@@ -2,6 +2,7 @@
 
 import { usePathname } from 'next/navigation';
 import { Link, Flex } from "@radix-ui/themes";
+import { UploadIcon, MaskOffIcon } from '@radix-ui/react-icons';
 
 import { LogoSVG } from "@/components/Logo/Logo";
 import { Button } from "@/components/Button/Button";
@@ -11,6 +12,7 @@ import Logotype from "@/components/Logotype/Logotype";
 import { isTrackerEnabled, isImportEnabled } from "@/lib/featureFlags";
 
 import { useImportWithUsernameCheck } from "@/lib/hooks/useImportWithUsernameCheck";
+
 import { useAuth } from "@/lib/contexts/AuthContext";
 import { useProfile } from "@/lib/contexts/ProfileContext";
 
@@ -41,8 +43,10 @@ export function HeaderWrapper() {
         {isTrackerEnabled() && (
           <Button
             variant="soft"
+            radius="full"
             href="/pitch-tracker"
           >
+            <MaskOffIcon />
             Tracker
           </Button>
         )}
@@ -50,6 +54,7 @@ export function HeaderWrapper() {
         {isImportEnabled() && (
           <Button
             variant="soft"
+            radius="full"
             onClick={() => {
               // redirect to login if not authenticated
               if (!user) {
@@ -78,6 +83,7 @@ export function HeaderWrapper() {
             }}
             disabled={isUploading || profileLoading}
           >
+            <UploadIcon />
             {isUploading ? 'Importing...' : 'Import'}
           </Button>
         )}

@@ -2,6 +2,8 @@
 
 *Last updated: March 17, 2026*
 
+Pitch Share is an independent service operated by Kevin Cameron, based in Seattle, Washington, United States.
+
 ## 1. Introduction
 
 Welcome to Pitch Share ("we," "our," or "us"). This Privacy Policy explains how we collect, use, disclose, and safeguard your information when you use our pitch tracking application and related services.
@@ -28,7 +30,7 @@ We automatically collect certain information about your device and usage of our 
 - Pitch tracking data and session information
 - Device information and browser data
 - Usage patterns and preferences
-- CSV upload data and processing results
+- Data contained in CSV files you upload, including pitch metrics or related performance data, and the processing results generated from that data.
 
 ---
 
@@ -43,6 +45,8 @@ We use the collected information to:
 - Respond to your comments, questions, and customer service requests
 - Send you technical notices, updates, and administrative messages
 
+Where required by applicable law, we process personal information based on one or more of the following legal bases: performance of a contract, legitimate interests in operating and improving the Service, compliance with legal obligations, or your consent.
+
 ---
 
 ## 4. Information Sharing and Disclosure
@@ -50,7 +54,8 @@ We use the collected information to:
 We do not sell, trade, or otherwise transfer your personal information to third parties except in the following circumstances:
 
 - **With your consent:** When you explicitly agree to the sharing
-- **Service providers:** Third-party companies that help us operate our service (e.g., Supabase for data storage)
+- **Service providers:** Third-party companies that help us operate our service (e.g., Supabase for data storage)  
+These service providers process data on our behalf under appropriate data processing agreements.
 - **Legal compliance:** When required by law or to protect our rights
 - **Business transfers:** In connection with any merger, sale, or acquisition
 
@@ -89,13 +94,17 @@ We use cookies and similar tracking technologies to enhance your experience. The
 - Analyze usage patterns and improve our service
 - Provide secure authentication
 
-You can control cookie preferences through your browser settings. See our Cookie Policy for detailed information.
+You can control cookie preferences through your browser settings. See our [Cookie Policy](/legal/cookie-policy) for detailed information.
+
+Where required by applicable law, we obtain your consent before placing non-essential cookies such as analytics cookies on your device.
 
 ---
 
 ## 8. Data Retention
 
 We retain your personal information only as long as necessary to provide our services and fulfill the purposes outlined in this policy. When you delete your account, we will permanently remove your personal data and associated content within 30 days, except where we are required to retain certain information for legal compliance.
+
+Residual copies of your information may remain in backups for a limited period but will not be used for any other purpose.
 
 ---
 

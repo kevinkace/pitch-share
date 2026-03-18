@@ -2,6 +2,8 @@
 
 *Last updated: March 17, 2026*
 
+Pitch Share is an independent service operated by Kevin Cameron, based in Seattle, Washington, United States.
+
 ## 1. What Are Cookies
 
 Cookies are small text files that are placed on your computer, smartphone, or other device when you visit a website. They are widely used to make websites work more efficiently and provide information to website owners.
@@ -51,7 +53,7 @@ These are cookies set directly by Pitch Share. We use them for essential functio
 We may also use cookies from trusted third-party services:
 
 - **Supabase:** Authentication and database services
-- **Analytics providers:** To understand user behavior and improve our service
+- **Analytics providers:** Such as Google Analytics, to understand user behavior and improve our service.
 - **Error tracking services:** To monitor and fix application issues
 
 ---

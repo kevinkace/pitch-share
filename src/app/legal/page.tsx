@@ -1,6 +1,8 @@
 import { Metadata } from 'next';
 import Link from 'next/link';
-import { Heading, Text, Card, Flex, Section } from '@radix-ui/themes';
+import { Card, Flex } from '@radix-ui/themes';
+
+import styles from "./page.module.css";
 
 export const metadata: Metadata = {
     title: 'Legal Information - Pitch Share',
@@ -11,68 +13,66 @@ export default function LegalIndexPage() {
     const lastUpdated = 'March 17, 2026';
 
     return (
-        <>
-            <Heading size="8" mb="4">Legal Information</Heading>
-            <Text size="3" color="gray" mb="6">
-                Important legal documents and policies for Pitch Share users
-            </Text>
+        <div>
+            <h1>Legal Information</h1>
 
-            <Section mb="6">
-                <Text mb="4">
-                    This page contains all the legal documents related to your use of Pitch Share.
-                    Please take a moment to review these important policies and terms.
-                </Text>
-                <Text size="2" color="gray" mb="6">
-                    Last updated: {lastUpdated}
-                </Text>
-            </Section>
+            <p>
+                This page contains all the legal documents related to your use of Pitch Share.
+                Please take a moment to review these important policies and terms.
+            </p>
 
-            <Flex direction="column" gap="4">
+            <p>
+                Also note, I'm just a single developer maintaining this project, so while I strive to keep everything up to date and accurate, there may be occasional oversights.
+            </p>
+
+            <p>
+                If you need to get in touch regarding these legal documents, you can either open an issue on our GitHub repository or contact us directly at <a href="mailto:support@pitchshare.app">support@pitchshare.app</a>.
+            </p>
+
+            <p className={styles.lastUpdated}>
+                Last updated: {lastUpdated}
+            </p>
+
+            <Flex direction="column" gap="5" className={styles.linkContainer}>
                 <Card asChild>
-                    <Link href="/legal/privacy-policy" style={{ textDecoration: 'none' }}>
-                        <Flex direction="column" gap="2" p="4">
-                            <Heading size="4">Privacy Policy</Heading>
-                            <Text color="gray">
-                                Learn how we collect, use, and protect your personal information when you use Pitch Share.
-                                This includes details about data storage, sharing practices, and your privacy rights.
-                            </Text>
-                        </Flex>
+                    <Link href="/legal/privacy-policy">
+                        <h3>Privacy Policy</h3>
+                        <p>
+                            Learn how we collect, use, and protect your personal information when you use Pitch Share.
+                            This includes details about data storage, sharing practices, and your privacy rights.
+                        </p>
                     </Link>
                 </Card>
 
                 <Card asChild>
-                    <Link href="/legal/terms-of-service" style={{ textDecoration: 'none' }}>
-                        <Flex direction="column" gap="2" p="4">
-                            <Heading size="4">Terms of Service</Heading>
-                            <Text color="gray">
-                                The legal agreement between you and Pitch Share that governs your use of our service.
-                                This covers acceptable use, account responsibilities, and service limitations.
-                            </Text>
-                        </Flex>
+                    <Link href="/legal/terms-of-service">
+                        <h3>Terms of Service</h3>
+                        <p>
+                            The legal agreement between you and Pitch Share that governs your use of our service.
+                            This covers acceptable use, account responsibilities, and service limitations.
+                        </p>
                     </Link>
                 </Card>
 
                 <Card asChild>
-                    <Link href="/legal/cookie-policy" style={{ textDecoration: 'none' }}>
-                        <Flex direction="column" gap="2" p="4">
-                            <Heading size="4">Cookie Policy</Heading>
-                            <Text color="gray">
-                                Information about how we use cookies and similar technologies to enhance your experience,
-                                provide security, and analyze usage patterns.
-                            </Text>
-                        </Flex>
+                    <Link href="/legal/cookie-policy">
+                        <h3>Cookie Policy</h3>
+                        <p>
+                            Information about how we use cookies and similar technologies to enhance your experience,
+                            provide security, and analyze usage patterns.
+                        </p>
                     </Link>
                 </Card>
             </Flex>
 
-            <Section mt="6">
-                <Heading size="4" mb="3">Questions or Concerns?</Heading>
-                <Text>
-                    If you have any questions about these legal documents or our policies,
-                    please don't hesitate to contact us through your account settings or our support channels.
-                    We're committed to transparency and will be happy to address any concerns you may have.
-                </Text>
-            </Section>
-        </>
+            <h2>Questions or Concerns?</h2>
+            <p>
+                If you have any questions about these legal documents or our policies,
+                please don't hesitate to contact us through your account settings or our support channels.
+            </p>
+            <p>
+                We're committed to transparency and will be happy to address any concerns you may have.
+            </p>
+        </div>
     );
 }

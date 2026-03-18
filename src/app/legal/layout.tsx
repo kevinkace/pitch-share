@@ -1,5 +1,6 @@
 import { Metadata } from 'next';
-import { Container } from '@radix-ui/themes';
+
+import Container from '@/components/Container/Container';
 
 export const metadata: Metadata = {
     title: 'Legal - Pitch Share',
@@ -12,7 +13,7 @@ export default function LegalLayout({
     children: React.ReactNode;
 }) {
     return (
-        <Container size="3" style={{ paddingTop: '2rem', paddingBottom: '2rem' }}>
+        <Container>
             {children}
         </Container>
     );

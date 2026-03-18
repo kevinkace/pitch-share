@@ -1,0 +1,13 @@
+.lastUpdated {
+    font-size: 0.9em;
+    opacity: 0.7;
+}
+
+.linkContainer {
+    margin: 3em auto 4em;
+    max-width: 800px;
+
+    a {
+        padding: 1em 1.4em 0.6em;
+    }
+}

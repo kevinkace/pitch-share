@@ -4,6 +4,8 @@ import React, { useState } from 'react';
 
 import style from './PitchTracker.module.css';
 
+const DECIMAL = 1;
+
 type Pitch = {
     id: string
     x: number
@@ -20,53 +22,54 @@ type Props = {
 }
 
 export default function PitchSVG({ pitches = [], selectedPitchIds = [], onPitchClick }: Props) {
-    const width = 7182
-    const height = 7182
-    const strikeW = 1419  // width from strike-zone-2.svg (4301-2882)
-    const strikeH = 1703  // height from strike-zone-2.svg
-    const grassHeight = 567  // height from strike-zone-2.svg ground section
-    const borderThickness = 176  // scaled border thickness
+    const width = 7182;
+    const height = 7182;
+    const strikeW = 1419;  // width from strike-zone-2.svg (4301-2882)
+    const strikeH = 1703;  // height from strike-zone-2.svg
+    const grassHeight = 567;  // height from strike-zone-2.svg ground section
+    const borderThickness = 176;  // scaled border thickness
 
     const [ mouse, setMouse ] = useState({ x: 0, y: 0 });
     const [ svgPos, setSvgPos ] = useState({ x: 0, y: 0 });
-    const [ pitchType, setPitchType ] = useState('')
+    const [ pitchType, setPitchType ] = useState('');
 
     function toFeet(pxX: number, pxY: number) {
-        const cx = width / 2
-        const cy = height / 2
+        const cx = width / 2;
+        const cy = height / 2;
         // Add half strike zone height to center y at strike zone center
         const strikeZoneCenterY = cy + (strikeH / 2)
         // map horizontal to +/-12 feet, vertical to +/-6 feet
-        const xFeet = ((pxX - cx) / (width / 2)) * 12
-        const yFeet = ((strikeZoneCenterY - pxY) / (height / 2)) * 6
-        return { x: Number(xFeet.toFixed(3)), y: Number(yFeet.toFixed(3)) }
+        const xFeet = ((pxX - cx) / (width / 2)) * 12;
+        const yFeet = ((strikeZoneCenterY - pxY) / (height / 2)) * 6;
+
+        return { x: Number(xFeet.toFixed(DECIMAL)), y: Number(yFeet.toFixed(DECIMAL)) }
     }
 
     function toSvgCoords(xFeet: number, yFeet: number) {
-        const cx = width / 2
-        const cy = height / 2
+        const cx = width / 2;
+        const cy = height / 2;
         // Add half strike zone height to center y at strike zone center
-        const strikeZoneCenterY = cy + (strikeH / 2)
+        const strikeZoneCenterY = cy + (strikeH / 2);
         // Reverse the toFeet calculation
-        const svgX = cx + (xFeet * (width / 2)) / 12
-        const svgY = strikeZoneCenterY - (yFeet * (height / 2)) / 6
-        return { x: svgX, y: svgY }
+        const svgX = cx + (xFeet * (width / 2)) / 12;
+        const svgY = strikeZoneCenterY - (yFeet * (height / 2)) / 6;
+        return { x: svgX, y: svgY };
     }
 
     const handleClick = async (e: React.MouseEvent<SVGSVGElement>) => {
-        const rect = (e.currentTarget as SVGSVGElement).getBoundingClientRect()
+        const rect = (e.currentTarget as SVGSVGElement).getBoundingClientRect();
 
-        const pxX = e.clientX - rect.left
-        const pxY = e.clientY - rect.top
+        const pxX = e.clientX - rect.left;
+        const pxY = e.clientY - rect.top;
 
         // convert rendered pixel coords to SVG internal coordinates
-        const svgX = (pxX / rect.width) * width
-        const svgY = (pxY / rect.height) * height
+        const svgX = (pxX / rect.width) * width;
+        const svgY = (pxY / rect.height) * height;
 
-        const { x, y } = toFeet(svgX, svgY)
+        const { x, y } = toFeet(svgX, svgY);
 
-        const isGround = (e.target as Element)?.id === 'ground'
-        const isStrike = (e.target as Element)?.id === 'strike-zone'
+        const isGround = (e.target as Element)?.id === 'ground';
+        const isStrike = (e.target as Element)?.id === 'strike-zone';
 
         // set data
     }
@@ -104,8 +107,8 @@ export default function PitchSVG({ pitches = [], selectedPitchIds = [], onPitchC
                 onMouseMove={(e) => {
                     const rect = (e.currentTarget as SVGSVGElement).getBoundingClientRect();
 
-                    const pxX = e.clientX - rect.left
-                    const pxY = e.clientY - rect.top
+                    const pxX = e.clientX - rect.left;
+                    const pxY = e.clientY - rect.top;
 
                     // convert rendered pixel coords to SVG internal coordinates
                     const svgX = Math.floor((pxX / rect.width) * width);
@@ -113,7 +116,7 @@ export default function PitchSVG({ pitches = [], selectedPitchIds = [], onPitchC
 
                     setSvgPos(toFeet(svgX, svgY));
 
-                    const targetId = (e.target as Element)?.id
+                    const targetId = (e.target as Element)?.id;;
 
                     if (targetId === 'strike-zone') {
                         setPitchType('Strike')
@@ -209,9 +212,9 @@ export default function PitchSVG({ pitches = [], selectedPitchIds = [], onPitchC
                 {/* Pitch markers group */}
                 <g id="pitch-markers">
                     {pitches.map((pitch) => {
-                        const { x: svgX, y: svgY } = toSvgCoords(pitch.x, pitch.y)
-                        const isSelected = selectedPitchIds.includes(pitch.id)
-                        const ballSize = 120 // Size of the ball in SVG units
+                        const { x: svgX, y: svgY } = toSvgCoords(pitch.x, pitch.y);
+                        const isSelected = selectedPitchIds.includes(pitch.id);
+                        const ballSize = 120; // Size of the ball in SVG units
 
                         return (
                             <g key={pitch.id}>

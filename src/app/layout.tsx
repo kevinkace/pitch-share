@@ -8,8 +8,8 @@ import { ProfileProvider } from "@/lib/contexts/ProfileContext";
 import { ImportProvider } from "@/lib/contexts/ImportContext";
 
 import Analytics from "@/components/Analytics/Analytics";
-import { HeaderWrapper } from "@/components/HeaderWrapper/HeaderWrapper";
-import Footer from "@/components/Footer/Footer";
+import { HeaderWrapper } from "@/components/LAYOUT/HeaderWrapper/HeaderWrapper";
+import Footer from "@/components/LAYOUT/Footer/Footer";
 
 import "./globals.css";
 import style from "./layout.module.css";

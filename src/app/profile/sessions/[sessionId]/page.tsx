@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import Container from '@/components/Container/Container';
-import SessionView from '@/components/SessionView/SessionView';
+import SessionView from '@/components/SESSION/SessionView/SessionView';
 import { SessionProvider } from '@/lib/contexts/SessionContext';
 
 interface ProfileSessionPageProps {

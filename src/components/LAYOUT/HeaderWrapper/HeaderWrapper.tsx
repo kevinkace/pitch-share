@@ -4,10 +4,10 @@ import { usePathname } from 'next/navigation';
 import { Link, Flex } from "@radix-ui/themes";
 import { UploadIcon, MaskOffIcon } from '@radix-ui/react-icons';
 
-import { LogoSVG } from "@/components/Logo/Logo";
+import { LogoSVG } from "@/components/LAYOUT/Logo/Logo";
 import { Button } from "@/components/Button/Button";
-import { UserNav } from "@/components/UserNav/UserNav";
-import Logotype from "@/components/Logotype/Logotype";
+import { UserNav } from "@/components/LAYOUT/UserNav/UserNav";
+import Logotype from "@/components/LAYOUT/Logotype/Logotype";
 
 import { isTrackerEnabled, isImportEnabled } from "@/lib/featureFlags";
 

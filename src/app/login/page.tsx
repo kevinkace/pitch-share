@@ -8,12 +8,12 @@ import { Card, Grid, Flex } from '@radix-ui/themes';
 
 import LoginForm from '@/components/LoginForm/LoginForm';
 import Container from '@/components/Container/Container';
-import Logo      from '@/components/Logo/Logo';
-import Logotype from "@/components/Logotype/Logotype";
+import Logo      from '@/components/LAYOUT/Logo/Logo';
+import Logotype from "@/components/LAYOUT/Logotype/Logotype";
 
 import { useAuth } from '@/lib/contexts/AuthContext';
 
-import styles from './page.module.css'
+import styles from './page.module.css';
 
 function LoginContent() {
   const { sent, setSent } = useAuth();

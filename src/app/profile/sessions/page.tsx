@@ -1,4 +1,4 @@
-import SessionList from "@/components/SessionList/SessionList";
+import SessionList from "@/components/SESSION/SessionList/SessionList";
 
 export default function SessionsPage() {
     return (

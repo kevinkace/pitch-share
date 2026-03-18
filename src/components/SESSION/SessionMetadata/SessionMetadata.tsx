@@ -1,6 +1,6 @@
 import { ImageResponse } from 'next/og';
 
-import { LogoSVG } from '@/components/Logo/Logo';
+import { LogoSVG } from '@/components/LAYOUT/Logo/Logo';
 
 import { imageStyles } from './SessionMetadata.module.css';
 interface SessionMetadataProps {

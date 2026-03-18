@@ -3,7 +3,7 @@
 import { createContext, useContext, useEffect, useState } from 'react';
 import { createClient } from '@/lib/supabase/client';
 import { useAuth } from './AuthContext';
-import { UsernameCreation } from '@/components/UsernameCreation/UsernameCreation';
+import { UsernameCreation } from '@/components/PROFILE/UsernameCreation/UsernameCreation';
 
 export interface UserProfile {
     id: string;

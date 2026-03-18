@@ -1,7 +1,7 @@
-import { Container } from '@/components/Container/Container'
-import { Button } from '@/components/Button/Button'
-import Link from 'next/link'
-import styles from './page.module.css'
+import { Container } from '@/components/Container/Container';
+import { Button } from '@/components/Button/Button';
+import Link from 'next/link';
+import styles from './page.module.css';
 
 export default function AuthCodeError() {
   return (

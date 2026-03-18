@@ -3,14 +3,14 @@
 import { useState, useRef, useEffect } from 'react';
 import Link from 'next/link';
 import { Separator, Card, Flex } from '@radix-ui/themes';
-import { PersonIcon, GearIcon, ExitIcon, ShadowInnerIcon } from "@radix-ui/react-icons"
+import { PersonIcon, GearIcon, ExitIcon, ShadowInnerIcon } from "@radix-ui/react-icons";
 import { motion, AnimatePresence } from "framer-motion";
 
 import { useAuth } from '@/lib/contexts/AuthContext';
 import { useProfile } from '@/lib/contexts/ProfileContext';
 
 import { Button } from '@/components/Button/Button';
-import UserAvatar from '@/components/UserAvatar/UserAvatar';
+import UserAvatar from '@/components/USER/UserAvatar/UserAvatar';
 
 import styles from './UserNav.module.css';
 

@@ -3,10 +3,10 @@
 import { useState } from "react";
 import { Flex, Text, Heading, Separator } from "@radix-ui/themes";
 
-import { AvatarUpload } from "@/components/AvatarUpload/AvatarUpload";
-import { UsernameEditor } from "@/components/UsernameEditor/UsernameEditor";
-import { DataExportButton } from "@/components/DataExportButton/DataExportButton";
-import { AccountDeleteButton } from "@/components/AccountDeleteButton/AccountDeleteButton";
+import { AvatarUpload } from "@/components/PROFILE/AvatarUpload/AvatarUpload";
+import { UsernameEditor } from "@/components/PROFILE/UsernameEditor/UsernameEditor";
+import { DataExportButton } from "@/components/PROFILE/DataExportButton/DataExportButton";
+import { AccountDeleteButton } from "@/components/PROFILE/AccountDeleteButton/AccountDeleteButton";
 
 export default function SettingsPage() {
     const [error, setError] = useState<string | null>(null);

@@ -9,14 +9,14 @@ import { TrashIcon } from '@radix-ui/react-icons';
 
 import 'ag-grid-community/styles/ag-theme-alpine.css';
 
-import SessionSummary from '@/components/SessionSummary/SessionSummary';
-import SessionStats from '@/components/SessionStats/SessionStats';
-import SessionNavigation from '@/components/SessionNavigation/SessionNavigation';
-import SpeedGauge from '@/components/SpeedGauge/SpeedGauge';
-import SpeedColorIndicator from '@/components/SpeedColorIndicator/SpeedColorIndicator';
-import SessionOwnershipBadge from '@/components/SessionOwnershipBadge/SessionOwnershipBadge';
-import UserAvatar from "@/components/UserAvatar/UserAvatar";
-import UserLink from '@/components/UserLink/UserLink';
+import SessionSummary from '@/components/SESSION/SessionSummary/SessionSummary';
+import SessionStats from '@/components/SESSION/SessionStats/SessionStats';
+import SessionNavigation from '@/components/SESSION/SessionNavigation/SessionNavigation';
+import SpeedGauge from '@/components/SESSION/SpeedGauge/SpeedGauge';
+import SpeedColorIndicator from '@/components/SESSION/SpeedColorIndicator/SpeedColorIndicator';
+import SessionOwnershipBadge from '@/components/SESSION/SessionOwnershipBadge/SessionOwnershipBadge';
+import UserAvatar from "@/components/USER/UserAvatar/UserAvatar";
+import UserLink from '@/components/USER/UserLink/UserLink';
 
 import { useSession } from '@/lib/contexts/SessionContext';
 import { getSpeedColor } from '@/lib/speedRanges';

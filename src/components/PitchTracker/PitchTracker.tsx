@@ -2,19 +2,21 @@
 
 import React from 'react';
 
+import { Flex } from '@radix-ui/themes';
+
 import PitchSVG from '@/components/PitchTracker/PitchSVG';
 
 export default function PitchTracker() {
 
 
     return (
-        <>
-            <div style={{ flex: 2 }}>
+        <Flex direction="row" gap="4">
+            <div>
                 <PitchSVG />
             </div>
-            <div style={{ flex: 1 }}>
+            <div>
                 pitch events
             </div>
-        </>
+        </Flex>
     )
 }

@@ -6,7 +6,7 @@ import { CameraIcon } from "@radix-ui/react-icons";
 import Cropper from "react-easy-crop";
 import { Area, Point } from "react-easy-crop/types";
 
-import UserAvatar from "@/components/UserAvatar/UserAvatar";
+import UserAvatar from "@/components/USER/UserAvatar/UserAvatar";
 
 import { createClient } from "@/lib/supabase/client";
 import { useProfile } from "@/lib/contexts/ProfileContext";

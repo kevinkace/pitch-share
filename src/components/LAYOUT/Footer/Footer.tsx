@@ -1,8 +1,8 @@
 import Link from "next/link";
 import { Flex, Text } from "@radix-ui/themes";
 
-import Logo      from '@/components/Logo/Logo';
-import Logotype from "@/components/Logotype/Logotype";
+import Logo      from '@/components/LAYOUT/Logo/Logo';
+import Logotype from "@/components/LAYOUT/Logotype/Logotype";
 import Container from "@/components/Container/Container";
 
 import styles from './Footer.module.css';

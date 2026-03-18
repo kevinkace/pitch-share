@@ -6,7 +6,7 @@ import { useRouter } from 'next/navigation';
 import { createClient } from '@/lib/supabase/client';
 
 import { useAuth } from '@/lib/contexts/AuthContext';
-import { DuplicateSessionDialog } from '@/components/DuplicateSessionDialog/DuplicateSessionDialog';
+import { DuplicateSessionDialog } from '@/components/SESSION/DuplicateSessionDialog/DuplicateSessionDialog';
 
 interface ImportContextType {
     isUploading: boolean;

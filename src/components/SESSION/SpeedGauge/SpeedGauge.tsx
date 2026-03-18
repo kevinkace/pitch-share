@@ -3,7 +3,7 @@
 import { PieChart, Pie, Cell, ResponsiveContainer } from 'recharts';
 
 import { SPEED_RANGES } from '@/lib/speedRanges';
-import SpeedColorIndicator from '@/components/SpeedColorIndicator/SpeedColorIndicator';
+import SpeedColorIndicator from '@/components/SESSION/SpeedColorIndicator/SpeedColorIndicator';
 
 import styles from './SpeedGauge.module.css';
 

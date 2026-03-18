@@ -1,5 +1,5 @@
 
-import { colorSchemeDark, themeQuartz } from 'ag-grid-community'
+import { colorSchemeDark, themeQuartz } from 'ag-grid-community';
 
 export const theme = themeQuartz
     .withPart(colorSchemeDark)

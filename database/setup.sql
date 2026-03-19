@@ -31,6 +31,10 @@ CREATE TABLE sessions (
   activity TEXT,
   unit TEXT,
   pitch_count INTEGER,
+  strike_count INTEGER DEFAULT 0,
+  ball_count INTEGER DEFAULT 0,
+  ground_count INTEGER DEFAULT 0,
+  out_of_bounds_count INTEGER DEFAULT 0,
   fastest_speed DECIMAL(5,2),
   average_speed DECIMAL(5,2),
   csv_file_path TEXT,
@@ -92,6 +96,12 @@ CREATE INDEX idx_positions_session_id ON positions(session_id);
 
 -- Add out_of_bounds column if running this after initial table creation
 -- ALTER TABLE positions ADD COLUMN IF NOT EXISTS out_of_bounds BOOLEAN DEFAULT false;
+
+-- Add position count columns to sessions table if running this after initial table creation
+-- ALTER TABLE sessions ADD COLUMN IF NOT EXISTS strike_count INTEGER DEFAULT 0;
+-- ALTER TABLE sessions ADD COLUMN IF NOT EXISTS ball_count INTEGER DEFAULT 0;
+-- ALTER TABLE sessions ADD COLUMN IF NOT EXISTS ground_count INTEGER DEFAULT 0;
+-- ALTER TABLE sessions ADD COLUMN IF NOT EXISTS out_of_bounds_count INTEGER DEFAULT 0;
 
 -- 5. Enable Row Level Security
 ALTER TABLE sessions ENABLE ROW LEVEL SECURITY;

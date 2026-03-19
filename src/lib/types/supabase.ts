@@ -89,42 +89,60 @@ export type Database = {
         Row: {
           id: string
           user_id: string
-          title: string
           player_name: string
           date: string | null
           sport: string | null
           activity: string | null
           unit: string | null
           pitch_count: number | null
-          raw_data: Json | null
+          strike_count: number | null
+          ball_count: number | null
+          ground_count: number | null
+          out_of_bounds_count: number | null
+          fastest_speed: number | null
+          average_speed: number | null
+          csv_file_path: string | null
+          is_private: boolean | null
           created_at: string
           updated_at: string
         }
         Insert: {
           id: string
           user_id: string
-          title: string
           player_name: string
           date?: string | null
           sport?: string | null
           activity?: string | null
           unit?: string | null
           pitch_count?: number | null
-          raw_data?: Json | null
+          strike_count?: number | null
+          ball_count?: number | null
+          ground_count?: number | null
+          out_of_bounds_count?: number | null
+          fastest_speed?: number | null
+          average_speed?: number | null
+          csv_file_path?: string | null
+          is_private?: boolean | null
           created_at?: string
           updated_at?: string
         }
         Update: {
           id?: string
           user_id?: string
-          title?: string
           player_name?: string
           date?: string | null
           sport?: string | null
           activity?: string | null
           unit?: string | null
           pitch_count?: number | null
-          raw_data?: Json | null
+          strike_count?: number | null
+          ball_count?: number | null
+          ground_count?: number | null
+          out_of_bounds_count?: number | null
+          fastest_speed?: number | null
+          average_speed?: number | null
+          csv_file_path?: string | null
+          is_private?: boolean | null
           created_at?: string
           updated_at?: string
         }

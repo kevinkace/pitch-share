@@ -96,7 +96,11 @@ export function PositionProvider({ children }: { children: ReactNode }) {
             sport: 'Baseball',
             activity: 'Pitch Tracker',
             unit: 'MPH',
-            pitch_count: 0,
+            pitch_count: 0, // Start with 0, will be incremented after position insert
+            strike_count: 0,
+            ball_count: 0,
+            ground_count: 0,
+            out_of_bounds_count: 0,
             is_private: true
           };
 
@@ -123,6 +127,45 @@ export function PositionProvider({ children }: { children: ReactNode }) {
       if (positionError) {
         console.error('Error inserting position:', positionError);
         throw new Error('Failed to save position');
+      }
+
+      // Update session pitch count and position type counts
+      if (insertData.session_id) {
+        // Get current session counts
+        const { data: currentSession } = await supabase
+          .from('sessions')
+          .select('pitch_count, strike_count, ball_count, ground_count, out_of_bounds_count')
+          .eq('id', insertData.session_id)
+          .single();
+
+        const newPitchCount = (currentSession?.pitch_count || 0) + 1;
+
+        // Determine which specific count to increment based on position type
+        const updateData: any = {
+          pitch_count: newPitchCount,
+          updated_at: new Date().toISOString()
+        };
+
+        if (positionData.strike) {
+          updateData.strike_count = (currentSession?.strike_count || 0) + 1;
+        } else if (positionData.ground) {
+          updateData.ground_count = (currentSession?.ground_count || 0) + 1;
+        } else if (positionData.out_of_bounds) {
+          updateData.out_of_bounds_count = (currentSession?.out_of_bounds_count || 0) + 1;
+        } else {
+          // This is a ball (not strike, not ground, not out of bounds)
+          updateData.ball_count = (currentSession?.ball_count || 0) + 1;
+        }
+
+        const { error: sessionUpdateError } = await supabase
+          .from('sessions')
+          .update(updateData)
+          .eq('id', insertData.session_id);
+
+        if (sessionUpdateError) {
+          console.error('Error updating session counts:', sessionUpdateError);
+          // Don't throw here - position was saved successfully, session update is secondary
+        }
       }
 
       return position;

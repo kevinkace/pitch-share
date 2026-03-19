@@ -70,10 +70,34 @@ CREATE UNIQUE INDEX idx_profiles_username_lower ON profiles (LOWER(username));
 -- Index for username lookup
 CREATE INDEX idx_profiles_username ON profiles (username);
 
--- 4. Enable Row Level Security
+-- 4. Create positions table (for pitch tracker position data)
+CREATE TABLE positions (
+  id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+  user_id UUID REFERENCES auth.users(id) ON DELETE CASCADE NOT NULL,
+  session_id TEXT, -- Optional, will be created if not exists
+  x DECIMAL(5,2) NOT NULL, -- X coordinate in feet
+  y DECIMAL(5,2) NOT NULL, -- Y coordinate in feet
+  strike BOOLEAN DEFAULT false,
+  ground BOOLEAN DEFAULT false,
+  out_of_bounds BOOLEAN DEFAULT false,
+  created_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+-- Create indexes for positions table
+-- For user's positions
+CREATE INDEX idx_positions_user_id_created_at ON positions(user_id, created_at DESC);
+
+-- For session positions
+CREATE INDEX idx_positions_session_id ON positions(session_id);
+
+-- Add out_of_bounds column if running this after initial table creation
+-- ALTER TABLE positions ADD COLUMN IF NOT EXISTS out_of_bounds BOOLEAN DEFAULT false;
+
+-- 5. Enable Row Level Security
 ALTER TABLE sessions ENABLE ROW LEVEL SECURITY;
 ALTER TABLE pitches ENABLE ROW LEVEL SECURITY;
 ALTER TABLE profiles ENABLE ROW LEVEL SECURITY;
+ALTER TABLE positions ENABLE ROW LEVEL SECURITY;
 
 -- 5. Create RLS policies for sessions
 -- Users can always view their own sessions
@@ -123,7 +147,34 @@ CREATE POLICY "Users can update own pitches" ON pitches
 CREATE POLICY "Users can delete own pitches" ON pitches
   FOR DELETE USING (auth.uid() = user_id);
 
--- 7. Create RLS policies for profiles
+-- 7. Create RLS policies for positions
+-- Users can always view their own positions
+CREATE POLICY "Users can view own positions" ON positions
+  FOR SELECT USING (auth.uid() = user_id);
+
+-- Anyone can view positions from public sessions (including anonymous users)
+CREATE POLICY "Anyone can view positions from public sessions" ON positions
+  FOR SELECT USING (
+    session_id IS NOT NULL AND EXISTS (
+      SELECT 1 FROM sessions
+      WHERE sessions.id = positions.session_id
+      AND sessions.is_private = false
+    )
+  );
+
+-- Users can insert their own positions
+CREATE POLICY "Users can insert own positions" ON positions
+  FOR INSERT WITH CHECK (auth.uid() = user_id);
+
+-- Users can update their own positions
+CREATE POLICY "Users can update own positions" ON positions
+  FOR UPDATE USING (auth.uid() = user_id);
+
+-- Users can delete their own positions
+CREATE POLICY "Users can delete own positions" ON positions
+  FOR DELETE USING (auth.uid() = user_id);
+
+-- 8. Create RLS policies for profiles
 -- Users can view all profiles (for username uniqueness checks and public viewing)
 CREATE POLICY "Anyone can view profiles" ON profiles
   FOR SELECT USING (true);
@@ -140,14 +191,14 @@ CREATE POLICY "Users can update own profile" ON profiles
 CREATE POLICY "Users can delete own profile" ON profiles
   FOR DELETE USING (auth.uid() = id);
 
--- 8. Create storage buckets
+-- 9. Create storage buckets
 INSERT INTO storage.buckets (id, name, public)
 VALUES ('csv-uploads', 'csv-uploads', false);
 
 INSERT INTO storage.buckets (id, name, public)
 VALUES ('avatars', 'avatars', true);
 
--- 9. Create storage policies
+-- 10. Create storage policies
 -- CSV files policies
 -- Allow users to upload their own CSV files
 CREATE POLICY "Users can upload own CSV files" ON storage.objects

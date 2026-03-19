@@ -1,7 +1,8 @@
-"use client"
+"use client";
 
 import React, { useState } from 'react';
 
+import { usePosition, PositionData } from '@/lib/contexts/PositionContext';
 import style from './PitchTracker.module.css';
 
 const DECIMAL = 1;
@@ -19,9 +20,11 @@ type Props = {
     pitches?: Pitch[]
     selectedPitchIds?: string[]
     onPitchClick?: (pitch: Pitch) => void
+    onRecord?: (position: PositionData) => void
 }
 
-export default function PitchSVG({ pitches = [], selectedPitchIds = [], onPitchClick }: Props) {
+export default function PitchSVG({ pitches = [], selectedPitchIds = [], onPitchClick, onRecord }: Props) {
+    const { savePosition } = usePosition();
     const width = 7182;
     const height = 7182;
     const strikeW = 1419;  // width from strike-zone-2.svg (4301-2882)
@@ -36,23 +39,28 @@ export default function PitchSVG({ pitches = [], selectedPitchIds = [], onPitchC
     function toFeet(pxX: number, pxY: number) {
         const cx = width / 2;
         const cy = height / 2;
+
         // Add half strike zone height to center y at strike zone center
-        const strikeZoneCenterY = cy + (strikeH / 2)
+        const strikeZoneCenterY = cy + (strikeH / 2);
+
         // map horizontal to +/-12 feet, vertical to +/-6 feet
         const xFeet = ((pxX - cx) / (width / 2)) * 12;
         const yFeet = ((strikeZoneCenterY - pxY) / (height / 2)) * 6;
 
-        return { x: Number(xFeet.toFixed(DECIMAL)), y: Number(yFeet.toFixed(DECIMAL)) }
+        return { x: Number(xFeet.toFixed(DECIMAL)), y: Number(yFeet.toFixed(DECIMAL)) };
     }
 
     function toSvgCoords(xFeet: number, yFeet: number) {
         const cx = width / 2;
         const cy = height / 2;
+
         // Add half strike zone height to center y at strike zone center
         const strikeZoneCenterY = cy + (strikeH / 2);
+
         // Reverse the toFeet calculation
         const svgX = cx + (xFeet * (width / 2)) / 12;
         const svgY = strikeZoneCenterY - (yFeet * (height / 2)) / 6;
+
         return { x: svgX, y: svgY };
     }
 
@@ -70,9 +78,29 @@ export default function PitchSVG({ pitches = [], selectedPitchIds = [], onPitchC
 
         const isGround = (e.target as Element)?.id === 'ground';
         const isStrike = (e.target as Element)?.id === 'strike-zone';
+        const targetId = (e.target as Element)?.id;
+        const isOutOfBounds = ['top', 'left', 'right'].includes(targetId);
 
-        // set data
-    }
+        // Save position data
+        try {
+            const positionData = {
+                x,
+                y,
+                strike: isStrike,
+                ground: isGround,
+                out_of_bounds: isOutOfBounds
+            };
+
+            const savedPosition = await savePosition(positionData);
+
+            if (savedPosition && onRecord) {
+                onRecord(savedPosition);
+            }
+        } catch (error) {
+            console.error('Error saving position:', error);
+            // You might want to show a user-friendly error message here
+        }
+    };
 
     return (
         <div
@@ -116,16 +144,16 @@ export default function PitchSVG({ pitches = [], selectedPitchIds = [], onPitchC
 
                     setSvgPos(toFeet(svgX, svgY));
 
-                    const targetId = (e.target as Element)?.id;;
+                    const targetId = (e.target as Element)?.id;
 
                     if (targetId === 'strike-zone') {
-                        setPitchType('Strike')
+                        setPitchType('Strike');
                     } else if (targetId === 'ground') {
-                        setPitchType('Ground')
-                    } else if ([ "top", "left", "right" ].includes(targetId)) {
-                        setPitchType('Out of Bounds')
+                        setPitchType('Ground');
+                    } else if (['top', 'left', 'right'].includes(targetId)) {
+                        setPitchType('Out of Bounds');
                     } else {
-                        setPitchType('')
+                        setPitchType('Ball');
                     }
                 }}
             >
@@ -231,8 +259,8 @@ export default function PitchSVG({ pitches = [], selectedPitchIds = [], onPitchC
                                         cursor: onPitchClick ? 'pointer' : 'default'
                                     }}
                                     onClick={(e) => {
-                                        e.stopPropagation()
-                                        onPitchClick?.(pitch)
+                                        e.stopPropagation();
+                                        onPitchClick?.(pitch);
                                     }}
                                 />
 
@@ -249,10 +277,10 @@ export default function PitchSVG({ pitches = [], selectedPitchIds = [], onPitchC
                                     />
                                 )}
                             </g>
-                        )
+                        );
                     })}
                 </g>
             </svg>
         </div>
-    )
+    );
 }

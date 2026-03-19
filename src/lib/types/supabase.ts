@@ -41,6 +41,50 @@ export type Database = {
           },
         ]
       }
+      positions: {
+        Row: {
+          id: string
+          user_id: string
+          session_id: string | null
+          x: number
+          y: number
+          strike: boolean
+          ground: boolean
+          out_of_bounds: boolean
+          created_at: string
+        }
+        Insert: {
+          id?: string
+          user_id: string
+          session_id?: string | null
+          x: number
+          y: number
+          strike?: boolean
+          ground?: boolean
+          out_of_bounds?: boolean
+          created_at?: string
+        }
+        Update: {
+          id?: string
+          user_id?: string
+          session_id?: string | null
+          x?: number
+          y?: number
+          strike?: boolean
+          ground?: boolean
+          out_of_bounds?: boolean
+          created_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "positions_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       sessions: {
         Row: {
           id: string

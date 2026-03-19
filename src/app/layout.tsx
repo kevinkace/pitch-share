@@ -6,6 +6,7 @@ import "@radix-ui/themes/styles.css";
 import { AuthProvider } from "@/lib/contexts/AuthContext";
 import { ProfileProvider } from "@/lib/contexts/ProfileContext";
 import { ImportProvider } from "@/lib/contexts/ImportContext";
+import { PositionProvider } from "@/lib/contexts/PositionContext";
 
 import Analytics from "@/components/Analytics/Analytics";
 import { HeaderWrapper } from "@/components/LAYOUT/HeaderWrapper/HeaderWrapper";
@@ -54,9 +55,11 @@ export default function RootLayout({
                     <AuthProvider>
                         <ProfileProvider>
                             <ImportProvider>
-                                <HeaderWrapper />
-                                {children}
-                                <Footer />
+                                <PositionProvider>
+                                    <HeaderWrapper />
+                                    {children}
+                                    <Footer />
+                                </PositionProvider>
                             </ImportProvider>
                         </ProfileProvider>
                     </AuthProvider>

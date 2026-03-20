@@ -41,6 +41,7 @@ export default function PitchSVG({ onRecord, positions = [], showPositions = fal
     const [ mouse, setMouse ] = useState({ x: 0, y: 0 });
     const [ svgPos, setSvgPos ] = useState({ x: 0, y: 0 });
     const [ pitchType, setPitchType ] = useState('');
+    const [ isHovering, setIsHovering ] = useState(false);
 
     function toFeet(pxX: number, pxY: number) {
         // distance from strike zone center in feet
@@ -74,24 +75,25 @@ export default function PitchSVG({ onRecord, positions = [], showPositions = fal
         const targetId = (e.target as Element)?.id;
         const isOutOfBounds = ['top', 'left', 'right'].includes(targetId);
 
-        // Save position data
+        const positionData = {
+            x,
+            y,
+            strike: isStrike,
+            ground: isGround,
+            out_of_bounds: isOutOfBounds,
+            // Store exact SVG coordinates for precise circle positioning
+            svgX,
+            svgY
+        };
+
+        // Show position marker immediately for instant feedback
+        if (onRecord) {
+            onRecord(positionData);
+        }
+
+        // Save position data asynchronously
         try {
-            const positionData = {
-                x,
-                y,
-                strike: isStrike,
-                ground: isGround,
-                out_of_bounds: isOutOfBounds,
-                // Store exact SVG coordinates for precise circle positioning
-                svgX,
-                svgY
-            };
-
-            const savedPosition = await savePosition(positionData);
-
-            if (savedPosition && onRecord) {
-                onRecord(savedPosition);
-            }
+            await savePosition(positionData);
         } catch (error) {
             console.error('Error saving position:', error);
             // You might want to show a user-friendly error message here
@@ -128,21 +130,38 @@ export default function PitchSVG({ onRecord, positions = [], showPositions = fal
         }
     };
 
+    const handleMouseEnter = () => {
+        setIsHovering(true);
+    };
+
+    const handleMouseLeave = () => {
+        setIsHovering(false);
+    };
+
+    function getBallColor(position: PositionData): string {
+        if (position.strike) return '#ef4444'; // Red for strikes
+        if (position.ground) return '#22c55e'; // Green for ground
+        if (position.out_of_bounds) return '#f59e0b'; // Orange for out of bounds
+        return '#3b82f6'; // Default blue for balls
+    }
+
     return (
         <div
             className={style.wrapper}
         >
             <div>{mouse.x}, {mouse.y}</div>
-            <div
-                className={style.tooltip}
-                style={{
-                    top : `calc(${mouse.y}px - ${pitchType.length ? "4" : "2.5"}em)`,
-                    left : `calc(${mouse.x}px - 4.5em)`
-                }}
-            >
-                {pitchType.length ? <>{pitchType}<br /></> : <></>}
-                {`x: ${svgPos.x}', y: ${svgPos.y}'`}
-            </div>
+            {isHovering && (
+                <div
+                    className={style.tooltip}
+                    style={{
+                        top : `calc(${mouse.y}px - ${pitchType.length ? "4" : "2.5"}em)`,
+                        left : `calc(${mouse.x}px - 4.5em)`
+                    }}
+                >
+                    {pitchType.length ? <>{pitchType}<br /></> : <></>}
+                    {`x: ${svgPos.x}', y: ${svgPos.y}'`}
+                </div>
+            )}
 
 
             <svg
@@ -151,6 +170,8 @@ export default function PitchSVG({ onRecord, positions = [], showPositions = fal
                 onClick={handleClick}
                 className={style.svg}
                 onMouseMove={handleMouseMove}
+                onMouseEnter={handleMouseEnter}
+                onMouseLeave={handleMouseLeave}
             >
 
                 {/* Strike zone group */}
@@ -237,14 +258,11 @@ export default function PitchSVG({ onRecord, positions = [], showPositions = fal
                 {showPositions && (
                     <g id="position-markers">
                         {positions.map((position, index) => {
-                            let fillColor = '#3b82f6'; // Default blue for balls
-                            const circleRadius = 50; // Simple circle size
+                            const circleRadiusInches = 2.9/2; // Simple circle size
+                            const circleRadius = circleRadiusInches * (pxToFeet / 12); // Convert inches to pixels
                             // Use stored SVG coordinates if available, otherwise convert from feet
                             const svgX = (position as any).svgX || toSvgCoords(position.x, position.y).x;
                             const svgY = (position as any).svgY || toSvgCoords(position.x, position.y).y;
-                            if (position.strike) fillColor = '#ef4444'; // Red for strikes
-                            else if (position.ground) fillColor = '#22c55e'; // Green for ground
-                            else if (position.out_of_bounds) fillColor = '#f59e0b'; // Orange for out of bounds
 
                             return (
                                 <circle
@@ -252,7 +270,7 @@ export default function PitchSVG({ onRecord, positions = [], showPositions = fal
                                     cx={svgX}
                                     cy={svgY}
                                     r={circleRadius}
-                                    fill={fillColor}
+                                    fill={getBallColor(position)}
                                     opacity={0.7}
                                     stroke="#ffffff"
                                     strokeWidth="8"

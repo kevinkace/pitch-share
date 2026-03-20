@@ -23,8 +23,10 @@
 .tooltip {
     pointer-events: none;
     position: absolute;
-    background: #444b;
+    background: #444d;
     padding: 0.2em 0.5em;
     border-radius: 0.2em;
+
+    white-space: nowrap;
     text-align: center;
 }

@@ -9,18 +9,20 @@ import PositionsGrid from '@/components/PitchTracker/PositionsGrid';
 import { PositionData } from '@/lib/contexts/PositionContext';
 
 export default function PitchTracker() {
-    const [latestPosition, setLatestPosition] = useState<PositionData | null>(null);
     const [allPositions, setAllPositions] = useState<PositionData[]>([]);
     const [showPositions, setShowPositions] = useState(false);
 
     const handlePositionRecord = (position: PositionData) => {
         console.log('Position recorded:', position);
 
-        // Add position immediately to grid for instant feedback
-        setLatestPosition(position);
+        // Add timestamp for immediate display in grid
+        const positionWithTimestamp = {
+            ...position,
+            created_at: new Date().toISOString()
+        };
 
-        // Add to all positions list for SVG display
-        setAllPositions(prev => [position, ...prev]);
+        // Add to all positions list for both SVG and grid display
+        setAllPositions(prev => [positionWithTimestamp, ...prev]);
     };
 
     return (
@@ -42,7 +44,7 @@ export default function PitchTracker() {
                 />
 
                 <PositionsGrid
-                    newPosition={latestPosition}
+                    positions={allPositions}
                 />
             </Flex>
         </Flex>

@@ -10,25 +10,10 @@ import { PositionData } from '@/lib/contexts/PositionContext';
 ModuleRegistry.registerModules([AllCommunityModule]);
 
 interface Props {
-  newPosition?: PositionData | null; // New position to add immediately
+  positions: PositionData[]; // All positions to display
 }
 
-export default function PositionsGrid({ newPosition }: Props) {
-  const [positions, setPositions] = useState<PositionData[]>([]);
-
-  // Add new position immediately to provide instant feedback
-  useEffect(() => {
-    if (newPosition && newPosition.id) {
-      setPositions(prev => {
-        // Check if position already exists (avoid duplicates)
-        const exists = prev.some(p => p.id === newPosition.id);
-        if (exists) return prev;
-
-        // Add new position at the beginning (most recent first)
-        return [newPosition, ...prev];
-      });
-    }
-  }, [newPosition]);
+export default function PositionsGrid({ positions }: Props) {
 
   const columnDefs: ColDef<PositionData>[] = [
     {

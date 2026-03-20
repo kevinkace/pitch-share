@@ -3,65 +3,58 @@
 import React, { useState } from 'react';
 
 import { usePosition, PositionData } from '@/lib/contexts/PositionContext';
+
 import style from './PitchTracker.module.css';
 
 const DECIMAL = 1;
 
-type Pitch = {
-    id: string
-    x: number
-    y: number
-    strike: boolean
-    ground: boolean
-    timestamp: string
-}
-
 type Props = {
-    pitches?: Pitch[]
-    selectedPitchIds?: string[]
-    onPitchClick?: (pitch: Pitch) => void
     onRecord?: (position: PositionData) => void
+    positions?: PositionData[]
+    showPositions?: boolean
 }
 
-export default function PitchSVG({ pitches = [], selectedPitchIds = [], onPitchClick, onRecord }: Props) {
+export default function PitchSVG({ onRecord, positions = [], showPositions = false }: Props) {
     const { savePosition } = usePosition();
+
     const width = 7182;
     const height = 7182;
-    const strikeW = 1419;  // width from strike-zone-2.svg (4301-2882)
-    const strikeH = 1703;  // height from strike-zone-2.svg
-    const grassHeight = 567;  // height from strike-zone-2.svg ground section
-    const borderThickness = 176;  // scaled border thickness
+
+    const strikeZoneCenter = {
+        x : width / 2,
+        y : 4395.5
+    };
+
+    const strikeW = 1419;
+    const strikeH = 1703;
+
+    const pxToFeet = 85.5 * 12;
+
+    const strikeLeft = strikeZoneCenter.x - strikeW / 2;
+    const strikeTop = strikeZoneCenter.y - strikeH / 2;
+
+    const borderThickness = 176;
+
+    const grassHeight = 567;
+
 
     const [ mouse, setMouse ] = useState({ x: 0, y: 0 });
     const [ svgPos, setSvgPos ] = useState({ x: 0, y: 0 });
     const [ pitchType, setPitchType ] = useState('');
 
     function toFeet(pxX: number, pxY: number) {
-        const cx = width / 2;
-        const cy = height / 2;
-
-        // Add half strike zone height to center y at strike zone center
-        const strikeZoneCenterY = cy + (strikeH / 2);
-
-        // map horizontal to +/-12 feet, vertical to +/-6 feet
-        const xFeet = ((pxX - cx) / (width / 2)) * 12;
-        const yFeet = ((strikeZoneCenterY - pxY) / (height / 2)) * 6;
+        // distance from strike zone center in feet
+        const xFeet = (pxX - strikeZoneCenter.x) / pxToFeet;
+        const yFeet = (strikeZoneCenter.y - pxY) / pxToFeet;
 
         return { x: Number(xFeet.toFixed(DECIMAL)), y: Number(yFeet.toFixed(DECIMAL)) };
     }
 
     function toSvgCoords(xFeet: number, yFeet: number) {
-        const cx = width / 2;
-        const cy = height / 2;
+        const pxX = xFeet * pxToFeet + strikeZoneCenter.x;
+        const pxY = strikeZoneCenter.y - yFeet * pxToFeet;
+        return { x: pxX, y: pxY };
 
-        // Add half strike zone height to center y at strike zone center
-        const strikeZoneCenterY = cy + (strikeH / 2);
-
-        // Reverse the toFeet calculation
-        const svgX = cx + (xFeet * (width / 2)) / 12;
-        const svgY = strikeZoneCenterY - (yFeet * (height / 2)) / 6;
-
-        return { x: svgX, y: svgY };
     }
 
     const handleClick = async (e: React.MouseEvent<SVGSVGElement>) => {
@@ -88,7 +81,10 @@ export default function PitchSVG({ pitches = [], selectedPitchIds = [], onPitchC
                 y,
                 strike: isStrike,
                 ground: isGround,
-                out_of_bounds: isOutOfBounds
+                out_of_bounds: isOutOfBounds,
+                // Store exact SVG coordinates for precise circle positioning
+                svgX,
+                svgY
             };
 
             const savedPosition = await savePosition(positionData);
@@ -102,18 +98,41 @@ export default function PitchSVG({ pitches = [], selectedPitchIds = [], onPitchC
         }
     };
 
+    const handleMouseMove = (e: React.MouseEvent<SVGSVGElement>) => {
+        const rect = (e.currentTarget as SVGSVGElement).getBoundingClientRect();
+
+        const x = Math.floor(e.clientX - rect.left);
+        const y = Math.floor(e.clientY - rect.top);
+
+        setMouse({ x, y });
+
+        const pxX = e.clientX - rect.left;
+        const pxY = e.clientY - rect.top;
+
+        // convert rendered pixel coords to SVG internal coordinates
+        const svgX = Math.floor((pxX / rect.width) * width);
+        const svgY = Math.floor((pxY / rect.height) * height);
+
+        setSvgPos(toFeet(svgX, svgY));
+
+        const targetId = (e.target as Element)?.id;
+
+        if (targetId === 'strike-zone') {
+            setPitchType('Strike');
+        } else if (targetId === 'ground') {
+            setPitchType('Ground');
+        } else if (['top', 'left', 'right'].includes(targetId)) {
+            setPitchType('Out of Bounds');
+        } else {
+            setPitchType('Ball');
+        }
+    };
+
     return (
         <div
             className={style.wrapper}
-            onMouseMove={(e) => {
-                const rect = e.currentTarget.getBoundingClientRect();
-
-                const x = Math.floor(e.clientX - rect.left);
-                const y = Math.floor(e.clientY - rect.top);
-
-                setMouse({ x, y });
-            }}
         >
+            <div>{mouse.x}, {mouse.y}</div>
             <div
                 className={style.tooltip}
                 style={{
@@ -128,34 +147,10 @@ export default function PitchSVG({ pitches = [], selectedPitchIds = [], onPitchC
 
             <svg
                 viewBox={`0 0 ${width} ${height}`}
-                width="100%"
-                height="600"  // Keep rendered height reasonable
+                width="50vw"  // Keep rendered height reasonable
                 onClick={handleClick}
                 className={style.svg}
-                onMouseMove={(e) => {
-                    const rect = (e.currentTarget as SVGSVGElement).getBoundingClientRect();
-
-                    const pxX = e.clientX - rect.left;
-                    const pxY = e.clientY - rect.top;
-
-                    // convert rendered pixel coords to SVG internal coordinates
-                    const svgX = Math.floor((pxX / rect.width) * width);
-                    const svgY = Math.floor((pxY / rect.height) * height);
-
-                    setSvgPos(toFeet(svgX, svgY));
-
-                    const targetId = (e.target as Element)?.id;
-
-                    if (targetId === 'strike-zone') {
-                        setPitchType('Strike');
-                    } else if (targetId === 'ground') {
-                        setPitchType('Ground');
-                    } else if (['top', 'left', 'right'].includes(targetId)) {
-                        setPitchType('Out of Bounds');
-                    } else {
-                        setPitchType('Ball');
-                    }
-                }}
+                onMouseMove={handleMouseMove}
             >
 
                 {/* Strike zone group */}
@@ -163,8 +158,8 @@ export default function PitchSVG({ pitches = [], selectedPitchIds = [], onPitchC
 
                     <rect
                         id="strike-zone-border"
-                        x={2882}
-                        y={3544}
+                        x={strikeLeft}
+                        y={strikeTop}
                         width={strikeW}
                         height={strikeH}
                         fill="var(--strike-zone-color)"
@@ -172,14 +167,15 @@ export default function PitchSVG({ pitches = [], selectedPitchIds = [], onPitchC
 
                     <rect
                         id="strike-zone-inner"
-                        x={2882 + borderThickness}
-                        y={3544 + borderThickness}
+                        x={strikeLeft + borderThickness}
+                        y={strikeTop + borderThickness}
                         width={strikeW - 2 * borderThickness}
                         height={strikeH - 2 * borderThickness}
                         fill="var(--strike-zone-inner-color)"
                     />
 
-                    <rect id="strike-zone" fill="transparent" x={2882} y={3544} width={strikeW} height={strikeH}/>
+                    <rect id="strike-zone" fill="transparent" x={strikeLeft} y={strikeTop} width={strikeW} height={strikeH}/>
+                    <rect style={{zIndex: 100}} fill="orange" x={strikeZoneCenter.x} y={strikeZoneCenter.y} width={50} height={50} />
                 </g>
 
 
@@ -194,8 +190,8 @@ export default function PitchSVG({ pitches = [], selectedPitchIds = [], onPitchC
                             NE : "m6615 567v3829h-2315l0.36-852z",
                             NNE : "m6615 567l-2314.64 2977h-709.36v-2977z",
                             NNW : "m3591 567v2977h-709l-2315-2977z",
-                            NW : "m2882 3544v852h-2315v-3829z",
-                            SW : "m2882 4395v852l-2315 1368v-2220z",
+                            NW : `m${strikeLeft} ${strikeTop}v852h-2315v-3829z`,
+                            SW : `m${strikeLeft} 4395v852l-2315 1368v-2220z`,
                             SSW : "m3591 5247v1368h-3024l2315-1368z",
                             SSE : "m4300.36 5247l2314.64 1368h-3024v-1368z"
                         }).map(([key, path]) => (
@@ -237,49 +233,34 @@ export default function PitchSVG({ pitches = [], selectedPitchIds = [], onPitchC
                     />
                 </g>
 
-                {/* Pitch markers group */}
-                <g id="pitch-markers">
-                    {pitches.map((pitch) => {
-                        const { x: svgX, y: svgY } = toSvgCoords(pitch.x, pitch.y);
-                        const isSelected = selectedPitchIds.includes(pitch.id);
-                        const ballSize = 120; // Size of the ball in SVG units
+                {/* Position markers group - simple circles */}
+                {showPositions && (
+                    <g id="position-markers">
+                        {positions.map((position, index) => {
+                            let fillColor = '#3b82f6'; // Default blue for balls
+                            const circleRadius = 50; // Simple circle size
+                            // Use stored SVG coordinates if available, otherwise convert from feet
+                            const svgX = (position as any).svgX || toSvgCoords(position.x, position.y).x;
+                            const svgY = (position as any).svgY || toSvgCoords(position.x, position.y).y;
+                            if (position.strike) fillColor = '#ef4444'; // Red for strikes
+                            else if (position.ground) fillColor = '#22c55e'; // Green for ground
+                            else if (position.out_of_bounds) fillColor = '#f59e0b'; // Orange for out of bounds
 
-                        return (
-                            <g key={pitch.id}>
-                                {/* Ball SVG */}
-                                <image
-                                    href="/ball-sized.svg"
-                                    x={svgX - ballSize / 2}
-                                    y={svgY - ballSize / 2}
-                                    width={ballSize}
-                                    height={ballSize}
-                                    opacity={isSelected ? 1 : 0.8}
-                                    style={{
-                                        filter: isSelected ? 'drop-shadow(0 0 10px #00ff00)' : 'none',
-                                        cursor: onPitchClick ? 'pointer' : 'default'
-                                    }}
-                                    onClick={(e) => {
-                                        e.stopPropagation();
-                                        onPitchClick?.(pitch);
-                                    }}
+                            return (
+                                <circle
+                                    key={position.id || `pos-${index}`}
+                                    cx={svgX}
+                                    cy={svgY}
+                                    r={circleRadius}
+                                    fill={fillColor}
+                                    opacity={0.7}
+                                    stroke="#ffffff"
+                                    strokeWidth="8"
                                 />
-
-                                {/* Selection indicator for selected pitches */}
-                                {isSelected && (
-                                    <circle
-                                        cx={svgX}
-                                        cy={svgY}
-                                        r={ballSize / 2 + 20}
-                                        fill="none"
-                                        stroke="#00ff00"
-                                        strokeWidth="8"
-                                        opacity="0.8"
-                                    />
-                                )}
-                            </g>
-                        );
-                    })}
-                </g>
+                            );
+                        })}
+                    </g>
+                )}
             </svg>
         </div>
     );

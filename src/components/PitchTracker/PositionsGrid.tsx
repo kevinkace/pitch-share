@@ -1,8 +1,8 @@
 "use client";
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { AgGridReact } from 'ag-grid-react';
-import { ColDef, ModuleRegistry, AllCommunityModule } from 'ag-grid-community';
+import { ColDef, ModuleRegistry, AllCommunityModule, GridApi } from 'ag-grid-community';
 
 import { theme } from '@/lib/datagrid-theme';
 import { PositionData } from '@/lib/contexts/PositionContext';
@@ -14,6 +14,12 @@ interface Props {
 }
 
 export default function PositionsGrid({ positions }: Props) {
+
+  // Generate unique ID for each row so ag-grid can track them
+  const getRowId = (params: any) => {
+    const data = params.data;
+    return data.id || `temp-${data.created_at}-${data.x}-${data.y}`;
+  };
 
   const columnDefs: ColDef<PositionData>[] = [
     {
@@ -89,6 +95,7 @@ export default function PositionsGrid({ positions }: Props) {
         domLayout='autoHeight'
         columnDefs={columnDefs}
         rowData={positions}
+        getRowId={getRowId}
         suppressRowClickSelection={true}
         animateRows={true}
         defaultColDef={{

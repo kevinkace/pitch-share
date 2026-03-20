@@ -149,7 +149,7 @@ export default function PitchSVG({ onRecord, positions = [], showPositions = fal
         <div
             className={style.wrapper}
         >
-            <div>{mouse.x}, {mouse.y}</div>
+
             {isHovering && (
                 <div
                     className={style.tooltip}

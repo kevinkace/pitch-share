@@ -47,8 +47,10 @@ export default function Page() {
 
     return (
         <Container width="flex">
+            <div>
             <h1>Pitch Tracker</h1>
             <PitchTracker />
+            </div>
         </Container>
     );
 }

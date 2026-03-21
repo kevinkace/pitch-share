@@ -20,15 +20,20 @@ export default function PitchSVG({ onRecord, positions = [], showPositions = fal
     const width = 7182;
     const height = 7182;
 
+    const pxToFeet = 65 * 12;
+
     const strikeZoneCenter = {
         x : width / 2,
         y : 4395.5
     };
 
+    const reticuleSizePx = 50;
+
     const strikeW = 1419;
     const strikeH = 1703;
 
-    const pxToFeet = 85.5 * 12;
+    const ballRadiusInches = 2.9/2;
+    const ballRadiusPx = ballRadiusInches * (pxToFeet / 12);
 
     const strikeLeft = strikeZoneCenter.x - strikeW / 2;
     const strikeTop = strikeZoneCenter.y - strikeH / 2;
@@ -36,7 +41,6 @@ export default function PitchSVG({ onRecord, positions = [], showPositions = fal
     const borderThickness = 176;
 
     const grassHeight = 567;
-
 
     const [ mouse, setMouse ] = useState({ x: 0, y: 0 });
     const [ svgPos, setSvgPos ] = useState({ x: 0, y: 0 });
@@ -196,7 +200,15 @@ export default function PitchSVG({ onRecord, positions = [], showPositions = fal
                     />
 
                     <rect id="strike-zone" fill="transparent" x={strikeLeft} y={strikeTop} width={strikeW} height={strikeH}/>
-                    <rect style={{zIndex: 100}} fill="orange" x={strikeZoneCenter.x} y={strikeZoneCenter.y} width={50} height={50} />
+
+                    <rect
+                        id="reticule"
+                        fill="orange"
+                        x={strikeZoneCenter.x - (reticuleSizePx / 2)}
+                        y={strikeZoneCenter.y - (reticuleSizePx / 2)}
+                        width={reticuleSizePx}
+                        height={reticuleSizePx}
+                    />
                 </g>
 
 
@@ -207,12 +219,12 @@ export default function PitchSVG({ onRecord, positions = [], showPositions = fal
                 >
                     {
                         Object.entries({
-                            SE : "m6615 4395v2220l-2315-1367.7v-852.3z",
-                            NE : "m6615 567v3829h-2315l0.36-852z",
+                            SE  : "m6615 4395v2220l-2315-1367.7v-852.3z",
+                            NE  : "m6615 567v3829h-2315l0.36-852z",
                             NNE : "m6615 567l-2314.64 2977h-709.36v-2977z",
                             NNW : "m3591 567v2977h-709l-2315-2977z",
-                            NW : `m${strikeLeft} ${strikeTop}v852h-2315v-3829z`,
-                            SW : `m${strikeLeft} 4395v852l-2315 1368v-2220z`,
+                            NW  : `m${strikeLeft} ${strikeTop}v852h-2315v-3829z`,
+                            SW  : `m${strikeLeft} 4395v852l-2315 1368v-2220z`,
                             SSW : "m3591 5247v1368h-3024l2315-1368z",
                             SSE : "m4300.36 5247l2314.64 1368h-3024v-1368z"
                         }).map(([key, path]) => (
@@ -258,8 +270,6 @@ export default function PitchSVG({ onRecord, positions = [], showPositions = fal
                 {showPositions && (
                     <g id="position-markers">
                         {positions.map((position, index) => {
-                            const circleRadiusInches = 2.9/2; // Simple circle size
-                            const circleRadius = circleRadiusInches * (pxToFeet / 12); // Convert inches to pixels
                             // Use stored SVG coordinates if available, otherwise convert from feet
                             const svgX = (position as any).svgX || toSvgCoords(position.x, position.y).x;
                             const svgY = (position as any).svgY || toSvgCoords(position.x, position.y).y;
@@ -269,7 +279,7 @@ export default function PitchSVG({ onRecord, positions = [], showPositions = fal
                                     key={position.id || `pos-${index}`}
                                     cx={svgX}
                                     cy={svgY}
-                                    r={circleRadius}
+                                    r={ballRadiusPx}
                                     fill={getBallColor(position)}
                                     opacity={0.7}
                                     stroke="#ffffff"

@@ -6,7 +6,7 @@ import { usePosition, PositionData } from '@/lib/contexts/PositionContext';
 
 import style from './PitchTracker.module.css';
 
-import { toFeet, toSvgCoords } from '@/lib/helpers/distance-conversion';
+import { toFeet, toSvgCoords, pxToFeet, strikeZoneCenter, width, height } from '@/lib/helpers/distance-conversion';
 
 type Props = {
     onRecord?: (position: PositionData) => void
@@ -16,15 +16,6 @@ type Props = {
 
 export default function PitchSVG({ onRecord, positions = [], showPositions = false }: Props) {
     const { savePosition } = usePosition();
-
-    const width = 7182;
-    const height = 7182;
-
-
-    const strikeZoneCenter = {
-        x : width / 2,
-        y : 4395.5
-    };
 
     const reticuleSizePx = 50;
 

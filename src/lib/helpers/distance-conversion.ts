@@ -1,6 +1,14 @@
 const DECIMAL = 1;
 
-const pxToFeet = 65 * 12;
+
+export const width = 7182;
+export const height = 7182;
+
+export const pxToFeet = 65 * 12;
+export const strikeZoneCenter = {
+    x : width / 2,
+    y : 4395.5
+};
 
 export function toFeet(pxX: number, pxY: number) {
     // distance from strike zone center in feet

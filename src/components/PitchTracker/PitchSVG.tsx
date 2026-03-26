@@ -6,7 +6,7 @@ import { usePosition, PositionData } from '@/lib/contexts/PositionContext';
 
 import style from './PitchTracker.module.css';
 
-const DECIMAL = 1;
+import { toFeet, toSvgCoords } from '@/lib/helpers/distance-conversion';
 
 type Props = {
     onRecord?: (position: PositionData) => void
@@ -20,7 +20,6 @@ export default function PitchSVG({ onRecord, positions = [], showPositions = fal
     const width = 7182;
     const height = 7182;
 
-    const pxToFeet = 65 * 12;
 
     const strikeZoneCenter = {
         x : width / 2,
@@ -47,20 +46,6 @@ export default function PitchSVG({ onRecord, positions = [], showPositions = fal
     const [ pitchType, setPitchType ] = useState('');
     const [ isHovering, setIsHovering ] = useState(false);
 
-    function toFeet(pxX: number, pxY: number) {
-        // distance from strike zone center in feet
-        const xFeet = (pxX - strikeZoneCenter.x) / pxToFeet;
-        const yFeet = (strikeZoneCenter.y - pxY) / pxToFeet;
-
-        return { x: Number(xFeet.toFixed(DECIMAL)), y: Number(yFeet.toFixed(DECIMAL)) };
-    }
-
-    function toSvgCoords(xFeet: number, yFeet: number) {
-        const pxX = xFeet * pxToFeet + strikeZoneCenter.x;
-        const pxY = strikeZoneCenter.y - yFeet * pxToFeet;
-        return { x: pxX, y: pxY };
-
-    }
 
     const handleClick = async (e: React.MouseEvent<SVGSVGElement>) => {
         const rect = (e.currentTarget as SVGSVGElement).getBoundingClientRect();
@@ -199,7 +184,14 @@ export default function PitchSVG({ onRecord, positions = [], showPositions = fal
                         fill="var(--strike-zone-inner-color)"
                     />
 
-                    <rect id="strike-zone" fill="transparent" x={strikeLeft} y={strikeTop} width={strikeW} height={strikeH}/>
+                    <rect
+                        id="strike-zone"
+                        fill="transparent"
+                        x={strikeLeft}
+                        y={strikeTop}
+                        width={strikeW}
+                        height={strikeH}
+                    />
 
                     <rect
                         id="reticule"
